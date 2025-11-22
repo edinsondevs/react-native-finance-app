@@ -1,35 +1,54 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Tabs } from "expo-router";
+import { FontAwesome } from "@expo/vector-icons";
+import { colors } from "@/styles/constants";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+	return (
+		<Tabs
+			screenOptions={{
+				tabBarActiveTintColor: colors.primary,
+				headerShown: false,
+        animation:"shift",
+			}}>
+			<Tabs.Screen
+				name='gastos'
+				options={{
+					title: "Gastos",
+					tabBarIcon: ({ color }) => (
+						<FontAwesome
+							size={28}
+							name='money'
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name='ingresos'
+				options={{
+					title: "Ingresos",
+					tabBarIcon: ({ color }) => (
+						<FontAwesome
+							size={28}
+							name='dollar'
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name='ajustes'
+				options={{
+					title: "Ajustes",
+					tabBarIcon: ({ color }) => (
+						<FontAwesome
+							size={28}
+							name='wrench'
+							color={color}
+						/>
+					),
+				}}
+			/>
+		</Tabs>
+	);
 }
