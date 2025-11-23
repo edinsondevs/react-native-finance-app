@@ -1,4 +1,18 @@
-export const colors = {
+export interface ColorsInterfaces {
+	primary: string;
+	secondary: string;
+	"background-light": string;
+	"text-dark": string;
+	"border-light": string;
+	"google-red": string;
+	"github-dark": string;
+	"text-white": string;
+	"text-gray": string;
+	"text-input-placeholder": string;
+	"text-black": string;
+}
+
+export const colors: ColorsInterfaces = {
 	// Color principal de la marca (el azul fuerte del botón 'Iniciar sesión')
 	primary: "#1E40FF",
 	secondary: "#4CAF50",

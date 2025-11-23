@@ -49,6 +49,19 @@ export default function RootLayout() {
 							headerShown: false,
 						}}
 					/>
+					<Stack.Screen
+						name='(tabs)'
+						options={{
+							headerShown: false,
+						}}
+					/>
+					{/* <Stack.Screen
+					name='(tabs)/ingresos'
+					options={{
+						title: "Ingresos",
+						headerShown: true, // Oculta el encabezado del Stack para evitar el texto "(tabs)"
+					}}
+				/> */}
 				</Stack>
 			</SafeAreaView>
 		</SafeAreaProvider>

@@ -31,7 +31,6 @@ const ButtomComponent = ({
 	textColor = "text-text-white",
 	color = "bg-primary",
 	width = "w-full",
-	circular = false,
 }: ButtomComponentProps) => {
 
 	const border =
@@ -41,11 +40,11 @@ const ButtomComponent = ({
 
 	return (
 		<Pressable
-			className={`${color} p-3 ${
-				circular ? "w-14 h-14" : width
-			} rounded-${
-				circular ? "full" : "lg"
-			} justify-center items-center ${border} `}
+			className={`${color} p-3
+			${ width } 
+			rounded-${ "lg" } 
+			justify-center items-center ${border} `
+		}
 			onPress={onPressFunction}>
 			<Text className={`${textColor} text-center font-bold text-lg`}>
 				{text}

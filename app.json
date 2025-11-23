@@ -1,13 +1,14 @@
 {
   "expo": {
-    "name": "blank",
-    "slug": "blank",
+    "name": "Finzanzas App",
+    "slug": "Finzanzas App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "blank",
+    "scheme": "Finzanzas App",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "autor": "Edinson Madrid",
     "ios": {
       "supportsTablet": true
     },

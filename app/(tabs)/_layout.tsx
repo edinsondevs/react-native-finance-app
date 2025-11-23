@@ -5,14 +5,22 @@ import { colors } from "@/styles/constants";
 export default function TabLayout() {
 	return (
 		<Tabs
+			
 			screenOptions={{
 				tabBarActiveTintColor: colors.primary,
-				headerShown: false,
-        animation:"shift",
+				headerShown: true,
+				animation: "shift",
 			}}>
 			<Tabs.Screen
-				name='gastos'
+				name='gastos/index'
 				options={{
+					headerTitle: "Gastos",
+					headerTitleContainerStyle: {
+						flex: 1,
+					},
+					headerStyle: {
+						height: 80,
+					},
 					title: "Gastos",
 					tabBarIcon: ({ color }) => (
 						<FontAwesome
@@ -24,7 +32,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name='ingresos'
+				name='ingresos/index'
 				options={{
 					title: "Ingresos",
 					tabBarIcon: ({ color }) => (
@@ -37,7 +45,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name='ajustes'
+				name='ajustes/index'
 				options={{
 					title: "Ajustes",
 					tabBarIcon: ({ color }) => (
