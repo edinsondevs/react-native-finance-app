@@ -8,3 +8,4 @@ export { default as SeparatorComponent } from './SeparatorComponent'
 export { default as TextInputComponent } from './TextInputComponent'
 export { default as FiltersButtons } from "./FiltersButtons";
 export { default as PeriodSelector } from "./PeriodSelector";
+export { default as ItemMovimientosCards } from "./ItemMovimeintosCards";

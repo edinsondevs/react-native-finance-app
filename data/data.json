@@ -1,0 +1,18 @@
+[{
+    "category": "Supermercado",
+	"description": "Comida",
+	"amount": 45.5,
+	"iconName": "shopping-cart"
+},
+{
+    "category": "Transporte",
+    "description": "Taxi",
+    "amount": 15.0,
+    "iconName": "drive-eta"
+},
+{
+    "category": "Entretenimiento",
+    "description": "Cine",
+    "amount": 12.0,
+    "iconName": "shopping-bag"
+}]

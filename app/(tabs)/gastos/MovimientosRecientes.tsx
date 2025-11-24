@@ -1,26 +1,19 @@
-import { Image } from "expo-image";
-import React from "react";
+import { ItemMovimientosCards }from "@/app/components";
 import { FlatList, Text, View } from "react-native";
+import data from '../../../data/data.json'
 
-const DataMovimientosRecientes: React.FC = () => {
-	return (
-		<View className='flex flex-1 flex-row gap-4 my-2 items-stretch '>
-			<Image
-				style={{ width: 40, height: 40, borderRadius: 25 }}
-				source='assets/images/investment.png'
-				placeholder='usuario logueado'
-				contentFit='cover'
-				transition={1000}
-			/>
-			<Text>componente</Text>
-		</View>
-	);
-};
 const MovimientosRecientes = () => {
 	return (
 		<FlatList
-			data={[2, 3, 4]}
-			renderItem={() => <DataMovimientosRecientes />}
+			data={data}
+			renderItem={({ item }) => (
+				<ItemMovimientosCards
+					category={item.category}
+					description={item.description}
+					amount={item.amount}
+					iconName={item.iconName}
+				/>
+			)}
 			keyExtractor={(item, index) => index.toString()}
 			ListHeaderComponent={() => (
 				<View className='mx-8 my-4'>
