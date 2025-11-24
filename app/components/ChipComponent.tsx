@@ -16,7 +16,7 @@ const ChipComponent = ({ onPressFunction, text }: ChipComponentProps) => {
 	const isDesktop = width >= DESKTOP_WIDTH_THRESHOLD;
 
 	// Las clases que no cambian de tamaño/forma
-	const baseClasses = isDesktop ? "flex py-4 rounded-lg shadow-md w-96" : "flex p-3 rounded-full shadow-md w-32 ";
+	const baseClasses = isDesktop ? "flex p-4 rounded-full shadow-md w-96" : "flex p-3 rounded-full shadow-md w-32 ";
     
 	return (
 		<View className={`${baseClasses} bg-white  `}>
