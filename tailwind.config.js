@@ -15,6 +15,7 @@ module.exports = {
         // Color principal de la marca (el azul fuerte del botón 'Iniciar sesión')
         'primary': '#135bec',
         'secondary': '#28a745',
+        'alert': '#dc3545',
 
         // Color para el fondo o elementos muy sutiles
         "background-light": "#f6f6f8",
@@ -31,7 +32,7 @@ module.exports = {
         'github-dark': '#333333',
         'text-white': '#FFFFFF',
         'text-gray': '#6B7280',
-        'text-input-placeholder': '#9CA3AF',
+        'input-placeholder': '#9CA3AF',
         'text-black': '#9f9f9f',
       },
 
@@ -39,7 +40,7 @@ module.exports = {
       fontFamily: {
         // Define una familia de fuentes sans-serif para todo el texto.
         // NOTA: Debes cargar la fuente 'Inter' en tu proyecto Expo para que funcione.
-        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],        
+        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
         "Inter-Bold": ["Inter_18pt-Bold", 'system-ui'],
         "Inter-ExtraBold": ["Inter_18pt-ExtraBold", 'system-ui'],
         "Inter-Medium": ["Inter_18pt-Medium", 'system-ui'],

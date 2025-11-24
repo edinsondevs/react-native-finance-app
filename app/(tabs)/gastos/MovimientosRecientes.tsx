@@ -1,6 +1,6 @@
-import { ItemMovimientosCards }from "@/app/components";
+import { ItemMovimientosCards } from "@/app/components";
 import { FlatList, Text, View } from "react-native";
-import data from '../../../data/data.json'
+import data from "../../../data/data.json";
 
 const MovimientosRecientes = () => {
 	return (

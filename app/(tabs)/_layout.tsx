@@ -8,11 +8,11 @@ export default function TabLayout() {
 			
 			screenOptions={{
 				tabBarActiveTintColor: colors.primary,
-				headerShown: true,
+				headerShown: false,
 				animation: "shift",
 			}}>
 			<Tabs.Screen
-				name='gastos/index'
+				name='gastos'
 				options={{
 					headerTitle: "Gastos",
 					headerTitleContainerStyle: {
@@ -32,7 +32,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name='ingresos/index'
+				name='ingresos'
 				options={{
 					title: "Ingresos",
 					tabBarIcon: ({ color }) => (

@@ -1,12 +1,14 @@
-import { CardsComponent, CircleButton, PeriodSelector, HeaderComponent } from "@/app/components";
-import MovimientosRecientes from './MovimientosRecientes';
-
+import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
 import {
-	Text,
-	View,
-} from "react-native";
-
-
+	CardsComponent,
+	CircleButton,
+	HeaderComponent,
+	PeriodSelector,
+} from "@/app/components";
+import { colors } from "@/styles/constants";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
+import { Text, View } from "react-native";
 
 const GastosScreen = () => {
 	// TODO Cambiar el texto por el nombre del usuario logueado
@@ -17,9 +19,9 @@ const GastosScreen = () => {
 			<HeaderComponent />
 
 			{/* Tarjeta con Balances del Mes*/}
-			<View className='mx-8 my-4' >
+			<View className='mx-8 my-4'>
 				<View>
-					<Text className='text-xl text-text-input-placeholder'>
+					<Text className='text-xl text-input-placeholder'>
 						Balance del Mes
 					</Text>
 				</View>
@@ -29,11 +31,17 @@ const GastosScreen = () => {
 					</Text>
 				</View>
 			</View>
-			
+
 			{/*  Tarjetas con Ingresos y egresos*/}
 			<View className='flex flex-row flex-wrap justify-around '>
 				<CardsComponent>
-					<View>
+					<View className='flex flex-row items-center '>
+						<MaterialIcons
+							name='arrow-upward'
+							size={24}
+							// color={colors.secondary}
+							className='text-secondary bg-secondary/10 p-1 rounded-full mr-4'
+						/>
 						<Text className='text-xl'>Ingresos</Text>
 					</View>
 					<View>
@@ -45,7 +53,13 @@ const GastosScreen = () => {
 
 				<CardsComponent>
 					<View className=''>
-						<View>
+						<View className='flex flex-row items-center '>
+							<MaterialIcons
+								name='arrow-downward'
+								size={24}
+								color={colors.alert}
+								className='bg-alert/10 p-1 rounded-full mr-4'
+							/>
 							<Text className='text-xl'>Gastos</Text>
 						</View>
 						<View className='w-100%'>
@@ -59,15 +73,19 @@ const GastosScreen = () => {
 
 			{/* Componente de filtros por las fechas */}
 			<PeriodSelector />
-			
+
 			{/* Componente de Movimientos */}
-			<MovimientosRecientes />
+			<View className='mt-3'>
+				<MovimientosRecientes />
+			</View>
 
 			{/* Botón Circular Azul para Añadir */}
 			<View className='bottom-0 right-0 m-6 absolute'>
 				<CircleButton
 					text='+'
-					onPressFunction={() => alert("Ayuda")}
+					onPressFunction={() =>
+						router.push("/(tabs)/gastos/AgregarGastos")
+					}
 				/>
 			</View>
 		</View>

@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
 import React from "react";
+import { Text, View } from "react-native";
 // Asumiendo que usas MaterialIcons para los iconos
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -7,6 +7,7 @@ interface ItemMovimientosCardsProps {
 	category: string;
 	description: string;
 	amount: number; // Por ejemplo: 45.50
+	// iconName: keyof typeof MaterialIcons.glyphMap; // Nombre del icono (ej: 'shopping-cart')
 	iconName: keyof typeof MaterialIcons.glyphMap; // Nombre del icono (ej: 'shopping-cart')
 }
 
@@ -55,4 +56,3 @@ const ItemMovimientosCards = ({
 };
 
 export default ItemMovimientosCards;
-

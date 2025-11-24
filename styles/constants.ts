@@ -1,24 +1,27 @@
 export interface ColorsInterfaces {
 	primary: string;
 	secondary: string;
+	alert: string;
 	"background-light": string;
+	"background-dark": string;
 	"text-dark": string;
 	"border-light": string;
 	"google-red": string;
 	"github-dark": string;
 	"text-white": string;
 	"text-gray": string;
-	"text-input-placeholder": string;
+	"input-placeholder": string;
 	"text-black": string;
 }
 
 export const colors: ColorsInterfaces = {
 	// Color principal de la marca (el azul fuerte del botón 'Iniciar sesión')
-	primary: "#1E40FF",
-	secondary: "#4CAF50",
-
+	primary: "#135bec",
+	secondary: "#28a745",
+	alert: "#dc3545",
 	// Color para el fondo o elementos muy sutiles
-	"background-light": "#FAFAFA",
+	"background-light": "#f6f6f8",
+	"background-dark": "#101622",
 
 	// Color para textos principales o encabezados
 	"text-dark": "#1F2937",
@@ -31,6 +34,6 @@ export const colors: ColorsInterfaces = {
 	"github-dark": "#333333",
 	"text-white": "#FFFFFF",
 	"text-gray": "#6B7280",
-	"text-input-placeholder": "#9CA3AF",
+	"input-placeholder": "#9CA3AF",
 	"text-black": "#9f9f9f",
 };
