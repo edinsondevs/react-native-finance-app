@@ -9,7 +9,7 @@ const SeparatorComponent = () => {
 			<View className='flex-1 h-px bg-gray-300' />
 
 			{/* Texto "o" centrado */}
-			<Text className='mx-4 text-gray-500 font-sans'>o</Text>
+			<Text className='mx-4 text-gray-500 '>o</Text>
 
 			{/* Línea divisoria derecha */}
 			<View className='flex-1 h-px bg-gray-300' />

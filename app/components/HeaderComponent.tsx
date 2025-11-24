@@ -16,7 +16,7 @@ const HeaderComponent = () => {
 						transition={1000}
 					/>
 				</Text>
-				<Text className='self-center font-ExtraBold text-2xl font-'>
+				<Text className='self-center font-Inter-Bold text-2xl '>
 					Hola, Edinson
 				</Text>
 			</View>

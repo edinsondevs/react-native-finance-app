@@ -10,7 +10,7 @@ interface LinkComponentProps {
 const LinkComponent = ({text, onPress} : LinkComponentProps) => {
 	return (
 		<Pressable className='' onPress={onPress}>
-			<Text className='text-primary underline text-right font-Medium'>
+			<Text className='text-primary underline text-right font-Inter-Medium'>
 				{text}
 			</Text>
 		</Pressable>

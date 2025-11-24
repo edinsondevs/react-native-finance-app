@@ -72,7 +72,7 @@ const LoginScreen = () => {
 				/>
 			</View>
 			<View className='mt-6 flex-row justify-center items-center gap-2'>
-				<Text className='text-text-gray font-Medium'>
+				<Text className='text-text-gray font-Inter-Medium'>
 					¿No tienes una cuenta?
 				</Text>
 				<LinkComponent
