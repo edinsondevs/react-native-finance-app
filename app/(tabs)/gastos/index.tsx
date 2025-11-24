@@ -38,7 +38,7 @@ const GastosScreen = () => {
 					<Text className='text-xl'>Balance del Mes</Text>
 				</View>
 				<View>
-					<Text className='text-3xl font-Bold'>$ 1.550.000,00</Text>
+					<Text className='text-3xl Inter-Bold'>$ 1.550.000,00</Text>
 				</View>
 			</CardsComponent>
 			{/* Tarjetas con Ingresos y egresos*/}
@@ -49,7 +49,7 @@ const GastosScreen = () => {
 						<Text className='text-xl'>Ingresos</Text>
 					</View>
 					<View>
-						<Text className='text-2xl font-Bold text-secondary'>
+						<Text className='text-2xl font-Inter-Bold text-secondary'>
 							$ 1.550.000,00
 						</Text>
 					</View>
@@ -61,8 +61,8 @@ const GastosScreen = () => {
 							<Text className='text-xl'>Gastos</Text>
 						</View>
 						<View className='w-100%'>
-							<Text className='text-2xl font-Bold text-google-red '>
-								$ 1.550.000,0055
+							<Text className='text-2xl Inter-Bold text-google-red'>
+								$ 1.550.000,00
 							</Text>
 						</View>
 					</View>

@@ -1,5 +1,5 @@
-import { Text, Pressable } from "react-native";
 import React from "react";
+import { Pressable, Text } from "react-native";
 import { PressableProps } from "react-native/Libraries/Components/Pressable/Pressable";
 
 interface ButtomComponentProps extends PressableProps {
@@ -32,7 +32,6 @@ const ButtomComponent = ({
 	color = "bg-primary",
 	width = "w-full",
 }: ButtomComponentProps) => {
-
 	const border =
 		color === "transparent"
 			? "border border-border-light"
@@ -41,12 +40,11 @@ const ButtomComponent = ({
 	return (
 		<Pressable
 			className={`${color} p-3
-			${ width } 
-			rounded-${ "lg" } 
-			justify-center items-center ${border} `
-		}
+			${width} 
+			rounded-${"lg"} 
+			justify-center items-center ${border} `}
 			onPress={onPressFunction}>
-			<Text className={`${textColor} text-center font-bold text-lg`}>
+			<Text className={`${textColor} text-center Inter-Bold text-lg`}>
 				{text}
 			</Text>
 		</Pressable>

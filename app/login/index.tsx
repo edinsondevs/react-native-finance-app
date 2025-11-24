@@ -1,10 +1,10 @@
-import { View, Text } from "react-native";
+import { router } from "expo-router";
 import React from "react";
-import TextInputComponent from "../components/TextInputComponent";
+import { Text, View } from "react-native";
 import ButtomComponent from "../components/ButtomComponent";
 import LinkComponent from "../components/LinkComponent";
 import SeparatorComponent from "../components/SeparatorComponent";
-import { router } from "expo-router";
+import TextInputComponent from "../components/TextInputComponent";
 
 const LoginScreen = () => {
 	const [email, setEmail] = React.useState("");
@@ -17,12 +17,12 @@ const LoginScreen = () => {
 	return (
 		<View className='flex-1 justify-center items-center '>
 			<View className='mb-4 max-w-xs  '>
-				<Text className='text-4xl text-center font-Bold '>
+				<Text className='text-4xl text-center font-Nunito-ExtraBold '>
 					App de Finanzas Personales
 				</Text>
 			</View>
 			<View className='gap-4 mt-8'>
-				<Text className='text-text-gray font-ExtraBold'>
+				<Text className='text-text-gray font-Inter-ExtraBold'>
 					Correo Eléctronico
 				</Text>
 				<TextInputComponent
@@ -31,7 +31,7 @@ const LoginScreen = () => {
 					icon='alternate-email'
 					placeholder='Introduce tu correo electrónico'
 				/>
-				<Text className='text-text-gray font-ExtraBold'>
+				<Text className='text-text-gray font-Inter-ExtraBold'>
 					Contraseña
 				</Text>
 				<TextInputComponent
