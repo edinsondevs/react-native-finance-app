@@ -1,10 +1,7 @@
 import { router } from "expo-router";
 import React from "react";
 import { Text, View } from "react-native";
-import ButtomComponent from "../components/ButtomComponent";
-import LinkComponent from "../components/LinkComponent";
-import SeparatorComponent from "../components/SeparatorComponent";
-import TextInputComponent from "../components/TextInputComponent";
+import { ButtomComponent, LinkComponent, SeparatorComponent, TextInputComponent } from "../components";
 
 const LoginScreen = () => {
 	const [email, setEmail] = React.useState("");

@@ -13,11 +13,12 @@ module.exports = {
       // === COLORES PERSONALIZADOS ===
       colors: {
         // Color principal de la marca (el azul fuerte del botón 'Iniciar sesión')
-        'primary': '#1E40FF',
-        'secondary': '#4CAF50',
+        'primary': '#135bec',
+        'secondary': '#28a745',
 
         // Color para el fondo o elementos muy sutiles
-        'background-light': '#FAFAFA',
+        "background-light": "#f6f6f8",
+        "background-dark": "#101622",
 
         // Color para textos principales o encabezados
         'text-dark': '#1F2937',

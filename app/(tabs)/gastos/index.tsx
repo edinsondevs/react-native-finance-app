@@ -1,12 +1,12 @@
-import CardsComponent from "@/app/components/CardsComponent";
+import { CardsComponent, CircleButton, PeriodSelector, HeaderComponent } from "@/app/components";
+import MovimientosRecientes from './MovimientosRecientes';
+
 import {
 	Text,
-	// ScrollView,
 	View,
 } from "react-native";
-import CircleButton from "../../components/CircleButton";
-import HeaderComponent from "../../components/HeaderComponent";
-import FiltersButtons from "@/app/components/FiltersButtons";
+
+
 
 const GastosScreen = () => {
 	// TODO Cambiar el texto por el nombre del usuario logueado
@@ -58,7 +58,10 @@ const GastosScreen = () => {
 			</View>
 
 			{/* Componente de filtros por las fechas */}
-			<FiltersButtons /> 
+			<PeriodSelector />
+			
+			{/* Componente de Movimientos */}
+			<MovimientosRecientes />
 
 			{/* Botón Circular Azul para Añadir */}
 			<View className='bottom-0 right-0 m-6 absolute'>
