@@ -21,12 +21,12 @@ const TabButton = ({ label, value, isSelected, onPress }: TabButtonProps) => {
 
 	// Clase base para la etiqueta (reemplaza 'label' y 'grow')
 	const baseClasses =
-		"flex h-full grow cursor-pointer items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-medium leading-normal";
+		"flex h-full grow cursor-pointer items-center justify-center overflow-hidden rounded-lg px-2 text-sm  leading-normal";
 
 	// Clases dinámicas basadas en el estado 'isSelected' (reemplaza has-[:checked])
 	const activeClasses = isSelected
-		? "bg-white text-[#111318] shadow-[0_0_4px_rgba(0,0,0,0.1)] dark:bg-gray-700 dark:text-white"
-		: "text-[#616f89] dark:text-gray-400";
+		? "bg-white text-[#111318] shadow-[0_0_4px_rgba(0,0,0,0.1)] "
+		: "text-[#616f89] ";
 
 	return (
 		<Pressable
@@ -51,9 +51,8 @@ const PeriodSelector = () => {
 
 	return (
 		// Reemplaza <div class="py-5">
-		<View className='flex h-10 flex-row items-center justify-center rounded-lg bg-[#f0f2f4] p-1 dark:bg-gray-800'>
-			{/* Reemplaza <div class="flex h-10 flex-1 items-center justify-center rounded-lg bg-[#f0f2f4] dark:bg-gray-800"> */}
-			<View className='flex h-10 flex-row flex-1 items-center justify-center rounded-lg bg-[#f0f2f4] p-1 dark:bg-gray-800'>
+		<View className='flex h-10 flex-row items-center justify-center rounded-lg p-1 '>
+			<View className='flex h-10 flex-row flex-1 items-center justify-center rounded-lg bg-border-light p-1'>
 				{periods.map((period) => (
 					<TabButton
 						key={period.value}

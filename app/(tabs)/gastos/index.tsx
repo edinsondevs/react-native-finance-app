@@ -5,81 +5,99 @@ import {
 	HeaderComponent,
 	PeriodSelector,
 } from "@/app/components";
+import CharstComponent from "@/app/components/CharstComponent";
+
 import { colors } from "@/styles/constants";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
-import { Text, View } from "react-native";
+import { View, Text, FlatList } from "react-native";
+import data from "../../../data/data.json"; // Asegúrate de ajustar esta ruta si es necesario
+
+const chartData = [
+	{ value: 54, color: "#177AD5" },
+	{ value: 40, color: "#79D2DE" },
+	{ value: 20, color: "#ED6665" },
+];
 
 const GastosScreen = () => {
-	// TODO Cambiar el texto por el nombre del usuario logueado
 	return (
-		// <ScrollView>
-		<View className='flex-1 bg-white '>
-			{/* Componente header que muestra el nombre del usuario logueado y las notificaciones */}
-			<HeaderComponent />
+		<View className='flex-1'>
+			<FlatList
+				data={data}
+				keyExtractor={(item, index) => index.toString()}
+				renderItem={({ item }) => (
+					<MovimientosRecientes
+						item={{
+							...item,
+							iconName: item.iconName as keyof typeof MaterialIcons.glyphMap,
+						}}
+					/>
+				)}
+				showsVerticalScrollIndicator={false}
+				ListHeaderComponent={
+					<>
+						<HeaderComponent />
 
-			{/* Tarjeta con Balances del Mes*/}
-			<View className='mx-8 my-4'>
-				<View>
-					<Text className='text-xl text-input-placeholder'>
-						Balance del Mes
-					</Text>
-				</View>
-				<View>
-					<Text className='text-3xl font-Nunito-Bold'>
-						$ 1.550.000,00
-					</Text>
-				</View>
-			</View>
-
-			{/*  Tarjetas con Ingresos y egresos*/}
-			<View className='flex flex-row flex-wrap justify-around '>
-				<CardsComponent>
-					<View className='flex flex-row items-center '>
-						<MaterialIcons
-							name='arrow-upward'
-							size={24}
-							// color={colors.secondary}
-							className='text-secondary bg-secondary/10 p-1 rounded-full mr-4'
-						/>
-						<Text className='text-xl'>Ingresos</Text>
-					</View>
-					<View>
-						<Text className='text-2xl font-Nunito-Bold text-secondary'>
-							$ 1.550.000,00
-						</Text>
-					</View>
-				</CardsComponent>
-
-				<CardsComponent>
-					<View className=''>
-						<View className='flex flex-row items-center '>
-							<MaterialIcons
-								name='arrow-downward'
-								size={24}
-								color={colors.alert}
-								className='bg-alert/10 p-1 rounded-full mr-4'
-							/>
-							<Text className='text-xl'>Gastos</Text>
-						</View>
-						<View className='w-100%'>
-							<Text className='text-2xl font-Nunito-Bold text-google-red'>
+						{/* Balance del Mes */}
+						<View className='mx-8 my-4'>
+							<Text className='text-xl text-input-placeholder'>
+								Balance del Mes
+							</Text>
+							<Text className='text-3xl font-Nunito-Bold'>
 								$ 1.550.000,00
 							</Text>
 						</View>
-					</View>
-				</CardsComponent>
-			</View>
 
-			{/* Componente de filtros por las fechas */}
-			<PeriodSelector />
+						{/* Ingresos / Gastos */}
+						<View className='flex flex-row justify-around w-6/12'>
+							<CardsComponent>
+								<View className='flex flex-row items-center'>
+									<MaterialIcons
+										name='arrow-upward'
+										size={24}
+										className='text-secondary bg-secondary/10 p-1 rounded-full mr-4'
+									/>
+									<Text className='text-xl'>Ingresos</Text>
+								</View>
+								<Text className='text-lg font-Nunito-Bold text-secondary'>
+									$ 1.550.000,00
+								</Text>
+							</CardsComponent>
 
-			{/* Componente de Movimientos */}
-			<View className='mt-3'>
-				<MovimientosRecientes />
-			</View>
+							<CardsComponent>
+								<View className='flex flex-row items-center'>
+									<MaterialIcons
+										name='arrow-downward'
+										size={24}
+										color={colors.alert}
+										className='bg-alert/10 p-1 rounded-full mr-4'
+									/>
+									<Text className='text-xl'>Gastos</Text>
+								</View>
+								<Text className='text-lg font-Nunito-Bold text-alert'>
+									$ 1.550.000,00
+								</Text>
+							</CardsComponent>
+						</View>
 
-			{/* Botón Circular Azul para Añadir */}
+						{/* Filtro y gráfico */}
+						<PeriodSelector />
+						<View className='flex items-center mb-6'>
+							<CharstComponent data={chartData} />
+						</View>
+
+						{/* Título antes de los movimientos */}
+						<View className='mx-8 mb-2'>
+							<Text className='text-2xl text-text-dark font-Inter-ExtraBold'>
+								Movimientos Recientes
+							</Text>
+						</View>
+					</>
+				}
+				contentContainerStyle={{ paddingBottom: 100 }}
+			/>
+
+			{/* Botón flotante */}
 			<View className='bottom-0 right-0 m-6 absolute'>
 				<CircleButton
 					text='+'
@@ -89,7 +107,6 @@ const GastosScreen = () => {
 				/>
 			</View>
 		</View>
-		// </ScrollView>
 	);
 };
 
