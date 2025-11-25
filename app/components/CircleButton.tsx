@@ -9,8 +9,6 @@ interface ButtonProps extends PressableProps {
 	text: string;
 	// Usamos 'bg-primary' como un ejemplo de clase de Tailwind para el color
 	color?:'bg-primary' | 'bg-secondary' | 'bg-google-red' ;
-	// Añadimos tamaño para que sea un círculo más grande o pequeño
-	size?: "w-12 h-12" | "w-14 h-14" | "w-16 h-16" | "w-20 h-20";
 	textColor?: string;
 }
 

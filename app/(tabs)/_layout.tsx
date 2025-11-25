@@ -5,11 +5,13 @@ import { colors } from "@/styles/constants";
 export default function TabLayout() {
 	return (
 		<Tabs
-			
 			screenOptions={{
 				tabBarActiveTintColor: colors.primary,
 				headerShown: false,
 				animation: "shift",
+				tabBarStyle:{
+					minHeight: 80,
+				}
 			}}>
 			<Tabs.Screen
 				name='gastos'
