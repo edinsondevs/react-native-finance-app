@@ -1,16 +1,16 @@
+import { useState } from "react";
 import { router } from "expo-router";
-import React from "react";
 import { Text, View } from "react-native";
 import { ButtomComponent, LinkComponent, SeparatorComponent, TextInputComponent } from "../components";
 
 const LoginScreen = () => {
-	const [email, setEmail] = React.useState("");
-	const [password, setPassword] = React.useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
 	function onPressFunction() {
 		router.push("/(tabs)/gastos");
 	}
-
+	
 	return (
 		<View className='flex-1 justify-center items-center '>
 			<View className='mb-4 max-w-xs  '>
@@ -74,7 +74,7 @@ const LoginScreen = () => {
 				</Text>
 				<LinkComponent
 					text='Regístrate'
-					onPress={() => {}}
+					onPress={() => router.push('/register')}
 				/>
 			</View>
 		</View>

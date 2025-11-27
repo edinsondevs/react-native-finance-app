@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -11,6 +12,7 @@ import "../global.css";
 
 // Mantiene la pantalla de presentación visible hasta que las fuentes estén cargadas.
 SplashScreen.preventAutoHideAsync();
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
 	// 1. Llama al hook useFonts y mapea un nombre a la ruta del archivo.
@@ -47,31 +49,32 @@ export default function RootLayout() {
 
 	return (
 		<SafeAreaProvider initialMetrics={initialWindowMetrics}>
-			<SafeAreaView
-				style={{ flex: 1 }}
-				edges={["top", "right", "left"]}>
-				<Stack>
-					<Stack.Screen
-						name='login/index'
-						options={{
-							headerShown: false,
-						}}
-					/>
-					<Stack.Screen
-						name='(tabs)'
-						options={{
-							headerShown: false,
-						}}
-					/>
-					{/* <Stack.Screen
-					name='(tabs)/ingresos'
-					options={{
-						title: "Ingresos",
-						headerShown: true, // Oculta el encabezado del Stack para evitar el texto "(tabs)"
-					}}
-				/> */}
-				</Stack>
-			</SafeAreaView>
+			<QueryClientProvider client={queryClient}>
+				<SafeAreaView
+					style={{ flex: 1 }}
+					edges={["top", "right", "left"]}>
+					<Stack>
+						<Stack.Screen
+							name='login/index'
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name='register/index'
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name='(tabs)'
+							options={{
+								headerShown: false,
+							}}
+						/>
+					</Stack>
+				</SafeAreaView>
+			</QueryClientProvider>
 		</SafeAreaProvider>
 	);
 }
