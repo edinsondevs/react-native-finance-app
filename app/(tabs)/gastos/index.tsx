@@ -4,14 +4,15 @@ import {
 	CircleButton,
 	HeaderComponent,
 	PeriodSelector,
-} from "@/app/components";
-import CharstComponent from "@/app/components/CharstComponent";
+} from "@/components";
+import CharstComponent from "@/components/CharstComponent";
 
 import { colors } from "@/styles/constants";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
-import { View, Text, FlatList } from "react-native";
-import data from "../../../data/data.json"; // Asegúrate de ajustar esta ruta si es necesario
+import { FlatList, Text, View } from "react-native";
+// import data from "../../../data/data.json"; // Asegúrate de ajustar esta ruta si es necesario
+import { ServicesPurchases } from "@/api/services/purchases.services";
 
 const chartData = [
 	{ value: 54, color: "#177AD5" },
@@ -20,6 +21,7 @@ const chartData = [
 ];
 
 const GastosScreen = () => {
+	const { data } = ServicesPurchases.get();
 	return (
 		<View className='flex-1'>
 			<FlatList
@@ -29,7 +31,8 @@ const GastosScreen = () => {
 					<MovimientosRecientes
 						item={{
 							...item,
-							iconName: item.iconName as keyof typeof MaterialIcons.glyphMap,
+							iconName:
+								item.iconName as keyof typeof MaterialIcons.glyphMap,
 						}}
 					/>
 				)}

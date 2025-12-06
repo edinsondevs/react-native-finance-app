@@ -1,12 +1,12 @@
-import { instance } from "../api/apiService";
+import { instance } from "../../api/apiService";
 
 
-const get = async () => {
+const get = async (): Promise<any> => {
     try {
         
         const {data} = await instance.get('/purchases',{
             params: {
-                limit: 1
+                limit: 10
             }
         })
         console.log(JSON.stringify(data, null, 4))

@@ -1,6 +1,6 @@
+import { useAuthStore } from "@/store/useAuthStore";
 import React, { useState } from "react";
-import { View, TextInput, Button, Text } from "react-native";
-import { useAuthStore } from "../store/useAuthStore";
+import { Button, Text, TextInput, View } from "react-native";
 
 const RegisterScreen = () => {
 	const { signUp, loading, error, user } = useAuthStore();
@@ -61,5 +61,5 @@ const RegisterScreen = () => {
 			)}
 		</View>
 	);
-}
-export default RegisterScreen
+};
+export default RegisterScreen;

@@ -1,10 +1,10 @@
-import { instance } from "../api/apiService";
+import { instance } from "../../api/apiService";
 
 
 const get = async () => {
     try {
         
-        const { data } = await instance.get("/productos", {
+        const { data } = await instance.get("/customers", {
 			params: {
 				limit: 1,
 			},
@@ -19,6 +19,6 @@ const get = async () => {
 }
 
 
-export const ServicesProductos = {
+export const ServicesCustomers = {
 	get,
 };

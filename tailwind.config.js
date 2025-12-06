@@ -3,7 +3,7 @@ module.exports = {
   // Asegúrate de que el contenido rastree todos tus archivos
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,jsx,ts-tsx}"
+    "./components/**/*.{js,jsx,ts,tsx}"
   ],
 
   presets: [require("nativewind/preset")],
