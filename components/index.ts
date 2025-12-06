@@ -13,4 +13,4 @@ export { default as TextInputComponent } from "./TextInputComponent";
 export { default as InputComponent } from "./InputComponent";
 export { default as DateTimePickerComponent } from "./DateTimePickerComponent";
 export { default as ModalComponent } from "./ModalComponent";
-
+export { default as CustomSelector } from "./CustomSelector";

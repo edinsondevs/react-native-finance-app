@@ -83,8 +83,13 @@ const GastosScreen = () => {
 							</CardsComponent>
 						</View>
 
-						{/* Filtro y gráfico */}
+						{
+						// TODO: Filtro y gráfico 
+						}
 						<PeriodSelector />
+						{
+						// TODO: Gráfico 
+						}
 						<View className='flex items-center mb-6'>
 							<CharstComponent data={chartData} />
 						</View>

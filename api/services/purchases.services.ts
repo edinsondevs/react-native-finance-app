@@ -9,7 +9,7 @@ const get = async (): Promise<any> => {
                 limit: 10
             }
         })
-        console.log(JSON.stringify(data, null, 4))
+        // console.log(JSON.stringify(data, null, 4))
         return data
     } catch (error) {
         console.log(error)

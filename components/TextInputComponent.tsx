@@ -3,6 +3,9 @@ import { TextInput, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 type widthType = 24 | 32 | 40 | 48 | 64 | 80 | 96 ;
 
+
+// TODO:  CAMBIAR AL COMPONENTE INPUTCOMPONENT Y ELIMINAR ESTE
+
 interface TextInputComponentProps {
 	// Define aquí las props que necesites
 	text: string;
