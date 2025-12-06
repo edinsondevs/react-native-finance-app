@@ -20,6 +20,7 @@ module.exports = {
         // Color para el fondo o elementos muy sutiles
         "background-light": "#f6f6f8",
         "background-dark": "#101622",
+        "calendar-primary": "#10b981",
 
         // Color para textos principales o encabezados
         'text-dark': '#1F2937',
