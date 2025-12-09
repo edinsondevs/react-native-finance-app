@@ -23,6 +23,7 @@ interface ButtomComponentProps extends PressableProps {
 		| "w-full";
 	circular?: boolean;
 	textColor?: "text-text-white" | "text-text-black";
+	className?: string;
 }
 
 const ButtomComponent = ({
@@ -31,6 +32,7 @@ const ButtomComponent = ({
 	textColor = "text-text-white",
 	color = "bg-primary",
 	width = "w-full",
+	className = "",
 }: ButtomComponentProps) => {
 	const border =
 		color === "transparent"
@@ -42,9 +44,9 @@ const ButtomComponent = ({
 			className={`${color} p-3
 			${width} 
 			rounded-${"lg"} 
-			justify-center items-center ${border} `}
+			justify-center items-center ${border} ${className} `}
 			onPress={onPressFunction}>
-			<Text className={`${textColor} text-center Inter-Bold text-lg`}>
+			<Text className={`${textColor} text-center font-Inter-Bold text-lg`}>
 				{text}
 			</Text>
 		</Pressable>

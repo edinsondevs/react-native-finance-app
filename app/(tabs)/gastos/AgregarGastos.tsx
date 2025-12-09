@@ -1,5 +1,6 @@
 import { categoriesData, Category } from "@/api/mocks/data";
 import {
+	ButtomComponent,
 	DateTimePickerComponent,
 	InputComponent,
 	ModalComponent,
@@ -21,7 +22,7 @@ const AgregarGastosScreen = () => {
 	const [modalVisible, setModalVisible] = useState(false);
 
 	return (
-		<View className='flex-1 bg-background-light'>
+		<View className='flex-1 bg-background-light px-4'>
 			{/* Header */}
 			<View className='flex flex-row items-center justify-between p-4 pb-2 border-t border-border-light absolute z-10 '>
 				<Text className='text-2xl font-Inter-Bold text-center flex-1' />
@@ -38,7 +39,7 @@ const AgregarGastosScreen = () => {
 			{/* Main Content - KeyboardAwareScrollView */}
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps='handled'
-				contentContainerStyle={{ padding: 16 }}
+				contentContainerStyle={{ paddingTop: 16 }}
 				showsVerticalScrollIndicator={false}
 				extraScrollHeight={100}
 				enableOnAndroid={true}>
@@ -53,10 +54,8 @@ const AgregarGastosScreen = () => {
 							setValue={setAmount}
 							placeholder='0.00'
 							keyboardType='numeric'
+							iconDollar
 						/>
-						<Text className='absolute left-3 top-2.5 text-xl font-semibold text-text-dark'>
-							$
-						</Text>
 					</View>
 				</View>
 
@@ -119,15 +118,13 @@ const AgregarGastosScreen = () => {
 				</View>
 
 				{/* Guardar botón - Dentro del scroll para que scroll hacia él */}
-				<View className='pt-4'>
-					<Pressable className='w-full h-14 bg-primary rounded-xl flex items-center justify-center active:bg-secondary/90'>
-						<Text className='text-text-white font-Inter-Bold text-lg'>
-							Guardar Gasto
-						</Text>
-					</Pressable>
-				</View>
 			</KeyboardAwareScrollView>
-
+			<ButtomComponent
+				onPressFunction={() => console.log("Guardar Gasto")}
+				text='Guardar Gasto'
+				color='bg-primary'
+				className='mb-6 '
+			/>
 			{/* Modal para fecha */}
 			<ModalComponent
 				visible={modalVisible}

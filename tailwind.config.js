@@ -24,6 +24,7 @@ module.exports = {
 
         // Color para textos principales o encabezados
         'text-dark': '#1F2937',
+        'text-light': '#fafafa',
 
         // Color para bordes de inputs (el gris claro)
         'border-light': '#D1D5DB',

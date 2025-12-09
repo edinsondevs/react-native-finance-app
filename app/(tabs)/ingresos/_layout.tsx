@@ -7,7 +7,12 @@ const IngresosLayout = () => {
     <Stack screenOptions={{ headerShown: true }}>
         <Stack.Screen name='index'
             options={{
-                title:'Ingresos'
+                title:'Historial de Ingresos'
+            }}
+        />
+        <Stack.Screen name='AgregarIngresos'
+            options={{
+                title:'Añadir Ingreso'
             }}
         />
     </Stack>
