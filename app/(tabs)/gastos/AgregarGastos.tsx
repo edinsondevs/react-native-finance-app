@@ -1,10 +1,5 @@
 import { categoriesData, Category } from "@/api/mocks/data";
-import {
-	ButtomComponent,
-	DateTimePickerComponent,
-	InputComponent,
-	ModalComponent,
-} from "@/components";
+import { ButtomComponent, CircleButton, DateTimePickerComponent, InputComponent, ModalComponent, TitleOpcionInput } from "@/components";
 import CustomSelector from "@/components/CustomSelector";
 import { MaterialIcons } from "@expo/vector-icons";
 import dayjs from "dayjs";
@@ -26,14 +21,12 @@ const AgregarGastosScreen = () => {
 			{/* Header */}
 			<View className='flex flex-row items-center justify-between p-4 pb-2 border-t border-border-light absolute z-10 '>
 				<Text className='text-2xl font-Inter-Bold text-center flex-1' />
-				<Pressable className='w-10 h-10 items-center justify-center bg-primary/50 rounded-full'>
-					<MaterialIcons
-						name='close'
-						size={24}
-						color='#111827'
-						onPress={() => router.back()}
-					/>
-				</Pressable>
+				<CircleButton
+					text='x'
+					className='bg-primary/50 w-9 h-9'
+					classNameText='text-xl'
+					onPressFunction={() => router.back()}
+				/>
 			</View>
 
 			{/* Main Content - KeyboardAwareScrollView */}
@@ -43,46 +36,37 @@ const AgregarGastosScreen = () => {
 				showsVerticalScrollIndicator={false}
 				extraScrollHeight={100}
 				enableOnAndroid={true}>
+				
 				{/* Monto */}
 				<View className='mb-5'>
-					<Text className='text-lg font-Inter-Bold pb-2 text-text-dark'>
-						Monto
-					</Text>
-					<View className='relative'>
-						<InputComponent
-							value={amount}
-							setValue={setAmount}
-							placeholder='0.00'
-							keyboardType='numeric'
-							iconDollar
-						/>
-					</View>
+					<TitleOpcionInput title="Monto" />
+					<InputComponent
+						value={amount}
+						setValue={setAmount}
+						placeholder='0.00'
+						keyboardType='numeric'
+						iconDollar
+					/>					
 				</View>
 
 				{/* Categoría */}
 				<View className='mb-5'>
-					<Text className='text-lg font-Inter-Bold pb-2 text-text-dark'>
-						Categoría
-					</Text>
-					<View className='relative'>
-						<CustomSelector<Category>
-							data={categoriesData}
-							labelKey='name'
-							valueKey='id'
-							placeholder='Selecciona una categoría...'
-							onSelect={(item) => console.log(item)}
+					<TitleOpcionInput title="Categoría" />
+					<CustomSelector<Category>
+						data={categoriesData}
+						labelKey='name'
+						valueKey='id'
+						placeholder='Selecciona una categoría...'
+						onSelect={(item) => console.log(item)}
 						/>
-					</View>
 				</View>
 
 				{/* Fecha */}
 				<Pressable
 					className='mb-5'
 					onPress={() => setModalVisible(!modalVisible)}>
-					<Text className='text-lg font-Inter-Bold pb-2 text-text-dark'>
-						Fecha
-					</Text>
-					<View className='relative'>
+					<TitleOpcionInput title="Fecha" />
+					<View >
 						<InputComponent
 							value={dayjs(date).format("DD/MM/YYYY")}
 							setValue={setDate}
@@ -96,7 +80,7 @@ const AgregarGastosScreen = () => {
 							style={{
 								position: "absolute",
 								right: 16,
-								top: 18,
+								top: 16,
 							}}
 						/>
 					</View>
@@ -104,9 +88,7 @@ const AgregarGastosScreen = () => {
 
 				{/* Descripción */}
 				<View className='mb-5'>
-					<Text className='text-lg font-Inter-Bold pb-2 text-text-dark'>
-						Descripción (Opcional)
-					</Text>
+					<TitleOpcionInput title="Descripción (Opcional)" />
 					<InputComponent
 						placeholder='Añade una nota...'
 						multiline
@@ -117,14 +99,15 @@ const AgregarGastosScreen = () => {
 					/>
 				</View>
 
-				{/* Guardar botón - Dentro del scroll para que scroll hacia él */}
 			</KeyboardAwareScrollView>
+			
 			<ButtomComponent
 				onPressFunction={() => console.log("Guardar Gasto")}
 				text='Guardar Gasto'
 				color='bg-primary'
 				className='mb-6 '
 			/>
+
 			{/* Modal para fecha */}
 			<ModalComponent
 				visible={modalVisible}
