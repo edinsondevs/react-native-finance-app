@@ -14,6 +14,7 @@ const RegisterScreen = () => {
 			return;
 		}
 		await signUp(email.trim(), password);
+		
 	};
 
 	return (
