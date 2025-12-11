@@ -1,10 +1,8 @@
-import { View, Text, Modal, ModalProps, Alert, Pressable } from 'react-native'
+import { View,  Modal, ModalProps } from 'react-native'
 import React from 'react'
 
 interface Props extends ModalProps {
     children: React.ReactNode;
-	// modalVisible: boolean;
-	// setModalVisible: (visible: boolean) => void;
 }
 const ModalComponent = ({ children, ...props }: Props) => {
   return (

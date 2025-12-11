@@ -8,11 +8,19 @@ import DateTimePicker, {
 interface DateTimePickerComponentProps {
 	onRequestClose: (date: DateType) => void;
 	cancelRequestClose: () => void;
+	value?: DateType;
+	mode?: "single" | "range";
+	maximumDate?: Date;
+	minimumDate?: Date;
 }
 
 const DateTimePickerComponent = ({
 	onRequestClose,
 	cancelRequestClose,
+	value = new Date(),
+	mode = "single",
+	maximumDate = new Date(),
+	minimumDate = new Date(2020, 0, 1),
 }: DateTimePickerComponentProps) => {
 	const [selected, setSelected] = useState<DateType>(new Date());
 	const defaultClassNames = useDefaultClassNames();

@@ -12,7 +12,12 @@ export interface IngresoInterfaces {
 
 export const getIngresosServices = async (): Promise<IngresoInterfaces[]> => {
 	try {
-		const response = await instance.get("/ingresos");
+		const response = await instance.get("/ingresos", {
+			params: {
+				limit: 7,
+				order: "fecha.desc",
+			},
+		});
 
 		return response.data;
 	} catch (error: any) {

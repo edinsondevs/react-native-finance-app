@@ -5,13 +5,14 @@ interface IngresoData {
 	monto: number;
 	fecha: string;
 	descripcion: string;
-	id: number;
-	// user_id: string; // Linking to the user is typically required
 }
 
 export const postIngresoServices = async (data: IngresoData) => {
+	console.log(data);
+	const mapperData = { ...data, id: Math.floor(Math.random() * 10000) };
+	
 	try {
-		const response = await instance.post("/ingresos", data);
+		const response = await instance.post("/ingresos", mapperData);
 
 		return response.data;
 	} catch (error: any) {

@@ -3,15 +3,16 @@ import { router } from "expo-router";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { getIngresosServices, IngresoInterfaces } from "@/api/services/ingreso/get.ingresos.services";
 import { CircleButton } from "@/components";
+import { useFormatNumber } from "@/hooks";
 
 const Item = ({ monto, fecha, origen }: Partial<IngresoInterfaces>) => (
 	<View className='flex p-4 border border-border-light h-24 gap-5'>
 		<View className='flex flex-row justify-between align-bottom'>
-			<Text className=''>{monto?.toString()}</Text>
-			<Text className=''>
+			<Text className='w-1/3 text-center'>{monto && useFormatNumber(monto)}</Text>
+			<Text className='w-1/3 text-center'>
 				{fecha ? new Date(fecha).toLocaleDateString() : ""}
 			</Text>
-			<Text className=''>{origen}</Text>
+			<Text className='w-1/3 text-center'>{origen}</Text>
 		</View>
 	</View>
 );
@@ -19,9 +20,9 @@ const Item = ({ monto, fecha, origen }: Partial<IngresoInterfaces>) => (
 const HeaderList = () => (
 	<View className='flex justify-evenly   border border-border-light h-12 gap-5'>
 		<View className='flex flex-row justify-around items-center'>
-			<Text className='font-Inter-Bold'>Monto</Text>
-			<Text className='font-Inter-Bold'>Fecha</Text>
-			<Text className='font-Inter-Bold'>Origen</Text>
+			<Text className='font-Inter-Bold w-1/3 text-center'>Monto</Text>
+			<Text className='font-Inter-Bold w-1/3 text-center'>Fecha</Text>
+			<Text className='font-Inter-Bold w-1/3 text-center'>Origen</Text>
 		</View>
 	</View>
 );
