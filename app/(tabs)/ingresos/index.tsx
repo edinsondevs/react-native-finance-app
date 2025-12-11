@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { FlatList, Text, View } from "react-native";
 
 import { CircleButton } from "@/components";
+import { getIngresosServices } from "@/api/services/ingreso/get.ingresos.services";
 
 interface Props {
 	id: string;
@@ -45,7 +46,11 @@ const Item = ({ monto, fecha, origen }: Props) => (
 	</View>
 );
 
+
+
 const IngresosScreen = () => {
+	
+
 	return (
 		<View className='flex-1'>
 			<FlatList
