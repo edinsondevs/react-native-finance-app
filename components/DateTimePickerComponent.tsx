@@ -9,7 +9,6 @@ interface DateTimePickerComponentProps {
 	onRequestClose: (date: DateType) => void;
 	cancelRequestClose: () => void;
 	value?: DateType;
-	mode?: "single" | "range";
 	maximumDate?: Date;
 	minimumDate?: Date;
 }
@@ -17,8 +16,6 @@ interface DateTimePickerComponentProps {
 const DateTimePickerComponent = ({
 	onRequestClose,
 	cancelRequestClose,
-	value = new Date(),
-	mode = "single",
 	maximumDate = new Date(),
 	minimumDate = new Date(2020, 0, 1),
 }: DateTimePickerComponentProps) => {
@@ -29,6 +26,8 @@ const DateTimePickerComponent = ({
 		<View className='bg-white m-5 p-5 rounded-3xl shadow-lg shadow-gray-200/50'>
 			<DateTimePicker
 				mode='single'
+				minDate={minimumDate}
+				maxDate={maximumDate}
 				date={selected}
 				onChange={({ date }) => setSelected(date)}
 				classNames={{

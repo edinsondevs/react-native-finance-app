@@ -12,6 +12,7 @@ import { postIngresoServices } from "@/api/services/ingreso/post.ingreso.service
 import { ButtomComponent, CircleButton, DateTimePickerComponent, InputComponent, ModalComponent, TitleOpcionInput } from "@/components";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { IngresoForm } from "./ingresos.interfaces";
+import { FontAwesome } from "@expo/vector-icons";
 
 const AgregarIngresos = () => {
 	// const user = useAuthStore((state) => state.user);
@@ -122,6 +123,9 @@ const AgregarIngresos = () => {
 								editable={false}
 								className='pl-3'
 							/>
+							<View className='absolute right-3 top-3'>
+								<FontAwesome name='calendar' size={24} color='black' />
+							</View>
 						</Pressable>
 
 						<ModalComponent
@@ -131,7 +135,6 @@ const AgregarIngresos = () => {
 							}>
 							<DateTimePickerComponent
 								value={date}
-								mode='single'
 								maximumDate={new Date()}
 								minimumDate={new Date(2020, 0, 1)}
 								cancelRequestClose={() =>
