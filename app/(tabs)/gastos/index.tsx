@@ -8,6 +8,7 @@ import { FlatList, Text, View } from "react-native";
 import { getResumeIngresosServices, getAllGastosServices, getResumeGastosServices } from "@/api/services/dashboard/get.alls.services";
 import { useQuery } from "@tanstack/react-query";
 // import { ServicesPurchases } from "@/api/services/purchases.services";
+import {categoriesData} from "../../../api/mocks/data";
 
 const chartData = [
 	{ value: 54, color: "#177AD5" },
@@ -18,23 +19,23 @@ const chartData = [
 const GastosScreen = () => {
 	
 	const { data: resumeIngresos } = useQuery({
-		queryKey: ["ingresos"],
+		queryKey: ["resumeIngresos"],
 		queryFn: getResumeIngresosServices,
 	});
-	const { data: resumeGastos } = useQuery({
-		queryKey: ["gastos"],
-		queryFn: getResumeGastosServices,
-	});
-	const { data: allGastos } = useQuery({
-		queryKey: ["gastos", "all"],
-		queryFn: getAllGastosServices,
-	});
-	console.log({resumeIngresos})
+	// const { data: resumeGastosr } = useQuery({
+	// 	queryKey: ["gastos"],
+	// 	queryFn: getResumeGastosServices,
+	// });
+	// const { data: allGastos } = useQuery({
+	// 	queryKey: ["gastos", "all"],
+	// 	queryFn: getAllGastosServices,
+	// });
+	// console.log({resumeIngresos})
 	return (
 		// <></>
 		<View className='flex-1'>
 			<FlatList
-				data={allGastos}
+				data={categoriesData}
 				keyExtractor={(_item, index) => index.toString()}
 				renderItem={({ item }) => (
 					<MovimientosRecientes

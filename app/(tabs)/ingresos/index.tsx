@@ -4,6 +4,7 @@ import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { getIngresosServices, IngresoInterfaces } from "@/api/services/ingreso/get.ingresos.services";
 import { CircleButton } from "@/components";
 import { useFormatNumber } from "@/hooks";
+import { categoriesData } from "@/api/mocks/data";
 
 const Item = ({ monto, fecha, origen }: Partial<IngresoInterfaces>) => (
 	<View className='flex p-4 border border-border-light h-24 gap-5'>

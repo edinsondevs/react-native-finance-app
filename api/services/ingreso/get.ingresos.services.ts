@@ -18,7 +18,7 @@ export const getIngresosServices = async (): Promise<IngresoInterfaces[]> => {
 				order: "fecha.desc",
 			},
 		});
-
+		console.log(response.data)
 		return response.data;
 	} catch (error: any) {
 		console.log("Error details:", error.response?.data);
