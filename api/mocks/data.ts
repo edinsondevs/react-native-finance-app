@@ -42,3 +42,22 @@ export const categoriesData: Category[] = [
 		description: "Cosméticos y cuidado personal",
 	},
 ];
+
+
+export const metodo_pago = [
+	{
+		id: 1,
+		name: "Efectivo",
+		description: "Pago en efectivo",
+	},
+	{
+		id: 2,
+		name: "Tarjeta de crédito",
+		description: "Pago con tarjeta de crédito",
+	},
+	{
+		id: 3,
+		name: "Tarjeta de débito",
+		description: "Pago con tarjeta de débito",
+	},
+];

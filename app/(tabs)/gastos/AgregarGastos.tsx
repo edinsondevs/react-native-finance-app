@@ -1,20 +1,35 @@
 import { categoriesData, Category } from "@/api/mocks/data";
 import { ButtomComponent, CircleButton, DateTimePickerComponent, InputComponent, ModalComponent, TitleOpcionInput } from "@/components";
 import CustomSelector from "@/components/CustomSelector";
-import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { DateType } from "react-native-ui-datepicker";
 
 const AgregarGastosScreen = () => {
-	const [amount, setAmount] = useState("");
-	const [date, setDate] = useState<DateType>(new Date());
-	const [description, setDescription] = useState("");
 	const router = useRouter();
 	const [modalVisible, setModalVisible] = useState(false);
+	const queryClient = useQueryClient();
+	const [textButton, setTextButton] = useState("Guardar Gasto");
+	const { control, handleSubmit, reset, watch, setValue } = useForm();
+
+	const onSubmit: SubmitHandler<any> = (data) => {
+		// crearGasto(data);
+		console.log({ data });
+		// reset();
+	};
+
+	// useEffect(() => {
+	// 	if (isPending) {
+	// 		setTextButton("Guardando...");
+	// 	} else {
+	// 		setTextButton("Guardar Ingreso");
+	// 	}
+	// }, [isPending]);
 
 	return (
 		<View className='flex-1 bg-background-light px-4'>
@@ -36,74 +51,98 @@ const AgregarGastosScreen = () => {
 				showsVerticalScrollIndicator={false}
 				extraScrollHeight={100}
 				enableOnAndroid={true}>
-				
 				{/* Monto */}
 				<View className='mb-5'>
-					<TitleOpcionInput title="Monto" />
-					<InputComponent
-						value={amount}
-						setValue={setAmount}
-						placeholder='0.00'
-						keyboardType='numeric'
-						iconDollar
-					/>					
+					<TitleOpcionInput title='Monto' />
+					<Controller
+						name='monto'
+						control={control}
+						render={({ field }) => (
+							<InputComponent
+								value={field.value}
+								setValue={field.onChange}
+								placeholder='0.00'
+								keyboardType='numeric'
+								iconDollar
+							/>
+						)}
+					/>
 				</View>
 
 				{/* Categoría */}
 				<View className='mb-5'>
-					<TitleOpcionInput title="Categoría" />
-					<CustomSelector<Category>
-						data={categoriesData}
-						labelKey='name'
-						valueKey='id'
-						placeholder='Selecciona una categoría...'
-						onSelect={(item) => console.log(item)}
-						/>
-				</View>
-
-				{/* Fecha */}
-				<Pressable
-					className='mb-5'
-					onPress={() => setModalVisible(!modalVisible)}>
-					<TitleOpcionInput title="Fecha" />
-					<View >
-						<InputComponent
-							value={dayjs(date).format("DD/MM/YYYY")}
-							setValue={setDate}
-							placeholder='Seleccionar fecha'
-							editable={false}
-							className='pl-3'
-						/>
-						<MaterialIcons
-							name='calendar-today'
-							size={20}
-							style={{
-								position: "absolute",
-								right: 16,
-								top: 16,
-							}}
-						/>
-					</View>
-				</Pressable>
-
-				{/* Descripción */}
-				<View className='mb-5'>
-					<TitleOpcionInput title="Descripción (Opcional)" />
-					<InputComponent
-						placeholder='Añade una nota...'
-						multiline
-						value={description}
-						setValue={setDescription}
-						className='h-40 pl-3'
-						style={{ textAlignVertical: "top" }}
+					<TitleOpcionInput title='Categoría' />
+					<Controller
+						name='categoria'
+						control={control}
+						render={({ field }) => (
+							<CustomSelector<Category>
+								data={categoriesData}
+								labelKey='name'
+								valueKey='id'
+								placeholder='Selecciona una categoría...'
+								onSelect={(item) => field.onChange(item)}
+							/>
+						)}
 					/>
 				</View>
 
+				{/* Fecha */}
+				<View className='mb-5'>
+					<TitleOpcionInput title='Fecha' />
+					<Controller
+						name='fecha'
+						control={control}
+						defaultValue={new Date()}
+						render={({ field }) => (
+							<Pressable
+								onPress={() => setModalVisible(!modalVisible)}>
+								<View>
+									<InputComponent
+										value={dayjs(
+											field.value || new Date()
+										).format("DD/MM/YYYY")}
+										setValue={() => {}}
+										placeholder='Seleccionar fecha'
+										editable={false}
+										className='pl-3'
+									/>
+									<View className='absolute right-3 top-3'>
+										<FontAwesome
+											name='calendar'
+											size={24}
+											color='black'
+										/>
+									</View>
+								</View>
+							</Pressable>
+						)}
+					/>
+				</View>
+
+				{/* Descripción */}
+				<View className='mb-5'>
+					<TitleOpcionInput title='Descripción (Opcional)' />
+					<Controller
+						name='descripcion'
+						control={control}
+						render={({ field }) => (
+							<InputComponent
+								placeholder='Añade una nota...'
+								multiline
+								value={field.value}
+								setValue={field.onChange}
+								className='h-40 pl-3'
+								style={{ textAlignVertical: "top" }}
+							/>
+						)}
+					/>
+				</View>
 			</KeyboardAwareScrollView>
-			
+
 			<ButtomComponent
-				onPressFunction={() => console.log("Guardar Gasto")}
-				text='Guardar Gasto'
+				onPressFunction={handleSubmit(onSubmit)}
+				text={textButton}
 				color='bg-primary'
 				className='mb-6 '
 			/>
@@ -113,9 +152,12 @@ const AgregarGastosScreen = () => {
 				visible={modalVisible}
 				onRequestClose={() => setModalVisible(!modalVisible)}>
 				<DateTimePickerComponent
+					value={watch("fecha") || new Date()}
+					maximumDate={new Date()}
+					minimumDate={new Date(2020, 0, 1)}
 					cancelRequestClose={() => setModalVisible(!modalVisible)}
-					onRequestClose={(date) => {
-						setDate(date);
+					onRequestClose={(selectedDate) => {
+						setValue("fecha", selectedDate || new Date());
 						setModalVisible(!modalVisible);
 					}}
 				/>

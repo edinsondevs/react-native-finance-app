@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import DateTimePicker, {
 	DateType,
@@ -16,11 +16,19 @@ interface DateTimePickerComponentProps {
 const DateTimePickerComponent = ({
 	onRequestClose,
 	cancelRequestClose,
+	value,
 	maximumDate = new Date(),
 	minimumDate = new Date(2020, 0, 1),
 }: DateTimePickerComponentProps) => {
-	const [selected, setSelected] = useState<DateType>(new Date());
+	const [selected, setSelected] = useState<DateType>(value || new Date());
 	const defaultClassNames = useDefaultClassNames();
+
+	// Sincronizar el estado interno con la prop value cuando cambie
+	useEffect(() => {
+		if (value) {
+			setSelected(value);
+		}
+	}, [value]);
 
 	return (
 		<View className='bg-white m-5 p-5 rounded-3xl shadow-lg shadow-gray-200/50'>
@@ -36,7 +44,9 @@ const DateTimePickerComponent = ({
 					selected: "bg-primary border-primary rounded-xl",
 					selected_label: "text-white font-bold",
 					header: "mb-4",
-					day: `${defaultClassNames.day} active:bg-gray-100 rounded-lg`,
+					day: `${defaultClassNames.day} active:bg-gray-100 rounded-lg text-black font-semibold`,
+					disabled: "opacity-40",
+					disabled_label: "text-gray-600 font-light",
 					day_label: "text-gray-400 font-medium text-sm mb-2",
 					month: "font-bold text-lg text-black",
 

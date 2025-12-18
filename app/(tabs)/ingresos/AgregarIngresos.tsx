@@ -18,8 +18,7 @@ const AgregarIngresos = () => {
 	// const user = useAuthStore((state) => state.user);
 	const [date, setDate] = useState<DateType>(new Date());
 	const [textButton, setTextButton] = useState("Guardar Ingreso");
-	const [isDatePickerVisible, setIsDatePickerVisible] =
-		useState<boolean>(false);
+	const [isDatePickerVisible, setIsDatePickerVisible] = useState<boolean>(false);
 	const { control, handleSubmit, reset } = useForm<IngresoForm>();
 	const queryClient = useQueryClient();
 
