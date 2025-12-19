@@ -47,7 +47,7 @@ const GastosScreen = () => {
 		queryKey: ["gastos", "all"],
 		queryFn: getAllGastosServices,
 	});
-	console.log({ allGastos });
+
 	return (
 		// <></>
 		<View className='flex-1'>
