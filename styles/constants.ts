@@ -14,6 +14,29 @@ export interface ColorsInterfaces {
 	"text-black": string;
 }
 
+export const Colors = {
+	light: {
+		primary: "#49129c",
+		secondary: "#b40086",
+		tertiary: "#ef2967",
+		success: "#52d49b",
+
+		text: "#000000",
+		background: "#f5f5f5",
+		backgroundListHeader: "#D6E2F1",
+	},
+	dark: {
+		primary: "#7a4edc",
+		secondary: "#d138a8",
+		tertiary: "#ff527f",
+		success: "#3a9d78",
+
+		text: "#ECEDEE",
+		background: "#17202A",
+		backgroundListHeader: "#314761",
+	},
+};
+
 export const colors: ColorsInterfaces = {
 	// Color principal de la marca (el azul fuerte del botón 'Iniciar sesión')
 	primary: "#135bec",

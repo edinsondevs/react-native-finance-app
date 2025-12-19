@@ -1,14 +1,25 @@
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
-import { CardsComponent, CircleButton, HeaderComponent, PeriodSelector, CharstComponent } from "@/components";
+import {
+	CardsComponent,
+	CharstComponent,
+	CircleButton,
+	HeaderComponent,
+	PeriodSelector,
+} from "@/components";
 
+import {
+	getAllGastosServices,
+	getResumeGastosServices,
+	getResumeIngresosServices,
+} from "@/api/services/dashboard/get.alls.services";
 import { colors } from "@/styles/constants";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { FlatList, Text, View } from "react-native";
-import { getResumeIngresosServices, getAllGastosServices, getResumeGastosServices } from "@/api/services/dashboard/get.alls.services";
-import { useQuery } from "@tanstack/react-query";
 // import { ServicesPurchases } from "@/api/services/purchases.services";
-import {categoriesData} from "../../../api/mocks/data";
+import { useFormatNumber } from "@/hooks";
+import { categoriesData } from "../../../api/mocks/data";
 
 const chartData = [
 	{ value: 54, color: "#177AD5" },
@@ -17,25 +28,31 @@ const chartData = [
 ];
 
 const GastosScreen = () => {
-	
 	const { data: resumeIngresos } = useQuery({
 		queryKey: ["resumeIngresos"],
 		queryFn: getResumeIngresosServices,
 	});
-	// const { data: resumeGastosr } = useQuery({
+
+	// const { data, isLoading, error } = useQuery({
 	// 	queryKey: ["gastos"],
-	// 	queryFn: getResumeGastosServices,
-	// });
-	// const { data: allGastos } = useQuery({
-	// 	queryKey: ["gastos", "all"],
-	// 	queryFn: getAllGastosServices,
-	// });
-	// console.log({resumeIngresos})
+	// 	queryFn: getGastosServices,
+	// })
+
+	const { data: resumeGastos } = useQuery({
+		queryKey: ["gastos", "resumen"],
+		queryFn: getResumeGastosServices,
+	});
+
+	const { data: allGastos } = useQuery({
+		queryKey: ["gastos", "all"],
+		queryFn: getAllGastosServices,
+	});
+	console.log({ allGastos });
 	return (
 		// <></>
 		<View className='flex-1'>
 			<FlatList
-				data={categoriesData}
+				data={allGastos}
 				keyExtractor={(_item, index) => index.toString()}
 				renderItem={({ item }) => (
 					<MovimientosRecientes
@@ -51,46 +68,42 @@ const GastosScreen = () => {
 					<>
 						<HeaderComponent />
 
-						{/* Balance del Mes */}
-						<View className='mx-8 my-4'>
-							<Text className='text-xl text-input-placeholder'>
-								Balance del Mes
-							</Text>
-							<Text className='text-3xl font-Nunito-Bold'>
-								{resumeIngresos}
-							</Text>
-						</View>
-
 						{/* Ingresos / Gastos */}
-						<View className='flex flex-row justify-around w-6/12'>
-							<CardsComponent>
-								<View className='flex flex-row items-center'>
-									<MaterialIcons
-										name='arrow-upward'
-										size={24}
-										className='text-secondary bg-secondary/10 p-1 rounded-full mr-4'
-									/>
-									<Text className='text-xl'>Ingresos</Text>
-								</View>
-								<Text className='text-lg font-Nunito-Bold text-secondary'>
-									$ 1.550.000,00
-								</Text>
-							</CardsComponent>
+						<View className='flex flex-row justify-around '>
+							<View className='w-6/12'>
+								<CardsComponent className='gap-1 items-center'>
+									<View className='flex flex-row items-center'>
+										<MaterialIcons
+											name='arrow-upward'
+											size={24}
+											className='text-secondary bg-secondary/10 p-1 rounded-full mr-4'
+										/>
+										<Text className='text-xl'>
+											Ingresos
+										</Text>
+									</View>
+									<Text className='font-Nunito-Bold text-secondary'>
+										{useFormatNumber(resumeIngresos)}
+									</Text>
+								</CardsComponent>
+							</View>
 
-							<CardsComponent>
-								<View className='flex flex-row items-center'>
-									<MaterialIcons
-										name='arrow-downward'
-										size={24}
-										color={colors.alert}
-										className='bg-alert/10 p-1 rounded-full mr-4'
-									/>
-									<Text className='text-xl'>Gastos</Text>
-								</View>
-								<Text className='text-lg font-Nunito-Bold text-alert'>
-									$ 1.550.000,00
-								</Text>
-							</CardsComponent>
+							<View className='w-6/12'>
+								<CardsComponent className='gap-1 items-center'>
+									<View className='flex flex-row items-center'>
+										<MaterialIcons
+											name='arrow-downward'
+											size={24}
+											color={colors.alert}
+											className='bg-alert/10 p-1 rounded-full mr-4'
+										/>
+										<Text className='text-xl'>Gastos</Text>
+									</View>
+									<Text className='font-Nunito-Bold text-alert'>
+										{useFormatNumber(resumeGastos)}
+									</Text>
+								</CardsComponent>
+							</View>
 						</View>
 
 						{

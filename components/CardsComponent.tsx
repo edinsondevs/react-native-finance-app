@@ -1,11 +1,11 @@
-import { View } from 'react-native'
+import { View, ViewProps } from 'react-native'
 
-interface CardsComponentProps  {
+interface CardsComponentProps extends ViewProps  {
     children: React.ReactNode;
 }
-const CardsComponent = ({ children }: CardsComponentProps) => {
+const CardsComponent = ({ children, ...rest }: CardsComponentProps) => {
 	return (
-		<View className='bg-white p-4 m-4 border border-border-light rounded-lg w-fit '>
+		<View className={`bg-white p-4 m-4 border border-border-light rounded-lg w-fit ${rest.className}`}>
 			{children}
 		</View>
 	);

@@ -1,7 +1,8 @@
 import React from "react";
 import { Text, View } from "react-native";
-// Asumiendo que usas MaterialIcons para los iconos
+
 import { MaterialIcons } from "@expo/vector-icons";
+import { useFormatNumber } from "@/hooks";
 
 interface ItemMovimientosCardsProps {
 	category: string;
@@ -16,9 +17,6 @@ const ItemMovimientosCards = ({
 	amount,
 	iconName,
 }: ItemMovimientosCardsProps) => {
-	// Formatear el monto con el signo y decimales
-	const formattedAmount = `-$${Number(amount || 0).toFixed(2)}`;
-
 
 	// Nota: La clase 'text-expense' se reemplaza aquí por 'text-red-500' o el color que definas para gastos
 	// Y los colores como 'bg-primary/10' se usan directamente.
@@ -50,7 +48,7 @@ const ItemMovimientosCards = ({
 			</View>
 
 			{/* Columna 3: Monto */}
-			<Text className='font-bold text-alert'>{formattedAmount}</Text>
+			<Text className='font-bold text-alert'>{useFormatNumber(amount)}</Text>
 		</View>
 	);
 };

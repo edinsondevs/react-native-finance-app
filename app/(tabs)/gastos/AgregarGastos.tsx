@@ -2,7 +2,7 @@ import { categoriesData, Category } from "@/api/mocks/data";
 import { ButtomComponent, CircleButton, DateTimePickerComponent, InputComponent, ModalComponent, TitleOpcionInput } from "@/components";
 import CustomSelector from "@/components/CustomSelector";
 import { FontAwesome } from "@expo/vector-icons";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -22,6 +22,7 @@ const AgregarGastosScreen = () => {
 		console.log({ data });
 		// reset();
 	};
+
 
 	// useEffect(() => {
 	// 	if (isPending) {
