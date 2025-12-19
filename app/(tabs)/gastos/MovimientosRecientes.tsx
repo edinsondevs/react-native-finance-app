@@ -1,4 +1,5 @@
 import { ItemMovimientosCards } from "@/components";
+import ThemedView from "@/presentation/ThemedView";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { View } from "react-native";
 
@@ -13,14 +14,14 @@ interface MovimientosRecientesProps {
 const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 	const { monto, categoria, descripcion, iconName } = item;
 	return (
-		<View>
+		<ThemedView margin>
 			<ItemMovimientosCards
 				category={categoria}
 				description={descripcion}
 				amount={monto}
 				iconName={iconName}
 			/>
-		</View>
+		</ThemedView>
 	);
 };
 

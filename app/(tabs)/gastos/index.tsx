@@ -12,14 +12,12 @@ import {
 	getResumeGastosServices,
 	getResumeIngresosServices,
 } from "@/api/services/dashboard/get.alls.services";
+import { useFormatNumber } from "@/hooks";
 import { colors } from "@/styles/constants";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { FlatList, Text, View } from "react-native";
-// import { ServicesPurchases } from "@/api/services/purchases.services";
-import { useFormatNumber } from "@/hooks";
-import { categoriesData } from "../../../api/mocks/data";
 
 const chartData = [
 	{ value: 54, color: "#177AD5" },

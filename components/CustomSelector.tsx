@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
 	FlatList,
@@ -20,6 +20,7 @@ interface CustomSelectorProps<T> {
 	valueKey?: keyof T;
 	isLoading?: boolean;
 	error?: string | null;
+	value?: T | null;
 }
 
 const CustomSelector = <T extends object>({
@@ -30,9 +31,15 @@ const CustomSelector = <T extends object>({
 	valueKey = "id" as keyof T,
 	isLoading = false,
 	error = null,
+	value = null,
 }: CustomSelectorProps<T>): React.ReactElement => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [selected, setSelected] = useState<T | null>(null);
+
+	// Sincronizar el estado interno con el valor externo (para resetear)
+	useEffect(() => {
+		setSelected(value);
+	}, [value]);
 
 	const handleSelect = (item: T): void => {
 		setSelected(item);

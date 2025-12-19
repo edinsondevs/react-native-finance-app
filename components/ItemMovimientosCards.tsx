@@ -22,7 +22,7 @@ const ItemMovimientosCards = ({
 	// Y los colores como 'bg-primary/10' se usan directamente.
 
 	return (
-		<View className='flex flex-row items-center gap-4 rounded-lg p-2 '>
+		<View className='flex flex-row items-center gap-4 rounded-lg p-2  '>
 			{/* Columna 1: Icono */}
 			<View className='flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary dark:bg-primary/20'>
 				{/* Usamos el componente MaterialIcons de Expo */}
@@ -35,14 +35,14 @@ const ItemMovimientosCards = ({
 			</View>
 
 			{/* Columna 2: Texto de Categoría y Descripción */}
-			<View className='flex-1'>
+			<View className='flex-1 '>
 				{/* Categoría: Supermercado */}
 				<Text className='font-semibold text-[#111318]'>
 					{category}
 				</Text>
 
 				{/* Descripción: Comida */}
-				<Text className='text-sm text-[#616f89] '>
+				<Text className='text-sm text-[#616f89]  '>
 					{description}
 				</Text>
 			</View>

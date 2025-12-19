@@ -1,14 +1,26 @@
-import { categoriesData, Category } from "@/api/mocks/data";
-import { ButtomComponent, CircleButton, DateTimePickerComponent, InputComponent, ModalComponent, TitleOpcionInput } from "@/components";
-import CustomSelector from "@/components/CustomSelector";
 import { FontAwesome } from "@expo/vector-icons";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+// import { categoriesData } from "@/api/mocks/data";
+import { getCategoriasServices } from "@/api/services";
+
+import { Category } from "@/api/services/shared/get.categorias.services";
+import {
+	ButtomComponent,
+	CircleButton,
+	CustomSelector,
+	DateTimePickerComponent,
+	InputComponent,
+	ModalComponent,
+	TitleOpcionInput,
+} from "@/components";
 
 const AgregarGastosScreen = () => {
 	const router = useRouter();
@@ -18,12 +30,27 @@ const AgregarGastosScreen = () => {
 	const { control, handleSubmit, reset, watch, setValue } = useForm();
 
 	const onSubmit: SubmitHandler<any> = (data) => {
-		// crearGasto(data);
-		console.log({ data });
-		// reset();
+		// Formatear la fecha al formato YYYY-MM-DD antes de enviar
+		const formattedData = {
+			...data,
+			fecha: data.fecha ? dayjs(data.fecha).format("YYYY-MM-DD") : null,
+		};
+
+		// crearGasto(formattedData);
+		console.log({ data: formattedData });
+		reset();
 	};
 
+	const {
+		data: categoriesData,
+		isPending,
+		error,
+	} = useQuery({
+		queryKey: ["categorias"],
+		queryFn: getCategoriasServices,
+	});
 
+	// console.log(JSON.stringify(categoriesData, null, 2))
 	// useEffect(() => {
 	// 	if (isPending) {
 	// 		setTextButton("Guardando...");
@@ -82,6 +109,7 @@ const AgregarGastosScreen = () => {
 								labelKey='name'
 								valueKey='id'
 								placeholder='Selecciona una categoría...'
+								value={field.value}
 								onSelect={(item) => field.onChange(item)}
 							/>
 						)}

@@ -1,18 +1,18 @@
 import { instance } from "@/api/apiService";
 
-interface IngresoData {
+interface GastoData {
 	origen: string;
 	monto: number;
 	fecha: string;
 	descripcion: string;
 }
 
-export const postIngresoServices = async (data: IngresoData) => {
+export const postGastosServices = async (data: GastoData) => {
 
 	const mapperData = { ...data, id: Math.floor(Math.random() * 10000) };
 	
 	try {
-		const response = await instance.post("/ingresos", mapperData);
+		const response = await instance.post("/gastos", mapperData);
 
 		return response.data;
 	} catch (error: any) {
