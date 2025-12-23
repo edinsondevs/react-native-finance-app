@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
@@ -12,23 +12,43 @@ import {
 	ViewStyle,
 } from "react-native";
 
+/**
+ * Propiedades del componente CustomSelector.
+ * @template T - El tipo de objeto que representa cada opción.
+ */
 interface CustomSelectorProps<T> {
+	/** Array de opciones a mostrar */
 	data?: T[];
+	/** Callback que se ejecuta al seleccionar una opción */
 	onSelect?: (item: T) => void;
+	/** Texto a mostrar cuando no hay ninguna opción seleccionada */
 	placeholder?: string;
+	/** Nombre de la propiedad del objeto a usar como etiqueta (display) */
 	labelKey?: keyof T;
+	/** Nombre de la propiedad del objeto a usar como valor único (id) */
 	valueKey?: keyof T;
+	/** Nombre de la propiedad del objeto que contiene el nombre del icono */
+	iconKey?: keyof T;
+	/** Indica si se están cargando los datos */
 	isLoading?: boolean;
+	/** Mensaje de error a mostrar */
 	error?: string | null;
+	/** Valor actualmente seleccionado (controlado externamente) */
 	value?: T | null;
 }
 
+/**
+ * Componente de selector personalizado reutilizable (generico).
+ * Soporta iconos personalizados, estados de carga, error y selección tipada.
+ * Se comporta como un Select/Dropdown que abre un Modal en dispositivos móviles.
+ */
 const CustomSelector = <T extends object>({
 	data = [],
 	onSelect,
 	placeholder = "Seleccionar opción",
 	labelKey = "label" as keyof T,
 	valueKey = "id" as keyof T,
+	iconKey,
 	isLoading = false,
 	error = null,
 	value = null,
@@ -41,6 +61,7 @@ const CustomSelector = <T extends object>({
 		setSelected(value);
 	}, [value]);
 
+	// Maneja la selección de un item: actualiza el estado local, notifica al padre y cierra el modal
 	const handleSelect = (item: T): void => {
 		setSelected(item);
 		onSelect?.(item);
@@ -49,13 +70,54 @@ const CustomSelector = <T extends object>({
 
 	const selectedLabel = String(selected?.[labelKey] || placeholder);
 
-	const renderItem = ({ item }: { item: T }): React.ReactElement => (
-		<Pressable
-			style={styles.optionItem}
-			onPress={() => handleSelect(item)}>
-			<Text style={styles.optionText}>{String(item[labelKey])}</Text>
-		</Pressable>
-	);
+	// Renderiza cada opción dentro del Modal
+	const renderItem = ({ item }: { item: T }): React.ReactElement => {
+		const isSelected = selected?.[valueKey] === item[valueKey];
+		const iconName = iconKey ? String(item[iconKey]) : null;
+
+		return (
+			<Pressable
+				style={[
+					styles.optionItem,
+					// Estilo condicional si está seleccionado
+					isSelected && styles.optionItemSelected,
+				]}
+				onPress={() => handleSelect(item)}>
+				{/* Contenedor Izquierdo: Icono (si existe) + Texto */}
+				<View style={{ flexDirection: "row", alignItems: "center" }}>
+					{iconName && (
+						<FontAwesome
+							name={iconName as any}
+							size={20}
+							// Cambia de color si está seleccionado
+							color={isSelected ? "#0066cc" : "#666"}
+							style={[
+								styles.itemIcon,
+								{ width: 24, textAlign: "center" },
+							]}
+						/>
+					)}
+					<Text
+						style={[
+							styles.optionText,
+							isSelected && styles.optionTextSelected,
+						]}>
+						{String(item[labelKey])}
+					</Text>
+				</View>
+
+				{/* Contenedor Derecho: Check de verificación (solo si seleccionado) */}
+				{isSelected && (
+					<MaterialIcons
+						name='check'
+						size={24}
+						color='#0066cc'
+						style={styles.checkIcon}
+					/>
+				)}
+			</Pressable>
+		);
+	};
 
 	return (
 		<View style={styles.container}>
@@ -122,7 +184,11 @@ const styles = StyleSheet.create<{
 	overlay: ViewStyle;
 	modalContent: ViewStyle;
 	optionItem: ViewStyle;
+	optionItemSelected: ViewStyle;
 	optionText: TextStyle;
+	optionTextSelected: TextStyle;
+	itemIcon: TextStyle;
+	checkIcon: TextStyle;
 }>({
 	container: {
 		marginVertical: 8,
@@ -172,10 +238,26 @@ const styles = StyleSheet.create<{
 		paddingHorizontal: 16,
 		borderBottomWidth: 1,
 		borderBottomColor: "#f0f0f0",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+	optionItemSelected: {
+		backgroundColor: "#f0f8ff",
 	},
 	optionText: {
 		fontSize: 16,
 		color: "#333",
+	},
+	optionTextSelected: {
+		color: "#0066cc",
+		fontWeight: "600",
+	},
+	itemIcon: {
+		marginRight: 12,
+	},
+	checkIcon: {
+		marginLeft: 8,
 	},
 });
 

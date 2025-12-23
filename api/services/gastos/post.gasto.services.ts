@@ -1,23 +1,16 @@
 import { instance } from "@/api/apiService";
+import { GastoData } from "../interfaces";
 
-interface GastoData {
-	origen: string;
-	monto: number;
-	fecha: string;
-	descripcion: string;
-}
 
-export const postGastosServices = async (data: GastoData) => {
+export const crearGastoServices = async (data: GastoData) => {
 
-	const mapperData = { ...data, id: Math.floor(Math.random() * 10000) };
-	
 	try {
-		const response = await instance.post("/gastos", mapperData);
+		const response = await instance.post("/gastos", data);
 
 		return response.data;
 	} catch (error: any) {
-		console.log("Error details:", error.response?.data);
-		throw error;
+		console.log("Error details:", error);
+		throw new Error("Error al crear el gasto", error.response?.data);
 	}
 };
 

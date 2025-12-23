@@ -4,14 +4,14 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-// import { categoriesData } from "@/api/mocks/data";
-import { getCategoriasServices } from "@/api/services";
+import { crearGastoServices, getCategoriasServices } from "@/api/services";
+import { Category, GastoData } from "@/api/services/interfaces";
 
-import { Category } from "@/api/services/shared/get.categorias.services";
+import { getMetodosPagoServices } from "@/api/services/shared/get.metodos-pago.services";
 import {
 	ButtomComponent,
 	CircleButton,
@@ -22,42 +22,67 @@ import {
 	TitleOpcionInput,
 } from "@/components";
 
+/**
+ * Pantalla para registrar nuevos gastos.
+ *
+ * Utiliza React Hook Form para la gestión del formulario y TanStack Query para
+ * obtener datos (categorías, métodos de pago) y persistir el nuevo gasto.
+ */
 const AgregarGastosScreen = () => {
 	const router = useRouter();
 	const [modalVisible, setModalVisible] = useState(false);
 	const queryClient = useQueryClient();
-	const [textButton, setTextButton] = useState("Guardar Gasto");
 	const { control, handleSubmit, reset, watch, setValue } = useForm();
 
+	// Mutation para crear gasto
+	const { mutate: crearGasto, isPending: isCreating } = useMutation({
+		mutationFn: crearGastoServices,
+		onSuccess: () => {
+			// Invalida las queries de gastos para refrescar los datos
+			queryClient.invalidateQueries({ queryKey: ["gastos"] });
+			reset();
+			router.back();
+		},
+		onError: (error: Error) => {
+			console.error("Error al crear gasto:", error);
+			// Aquí puedes agregar una notificación de error si lo deseas
+		},
+	});
+
+	/**
+	 * Maneja el envío del formulario.
+	 *
+	 * 1. Formatea la fecha seleccionada.
+	 * 2. Construye el objeto de datos necesario (GastoData).
+	 * 3. Ejecuta la mutación para guardar en el servidor.
+	 *
+	 * @param data Datos crudos del formulario (react-hook-form)
+	 */
 	const onSubmit: SubmitHandler<any> = (data) => {
 		// Formatear la fecha al formato YYYY-MM-DD antes de enviar
-		const formattedData = {
-			...data,
-			fecha: data.fecha ? dayjs(data.fecha).format("YYYY-MM-DD") : null,
+		const formattedData: GastoData = {
+			descripcion: data.descripcion,
+			monto: data.monto,
+			fecha: data.fecha ? dayjs(data.fecha).format("YYYY-MM-DD") : "",
+			categoria_id: data.categoria.id,
+			metodo_pago_id: data.metodo_pago_id.id,
 		};
 
-		// crearGasto(formattedData);
-		console.log({ data: formattedData });
-		reset();
+		crearGasto(formattedData);
 	};
 
-	const {
-		data: categoriesData,
-		isPending,
-		error,
-	} = useQuery({
+	const { data: categoriesData } = useQuery({
 		queryKey: ["categorias"],
 		queryFn: getCategoriasServices,
 	});
 
-	// console.log(JSON.stringify(categoriesData, null, 2))
-	// useEffect(() => {
-	// 	if (isPending) {
-	// 		setTextButton("Guardando...");
-	// 	} else {
-	// 		setTextButton("Guardar Ingreso");
-	// 	}
-	// }, [isPending]);
+	const { data: metodosPagoData } = useQuery({
+		queryKey: ["metodos-pago"],
+		queryFn: getMetodosPagoServices,
+	});
+
+	console.log({ metodosPagoData });
+	const textButton = isCreating ? "Guardando..." : "Guardar Gasto";
 
 	return (
 		<View className='flex-1 bg-background-light px-4'>
@@ -108,6 +133,7 @@ const AgregarGastosScreen = () => {
 								data={categoriesData}
 								labelKey='name'
 								valueKey='id'
+								iconKey='icon'
 								placeholder='Selecciona una categoría...'
 								value={field.value}
 								onSelect={(item) => field.onChange(item)}
@@ -163,6 +189,26 @@ const AgregarGastosScreen = () => {
 								setValue={field.onChange}
 								className='h-40 pl-3'
 								style={{ textAlignVertical: "top" }}
+							/>
+						)}
+					/>
+				</View>
+
+				{/* Metodo de Pago */}
+				<View className='mb-5'>
+					<TitleOpcionInput title='Metodo de Pago' />
+					<Controller
+						name='metodo_pago_id'
+						control={control}
+						render={({ field }) => (
+							<CustomSelector
+								data={metodosPagoData}
+								labelKey='name'
+								valueKey='id'
+								iconKey='icon'
+								placeholder='Selecciona el metodo de pago'
+								value={field.value}
+								onSelect={(item) => field.onChange(item)}
 							/>
 						)}
 					/>
