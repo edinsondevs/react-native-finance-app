@@ -1,23 +1,14 @@
-import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
-import {
-	CardsComponent,
-	CharstComponent,
-	CircleButton,
-	HeaderComponent,
-	PeriodSelector,
-} from "@/components";
-
-import {
-	getAllGastosServices,
-	getResumeGastosServices,
-	getResumeIngresosServices,
-} from "@/api/services/dashboard/get.alls.services";
-import { useFormatNumber } from "@/hooks";
-import { colors } from "@/styles/constants";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { FlatList, Text, View } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
+import { colors } from "@/styles/constants";
+import { useFormatNumber } from "@/hooks";
+import { CardsComponent, CharstComponent, CircleButton, HeaderComponent, PeriodSelector, TitleOpcionInput } from "@/components";
+
+import { getAllGastosServices, getResumeGastosServices, getResumeIngresosServices } from "@/api/services/dashboard/get.alls.services";
+import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
 
 const chartData = [
 	{ value: 54, color: "#177AD5" },
@@ -26,28 +17,22 @@ const chartData = [
 ];
 
 const GastosScreen = () => {
-	const { data: resumeIngresos } = useQuery({
-		queryKey: ["resumeIngresos"],
-		queryFn: getResumeIngresosServices,
-	});
+	const { data: resumeIngresos, isLoading: isLoadingResumeIngresos } = useQuery({
+			queryKey: ["resumeIngresos"],
+			queryFn: getResumeIngresosServices,
+		});
 
-	// const { data, isLoading, error } = useQuery({
-	// 	queryKey: ["gastos"],
-	// 	queryFn: getGastosServices,
-	// })
-
-	const { data: resumeGastos } = useQuery({
-		queryKey: ["gastos", "resumen"],
+	const { data: resumeGastos, isLoading: isLoadingResumeGastos } = useQuery({
+		queryKey: ["resumeGastos"],
 		queryFn: getResumeGastosServices,
 	});
 
-	const { data: allGastos } = useQuery({
+	const { data: allGastos, isLoading: isLoadingAllGastos } = useQuery({
 		queryKey: ["gastos", "all"],
 		queryFn: getAllGastosServices,
 	});
 
 	return (
-		// <></>
 		<View className='flex-1'>
 			<FlatList
 				data={allGastos}
@@ -61,6 +46,18 @@ const GastosScreen = () => {
 						}}
 					/>
 				)}
+				ListEmptyComponent={
+					isLoadingAllGastos ? (
+						<ActivityIndicator
+							size='large'
+							color={colors.primary}
+						/>
+					) : (
+						<Text className='text-center text-gray-500 mt-10'>
+							No hay movimientos
+						</Text>
+					)
+				}
 				showsVerticalScrollIndicator={false}
 				ListHeaderComponent={
 					<>
@@ -81,7 +78,11 @@ const GastosScreen = () => {
 										</Text>
 									</View>
 									<Text className='font-Nunito-Bold text-secondary'>
-										{useFormatNumber(resumeIngresos)}
+										{isLoadingResumeIngresos ? (
+											<ActivityIndicator />
+										) : (
+											useFormatNumber(resumeIngresos)
+										)}
 									</Text>
 								</CardsComponent>
 							</View>
@@ -98,7 +99,11 @@ const GastosScreen = () => {
 										<Text className='text-xl'>Gastos</Text>
 									</View>
 									<Text className='font-Nunito-Bold text-alert'>
-										{useFormatNumber(resumeGastos)}
+										{isLoadingResumeGastos ? (
+											<ActivityIndicator />
+										) : (
+											useFormatNumber(resumeGastos)
+										)}
 									</Text>
 								</CardsComponent>
 							</View>
@@ -117,9 +122,7 @@ const GastosScreen = () => {
 
 						{/* Título antes de los movimientos */}
 						<View className='mx-8 mb-2'>
-							<Text className='text-2xl text-text-dark font-Inter-ExtraBold'>
-								Movimientos Recientes
-							</Text>
+							<TitleOpcionInput title='Movimientos Recientes' />
 						</View>
 					</>
 				}
