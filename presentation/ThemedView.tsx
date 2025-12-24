@@ -1,5 +1,4 @@
 
-import { useThemeColor } from "@/hooks/use-theme-color";
 import React from "react";
 import { View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,15 +17,12 @@ const ThemedView = ({
 	safe = false,
 	bgColor,
 }: Props) => {
-	const ueThemeColor = useThemeColor({}, "background");
-	const backgroundColor = bgColor ?? ueThemeColor;
 	const safeArea = useSafeAreaInsets();
 
 	return (
 		<View
 			style={[
 				{
-					backgroundColor: backgroundColor,
 					flex: 1,
 					paddingTop: safe ? safeArea.top : 0,
 					marginHorizontal: margin ? 10 : 0,

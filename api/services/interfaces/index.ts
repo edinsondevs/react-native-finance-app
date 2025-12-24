@@ -20,4 +20,5 @@ export interface GastoData {
 	descripcion: string;
 	categoria_id: number;
 	metodo_pago_id: number;
+	icon: string;
 }

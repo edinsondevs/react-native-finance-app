@@ -14,7 +14,7 @@ export interface ColorsInterfaces {
 	"text-black": string;
 }
 
-export const Colors = {
+export const ColorsTheme = {
 	light: {
 		primary: "#49129c",
 		secondary: "#b40086",

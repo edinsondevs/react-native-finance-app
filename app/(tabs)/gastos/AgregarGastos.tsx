@@ -35,6 +35,10 @@ const AgregarGastosScreen = () => {
 	const { control, handleSubmit, reset, watch, setValue } = useForm();
 
 	// Mutation para crear gasto
+	/**
+	 * Mutación de React Query para enviar los datos del nuevo gasto al servidor (API).
+	 * Maneja los estados de carga (isCreating) y define acciones post-éxito/error.
+	 */
 	const { mutate: crearGasto, isPending: isCreating } = useMutation({
 		mutationFn: crearGastoServices,
 		onSuccess: () => {
@@ -65,17 +69,26 @@ const AgregarGastosScreen = () => {
 			monto: data.monto,
 			fecha: data.fecha ? dayjs(data.fecha).format("YYYY-MM-DD") : "",
 			categoria_id: data.categoria.id,
+			icon: data.categoria.icon,
 			metodo_pago_id: data.metodo_pago_id.id,
 		};
-
+		console.log({ data });
 		crearGasto(formattedData);
 	};
 
+	/**
+	 * Hook de React Query para obtener la lista de categorías disponibles desde el backend.
+	 * Estos datos se utilizan para poblar el selector de categorías en el formulario.
+	 */
 	const { data: categoriesData } = useQuery({
 		queryKey: ["categorias"],
 		queryFn: getCategoriasServices,
 	});
 
+	/**
+	 * Hook de React Query para obtener los métodos de pago disponibles.
+	 * Permite al usuario seleccionar cómo se realizó el gasto (Efectivo, Tarjeta, etc.).
+	 */
 	const { data: metodosPagoData } = useQuery({
 		queryKey: ["metodos-pago"],
 		queryFn: getMetodosPagoServices,
