@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -27,7 +27,7 @@ const GastosScreen = () => {
 		queryFn: getResumeGastosServices,
 	});
 
-	const { data: allGastos, isLoading: isLoadingAllGastos } = useQuery({
+	const { data: allGastos, isLoading: isLoadingAllGastos, refetch } = useQuery({
 		queryKey: ["gastos", "all"],
 		queryFn: getAllGastosServices,
 	});
@@ -36,6 +36,7 @@ const GastosScreen = () => {
 		<View className='flex-1'>
 			<FlatList
 				data={allGastos}
+				refreshControl={<RefreshControl refreshing={isLoadingAllGastos} onRefresh={refetch} />}
 				keyExtractor={(_item, index) => index.toString()}
 				renderItem={({ item }) => (
 					<MovimientosRecientes
