@@ -2,7 +2,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -14,7 +14,6 @@ import { Category, GastoData } from "@/api/services/interfaces";
 import { getMetodosPagoServices } from "@/api/services/shared/get.metodos-pago.services";
 import {
 	ButtomComponent,
-	CircleButton,
 	CustomSelector,
 	DateTimePickerComponent,
 	InputComponent,
@@ -66,7 +65,7 @@ const AgregarGastosScreen = () => {
 		// Formatear la fecha al formato YYYY-MM-DD antes de enviar
 		const formattedData: GastoData = {
 			descripcion: data.descripcion,
-			monto: data.monto,
+			monto: parseFloat(data.monto),
 			fecha: data.fecha ? dayjs(data.fecha).format("YYYY-MM-DD") : "",
 			categoria_id: data.categoria.id,
 			icon: data.categoria.icon,
@@ -93,21 +92,22 @@ const AgregarGastosScreen = () => {
 		queryFn: getMetodosPagoServices,
 	});
 
+	// Observar los campos requeridos del formulario
+	const monto = watch("monto");
+	const categoria = watch("categoria");
+	const metodoPago = watch("metodo_pago_id");
+
+	// Calcular si el botón debe estar deshabilitado
+	// El botón está deshabilitado si:
+	// 1. Está guardando (isCreating)
+	// 2. Falta algún campo requerido (monto, categoria, metodo_pago)
+	const isButtonDisabled = isCreating || !monto || !categoria || !metodoPago;
+
 	const textButton = isCreating ? "Guardando..." : "Guardar Gasto";
+	const buttonColor = isButtonDisabled ? "transparent" : "bg-primary";
 
 	return (
 		<View className='flex-1 bg-background-light px-4'>
-			{/* Header */}
-			<View className='flex flex-row items-center justify-between p-4 pb-2 border-t border-border-light absolute z-10 '>
-				<Text className='text-2xl font-Inter-Bold text-center flex-1' />
-				<CircleButton
-					text='x'
-					className='bg-primary/50 w-9 h-9'
-					classNameText='text-xl'
-					onPressFunction={() => router.back()}
-				/>
-			</View>
-
 			{/* Main Content - KeyboardAwareScrollView */}
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps='handled'
@@ -146,6 +146,26 @@ const AgregarGastosScreen = () => {
 								valueKey='id'
 								iconKey='icon'
 								placeholder='Selecciona una categoría...'
+								value={field.value}
+								onSelect={(item) => field.onChange(item)}
+							/>
+						)}
+					/>
+				</View>
+
+				{/* Metodo de Pago */}
+				<View className='mb-5'>
+					<TitleOpcionInput title='Metodo de Pago' />
+					<Controller
+						name='metodo_pago_id'
+						control={control}
+						render={({ field }) => (
+							<CustomSelector
+								data={metodosPagoData}
+								labelKey='name'
+								valueKey='id'
+								iconKey='icon'
+								placeholder='Selecciona el metodo de pago...'
 								value={field.value}
 								onSelect={(item) => field.onChange(item)}
 							/>
@@ -204,33 +224,14 @@ const AgregarGastosScreen = () => {
 						)}
 					/>
 				</View>
-
-				{/* Metodo de Pago */}
-				<View className='mb-5'>
-					<TitleOpcionInput title='Metodo de Pago' />
-					<Controller
-						name='metodo_pago_id'
-						control={control}
-						render={({ field }) => (
-							<CustomSelector
-								data={metodosPagoData}
-								labelKey='name'
-								valueKey='id'
-								iconKey='icon'
-								placeholder='Selecciona el metodo de pago'
-								value={field.value}
-								onSelect={(item) => field.onChange(item)}
-							/>
-						)}
-					/>
-				</View>
 			</KeyboardAwareScrollView>
 
 			<ButtomComponent
 				onPressFunction={handleSubmit(onSubmit)}
 				text={textButton}
-				color='bg-primary'
-				className='mb-6 '
+				color={buttonColor}
+				className='mb-6'
+				disabled={isButtonDisabled}
 			/>
 
 			{/* Modal para fecha */}

@@ -24,6 +24,7 @@ interface ButtomComponentProps extends PressableProps {
 	circular?: boolean;
 	textColor?: "text-text-white" | "text-text-black";
 	className?: string;
+	disabled?: boolean;
 }
 
 const ButtomComponent = ({
@@ -33,6 +34,7 @@ const ButtomComponent = ({
 	color = "bg-primary",
 	width = "w-full",
 	className = "",
+	disabled = false,
 }: ButtomComponentProps) => {
 	const border =
 		color === "transparent"
@@ -45,7 +47,9 @@ const ButtomComponent = ({
 			${width} 
 			rounded-${"lg"} 
 			justify-center items-center ${border} ${className} `}
-			onPress={onPressFunction}>
+			onPress={onPressFunction}
+			disabled={disabled}
+			>
 			<Text className={`${textColor} text-center font-Inter-Bold text-lg`}>
 				{text}
 			</Text>

@@ -19,7 +19,7 @@ const AgregarIngresos = () => {
 	const [date, setDate] = useState<DateType>(new Date());
 	const [textButton, setTextButton] = useState("Guardar Ingreso");
 	const [isDatePickerVisible, setIsDatePickerVisible] = useState<boolean>(false);
-	const { control, handleSubmit, reset } = useForm<IngresoForm>();
+	const { control, handleSubmit, reset, watch } = useForm<IngresoForm>();
 	const queryClient = useQueryClient();
 
 	// Configurar la mutación
@@ -49,6 +49,12 @@ const AgregarIngresos = () => {
 	const onSubmit: SubmitHandler<IngresoForm> = (data) => {
 		crearIngreso(data);
 	};
+
+		// const { watch } = control;
+		const monto = watch("monto");
+		const origen = watch("origen");
+		const fecha = watch("fecha");
+		const descripcion = watch("descripcion");
 
 	useEffect(() => {
 		if (isPending) {

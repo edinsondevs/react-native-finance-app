@@ -1,33 +1,54 @@
-import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import {
+	ActivityIndicator,
+	FlatList,
+	RefreshControl,
+	Text,
+	View,
+} from "react-native";
 
-import { colors } from "@/styles/constants";
+import {
+	CardsComponent,
+	CircleButton,
+	HeaderComponent,
+	TitleOpcionInput,
+} from "@/components";
 import { useFormatNumber } from "@/hooks";
-import { CardsComponent, CharstComponent, CircleButton, HeaderComponent, PeriodSelector, TitleOpcionInput } from "@/components";
+import { colors } from "@/styles/constants";
 
-import { getAllGastosServices, getResumeGastosServices, getResumeIngresosServices } from "@/api/services/dashboard/get.alls.services";
+import {
+	getAllGastosServices,
+	getResumeGastosServices,
+	getResumeIngresosServices,
+} from "@/api/services/dashboard/get.alls.services";
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
 
-const chartData = [
-	{ value: 54, color: "#177AD5" },
-	{ value: 40, color: "#79D2DE" },
-	{ value: 20, color: "#ED6665" },
-];
-
 const GastosScreen = () => {
-	const { data: resumeIngresos, isLoading: isLoadingResumeIngresos } = useQuery({
-			queryKey: ["resumeIngresos"],
-			queryFn: getResumeIngresosServices,
-		});
+	const {
+		data: resumeIngresos,
+		isLoading: isLoadingResumeIngresos,
+		refetch: refetchResumeIngresos,
+	} = useQuery({
+		queryKey: ["resumeIngresos"],
+		queryFn: getResumeIngresosServices,
+	});
 
-	const { data: resumeGastos, isLoading: isLoadingResumeGastos } = useQuery({
+	const {
+		data: resumeGastos,
+		isLoading: isLoadingResumeGastos,
+		refetch: refetchResumeGastos,
+	} = useQuery({
 		queryKey: ["resumeGastos"],
 		queryFn: getResumeGastosServices,
 	});
 
-	const { data: allGastos, isLoading: isLoadingAllGastos, refetch } = useQuery({
+	const {
+		data: allGastos,
+		isLoading: isLoadingAllGastos,
+		refetch,
+	} = useQuery({
 		queryKey: ["gastos", "all"],
 		queryFn: getAllGastosServices,
 	});
@@ -36,7 +57,16 @@ const GastosScreen = () => {
 		<View className='flex-1'>
 			<FlatList
 				data={allGastos}
-				refreshControl={<RefreshControl refreshing={isLoadingAllGastos} onRefresh={refetch} />}
+				refreshControl={
+					<RefreshControl
+						refreshing={isLoadingAllGastos}
+						onRefresh={() => {
+							refetch();
+							refetchResumeGastos();
+							refetchResumeIngresos();
+						}}
+					/>
+				}
 				keyExtractor={(_item, index) => index.toString()}
 				renderItem={({ item }) => (
 					<MovimientosRecientes
