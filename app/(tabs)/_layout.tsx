@@ -47,7 +47,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name='ajustes/index'
+				name='ajustes'
 				options={{
 					title: "Ajustes",
 					tabBarIcon: ({ color }) => (
