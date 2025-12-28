@@ -1,22 +1,41 @@
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { router } from "expo-router";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
+
 import { getIngresosServices, IngresoInterfaces } from "@/api/services/ingreso/get.ingresos.services";
 import { CircleButton } from "@/components";
 import { useFormatNumber } from "@/hooks";
-import { categoriesData } from "@/api/mocks/data";
 
-const Item = ({ monto, fecha, origen }: Partial<IngresoInterfaces>) => (
-	<View className='flex p-4 border border-border-light h-24 gap-5'>
-		<View className='flex flex-row justify-between align-bottom'>
-			<Text className='w-1/3 text-center'>{monto && useFormatNumber(monto)}</Text>
-			<Text className='w-1/3 text-center'>
-				{fecha ? new Date(fecha).toLocaleDateString() : ""}
-			</Text>
-			<Text className='w-1/3 text-center'>{origen}</Text>
+const Item = ({
+	monto,
+	fecha,
+	origen,
+	descripcion,
+}: Partial<IngresoInterfaces>) => {
+	
+	const height = descripcion ? "h-28" : "h-18";
+	return (
+		<View className={`flex p-4 border border-border-light ${height} gap-5`}>
+			<View className='flex flex-row justify-between align-bottom'>
+				<Text className='w-1/3 text-center'>
+					{monto && useFormatNumber(monto)}
+				</Text>
+				<Text className='w-1/3 text-center'>
+					{fecha ? dayjs(fecha).format("DD/MM/YYYY") : ""}
+				</Text>
+				<Text className='w-1/3 text-center'>{origen}</Text>
+			</View>
+			{descripcion && (
+				<View className='flex flex-row justify-end '>
+					<Text className='font-Inter-Regular text-right'>
+						{descripcion}
+					</Text>
+				</View>
+			)}
 		</View>
-	</View>
-);
+	);
+};
 
 const HeaderList = () => (
 	<View className='flex justify-evenly   border border-border-light h-12 gap-5'>
@@ -29,7 +48,7 @@ const HeaderList = () => (
 );
 
 const IngresosScreen = () => {
-	const { data, isLoading, error } = useQuery({
+	const { data, isLoading, error, refetch } = useQuery({
 		queryKey: ["ingresos"],
 		queryFn: getIngresosServices,
 	});
@@ -58,11 +77,18 @@ const IngresosScreen = () => {
 			<HeaderList />
 			<FlatList
 				data={data}
+				refreshControl={
+					<RefreshControl
+						refreshing={isLoading}
+						onRefresh={() => refetch()}
+					/>
+				}
 				renderItem={({ item }: { item: IngresoInterfaces }) => (
 					<Item
 						monto={item.monto}
 						fecha={item.fecha}
 						origen={item.origen}
+						descripcion={item.descripcion}
 						id={item.id}
 					/>
 				)}

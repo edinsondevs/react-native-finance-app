@@ -9,7 +9,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { DateType } from "react-native-ui-datepicker";
 
 import { postIngresoServices } from "@/api/services/ingreso/post.ingreso.services";
-import { ButtomComponent, CircleButton, DateTimePickerComponent, InputComponent, ModalComponent, TitleOpcionInput } from "@/components";
+import { ButtomComponent, DateTimePickerComponent, InputComponent, ModalComponent, TitleOpcionInput } from "@/components";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { IngresoForm } from "./ingresos.interfaces";
 import { FontAwesome } from "@expo/vector-icons";
@@ -34,6 +34,7 @@ const AgregarIngresos = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["ingresos"] });
+			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
 			Alert.alert("Éxito", "Ingreso guardado correctamente", [
 				{ text: "OK", onPress: () => router.back() },
 			]);
@@ -59,17 +60,6 @@ const AgregarIngresos = () => {
 
 	return (
 		<View className='flex-1 px-4'>
-			<View className='flex flex-row items-center border-t border-border-light absolute z-10 pt-3'>
-				<View className='flex-1' />
-				{!isPending && (
-					<CircleButton
-						text='x'
-						className='bg-primary/50 w-9 h-9'
-						classNameText='text-xl'
-						onPressFunction={() => router.back()}
-					/>
-				)}
-			</View>
 			{isPending ? (
 				<ActivityIndicator
 					size='large'
