@@ -1,0 +1,113 @@
+import { InputComponent, TitleOpcionInput } from "@/components";
+import { FontAwesome } from "@expo/vector-icons";
+import dayjs from "dayjs";
+import { useState } from "react";
+import {
+	Control,
+	Controller,
+	FieldValues,
+	Path,
+	PathValue,
+	UseFormSetValue,
+	UseFormWatch,
+} from "react-hook-form";
+import { Pressable, View } from "react-native";
+import { DatePickerModal } from "./DatePickerModal";
+
+interface FechaFieldProps<TFieldValues extends FieldValues = FieldValues> {
+	control: Control<TFieldValues>;
+	watch: UseFormWatch<TFieldValues>;
+	setValue: UseFormSetValue<TFieldValues>;
+	name?: Path<TFieldValues>;
+	title?: string;
+	defaultValue?: Date;
+}
+
+/**
+ * Componente reutilizable para el campo de fecha
+ * Incluye modal de selección de fecha y formato de visualización
+ */
+export const FechaField = <TFieldValues extends FieldValues = FieldValues>({
+	control,
+	watch,
+	setValue,
+	name = "fecha" as Path<TFieldValues>,
+	title = "Fecha",
+	defaultValue = new Date(),
+}: FechaFieldProps<TFieldValues>) => {
+	const [modalVisible, setModalVisible] = useState(false);
+
+	const handleSelectDate = (date: Date) => {
+		setValue(name, date as PathValue<TFieldValues, Path<TFieldValues>>);
+	};
+
+	const fieldValue = watch(name);
+	// Verificar si el valor es una fecha válida
+	const dateValue =
+		fieldValue &&
+		typeof fieldValue === "object" &&
+		fieldValue instanceof Date
+			? fieldValue
+			: typeof fieldValue === "string" || typeof fieldValue === "number"
+			? new Date(fieldValue)
+			: defaultValue;
+
+	return (
+		<>
+			<View className='mb-5'>
+				<TitleOpcionInput title={title} />
+				<Controller
+					name={name}
+					control={control}
+					defaultValue={
+						defaultValue as PathValue<
+							TFieldValues,
+							Path<TFieldValues>
+						>
+					}
+					render={({ field }) => {
+						const displayDate =
+							field.value &&
+							typeof field.value === "object" &&
+							field.value instanceof Date
+								? field.value
+								: typeof field.value === "string" ||
+								  typeof field.value === "number"
+								? new Date(field.value)
+								: defaultValue;
+
+						return (
+							<Pressable onPress={() => setModalVisible(true)}>
+								<View>
+									<InputComponent
+										value={dayjs(displayDate).format(
+											"DD/MM/YYYY"
+										)}
+										setValue={() => {}}
+										placeholder='Seleccionar fecha'
+										editable={false}
+										className='pl-3'
+									/>
+									<View className='absolute right-3 top-3'>
+										<FontAwesome
+											name='calendar'
+											size={24}
+											color='black'
+										/>
+									</View>
+								</View>
+							</Pressable>
+						);
+					}}
+				/>
+			</View>
+
+			<DatePickerModal
+				visible={modalVisible}
+				value={dateValue}
+				onClose={() => setModalVisible(false)}
+				onSelect={handleSelectDate}
+			/>
+		</>
+	);
+};

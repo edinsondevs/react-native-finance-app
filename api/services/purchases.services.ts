@@ -1,3 +1,4 @@
+import axios from "axios";
 import { instance } from "../../api/apiService";
 
 
@@ -9,12 +10,17 @@ const get = async (): Promise<any> => {
                 limit: 10
             }
         })
-        // console.log(JSON.stringify(data, null, 4))
-        return data
-    } catch (error) {
-        console.log(error)
-        throw new Error("Error al llamar al servicio");
         
+        return data
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            console.log("Error details:", error.response?.data);
+            throw error;
+        }
+        else{
+            console.log("Error details:", error);
+            throw error;
+        }
     }
 }
 

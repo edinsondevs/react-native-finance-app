@@ -1,4 +1,5 @@
 import { instance } from "@/api/apiService";
+import axios from "axios";
 
 export interface IngresoInterfaces {
 	id: number;
@@ -8,7 +9,6 @@ export interface IngresoInterfaces {
 	fecha: Date;
 	descripcion: string;
 }
-
 
 export const getIngresosServices = async (): Promise<IngresoInterfaces[]> => {
 	try {
@@ -20,8 +20,14 @@ export const getIngresosServices = async (): Promise<IngresoInterfaces[]> => {
 		});
 
 		return response.data;
-	} catch (error: any) {
-		console.log("Error details:", error.response?.data);
-		throw error;
+	} catch (error: unknown) {
+		if(axios.isAxiosError(error)){
+			console.log("Error details:", error.response?.data);
+			throw error;
+		}
+		else{
+			console.log("Error details:", error);
+			throw error;
+		}
 	}
 };

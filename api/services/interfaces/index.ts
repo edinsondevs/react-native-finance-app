@@ -22,3 +22,5 @@ export interface GastoData {
 	metodo_pago_id: number;
 	icon: string;
 }
+
+export * from "./gasto-form.interface";

@@ -1,4 +1,5 @@
 import { instance } from "@/api/apiService";
+import axios, { AxiosError } from "axios";
 
 interface IngresoData {
 	origen: string;
@@ -8,16 +9,19 @@ interface IngresoData {
 }
 
 export const postIngresoServices = async (data: IngresoData) => {
-
 	const mapperData = { ...data, id: Math.floor(Math.random() * 10000) };
-	
+
 	try {
 		const response = await instance.post("/ingresos", mapperData);
 
 		return response.data;
-	} catch (error: any) {
-		console.log("Error details:", error.response?.data);
-		throw error;
+	} catch (error: unknown ) {
+		if (axios.isAxiosError(error)) {
+			// Ahora TypeScript sabe que "error" es un AxiosError
+			console.error("Axios error message:", error.message);
+			console.error("Response data:", error.response?.data);
+		} else {
+			console.error("Unexpected error:", error);
+		}
 	}
 };
-

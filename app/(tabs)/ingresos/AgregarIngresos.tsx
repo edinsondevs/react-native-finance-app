@@ -1,29 +1,32 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Pressable, View } from "react-native";
-
-// import { useAuthStore } from "@/store/useAuthStore";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { DateType } from "react-native-ui-datepicker";
 
 import { postIngresoServices } from "@/api/services/ingreso/post.ingreso.services";
-import { ButtomComponent, DateTimePickerComponent, InputComponent, ModalComponent, TitleOpcionInput } from "@/components";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import {
+	ButtomComponent,
+	InputComponent,
+	TitleOpcionInput,
+} from "@/components";
+import {
+	DescripcionField,
+	FechaField,
+	MontoField,
+} from "@/components/form-fields";
+import { useFormMutation, useFormValidation } from "@/hooks";
 import { IngresoForm } from "./ingresos.interfaces";
-import { FontAwesome } from "@expo/vector-icons";
 
 const AgregarIngresos = () => {
-	// const user = useAuthStore((state) => state.user);
-	const [date, setDate] = useState<DateType>(new Date());
-	const [textButton, setTextButton] = useState("Guardar Ingreso");
-	const [isDatePickerVisible, setIsDatePickerVisible] = useState<boolean>(false);
-	const { control, handleSubmit, reset, watch } = useForm<IngresoForm>();
-	const queryClient = useQueryClient();
+	const { control, handleSubmit, reset, watch, setValue } =
+		useForm<IngresoForm>({
+			defaultValues: {
+				fecha: new Date(),
+			},
+		});
 
-	// Configurar la mutación
-	const { mutate: crearIngreso, isPending } = useMutation({
+	// Usar el custom hook para la mutación
+	const { mutate: crearIngreso, isPending } = useFormMutation<IngresoForm>({
 		mutationFn: async (data: IngresoForm) => {
 			return postIngresoServices({
 				origen: data.origen,
@@ -32,69 +35,38 @@ const AgregarIngresos = () => {
 				descripcion: data.descripcion,
 			});
 		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["ingresos"] });
-			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
-			Alert.alert("Éxito", "Ingreso guardado correctamente", [
-				{ text: "OK", onPress: () => router.back() },
-			]);
-			reset();
-		},
-		onError: (error) => {
-			console.error(error);
-			Alert.alert("Error", "No se pudo guardar el ingreso");
-		},
+		queryKeys: [["ingresos"], ["resumeIngresos"]],
+		successMessage: "Ingreso guardado correctamente",
+		onSuccessCallback: reset,
+	});
+
+	// Usar el custom hook para validación
+	const { isButtonDisabled, buttonColor, textButton } = useFormValidation({
+		requiredFields: ["monto", "origen"],
+		watch,
+		isPending,
+		saveButtonText: "Guardar Ingreso",
 	});
 
 	const onSubmit: SubmitHandler<IngresoForm> = (data) => {
 		crearIngreso(data);
 	};
 
-		// const { watch } = control;
-		const monto = watch("monto");
-		const origen = watch("origen");
-		const fecha = watch("fecha");
-		const descripcion = watch("descripcion");
-
-	useEffect(() => {
-		if (isPending) {
-			setTextButton("Guardando...");
-		} else {
-			setTextButton("Guardar Ingreso");
-		}
-	}, [isPending]);
-
 	return (
 		<View className='flex-1 px-4'>
-			{isPending ? (
-				<ActivityIndicator
-					size='large'
-					color='#0000ff'
-					className='flex-1'
-				/>
-			) : (
-				<KeyboardAwareScrollView
-					keyboardShouldPersistTaps='handled'
-					contentContainerStyle={{ paddingTop: 16 }}
-					showsVerticalScrollIndicator={false}
-					extraScrollHeight={100}
-					enableOnAndroid={true}>
-					<View className='flex flex-col '>
-						<TitleOpcionInput title={"Monto"} />
-						<Controller
-							name='monto'
-							control={control}
-							render={({ field }) => (
-								<InputComponent
-									placeholder='0.00'
-									keyboardType='numeric'
-									value={field.value}
-									setValue={field.onChange}
-									iconDollar
-								/>
-							)}
-						/>
-						<TitleOpcionInput title={"Origen"} />
+			<KeyboardAwareScrollView
+				keyboardShouldPersistTaps='handled'
+				contentContainerStyle={{ paddingTop: 16 }}
+				showsVerticalScrollIndicator={false}
+				extraScrollHeight={100}
+				enableOnAndroid={true}>
+				<View className='flex flex-col'>
+					{/* Monto - Componente reutilizable */}
+					<MontoField control={control} />
+
+					{/* Origen */}
+					<View className='mb-5'>
+						<TitleOpcionInput title='Origen' />
 						<Controller
 							name='origen'
 							control={control}
@@ -108,65 +80,26 @@ const AgregarIngresos = () => {
 								/>
 							)}
 						/>
-
-						<TitleOpcionInput title={"Fecha"} />
-						<Pressable onPress={() => setIsDatePickerVisible(true)}>
-							<InputComponent
-								value={dayjs(date).format("DD/MM/YYYY")}
-								setValue={() => {}}
-								placeholder='Seleccionar fecha'
-								editable={false}
-								className='pl-3'
-							/>
-							<View className='absolute right-3 top-3'>
-								<FontAwesome name='calendar' size={24} color='black' />
-							</View>
-						</Pressable>
-
-						<ModalComponent
-							visible={isDatePickerVisible}
-							onRequestClose={() =>
-								setIsDatePickerVisible(!isDatePickerVisible)
-							}>
-							<DateTimePickerComponent
-								value={date}
-								maximumDate={new Date()}
-								minimumDate={new Date(2020, 0, 1)}
-								cancelRequestClose={() =>
-									setIsDatePickerVisible(!isDatePickerVisible)
-								}
-								onRequestClose={(date) => {
-									setIsDatePickerVisible(
-										!isDatePickerVisible
-									);
-									setDate(date || new Date());
-								}}
-							/>
-						</ModalComponent>
-
-						<TitleOpcionInput title={"Descripción (opcional)"} />
-						<Controller
-							name='descripcion'
-							control={control}
-							render={({ field }) => (
-								<InputComponent
-									placeholder='Añade una nota...'
-									multiline
-									value={field.value}
-									setValue={field.onChange}
-									className='h-40 pl-3'
-									style={{ textAlignVertical: "top" }}
-								/>
-							)}
-						/>
 					</View>
-				</KeyboardAwareScrollView>
-			)}
+
+					{/* Fecha - Componente reutilizable */}
+					<FechaField
+						control={control}
+						watch={watch}
+						setValue={setValue}
+					/>
+
+					{/* Descripción - Componente reutilizable */}
+					<DescripcionField control={control} />
+				</View>
+			</KeyboardAwareScrollView>
+
 			<ButtomComponent
 				onPressFunction={handleSubmit(onSubmit)}
 				text={textButton}
-				color='bg-primary'
-				className='mb-6 '
+				color={buttonColor}
+				className='mb-6'
+				disabled={isButtonDisabled}
 			/>
 		</View>
 	);
