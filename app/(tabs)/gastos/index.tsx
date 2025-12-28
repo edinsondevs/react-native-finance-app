@@ -109,18 +109,6 @@ const GastosScreen = () => {
 								</CardsComponent>
 							</View>
 						</View>
-
-						{
-							// TODO: Filtro y gráfico
-						}
-						<PeriodSelector />
-						{
-							// TODO: Gráfico
-						}
-						<View className='flex items-center mb-6'>
-							<CharstComponent data={chartData} />
-						</View>
-
 						{/* Título antes de los movimientos */}
 						<View className='mx-8 mb-2'>
 							<TitleOpcionInput title='Movimientos Recientes' />
@@ -131,7 +119,7 @@ const GastosScreen = () => {
 			/>
 
 			{/* Botón flotante */}
-			<View className='bottom-0 right-0 m-6 absolute'>
+			<View className='bottom-0 right-0 m-3 absolute'>
 				<CircleButton
 					text='+'
 					onPressFunction={() =>

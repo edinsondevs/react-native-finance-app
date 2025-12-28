@@ -72,7 +72,6 @@ const AgregarGastosScreen = () => {
 			icon: data.categoria.icon,
 			metodo_pago_id: data.metodo_pago_id.id,
 		};
-		console.log({ data });
 		crearGasto(formattedData);
 	};
 
@@ -94,7 +93,6 @@ const AgregarGastosScreen = () => {
 		queryFn: getMetodosPagoServices,
 	});
 
-	console.log({ metodosPagoData });
 	const textButton = isCreating ? "Guardando..." : "Guardar Gasto";
 
 	return (

@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { Image } from 'expo-image';
-import { FontAwesome } from '@expo/vector-icons';
+// import { FontAwesome } from '@expo/vector-icons';
 
 const HeaderComponent = () => {
   return (
@@ -21,13 +21,13 @@ const HeaderComponent = () => {
 				</Text>
 			</View>
 
-			<View>
+			{/* <View>
 				<FontAwesome
 					name='bell-o'
 					size={24}
 					color='black'
 				/>
-			</View>
+			</View> */}
 		</View>
   );
 }
