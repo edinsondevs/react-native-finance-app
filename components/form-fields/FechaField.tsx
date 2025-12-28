@@ -44,10 +44,8 @@ export const FechaField = <TFieldValues extends FieldValues = FieldValues>({
 	const fieldValue = watch(name);
 	// Verificar si el valor es una fecha válida
 	const dateValue =
-		fieldValue &&
-		typeof fieldValue === "object" &&
-		fieldValue instanceof Date
-			? fieldValue
+		fieldValue && (fieldValue as any) instanceof Date
+			? (fieldValue as unknown as Date)
 			: typeof fieldValue === "string" || typeof fieldValue === "number"
 			? new Date(fieldValue)
 			: defaultValue;
@@ -67,10 +65,8 @@ export const FechaField = <TFieldValues extends FieldValues = FieldValues>({
 					}
 					render={({ field }) => {
 						const displayDate =
-							field.value &&
-							typeof field.value === "object" &&
-							field.value instanceof Date
-								? field.value
+							field.value && (field.value as any) instanceof Date
+								? (field.value as unknown as Date)
 								: typeof field.value === "string" ||
 								  typeof field.value === "number"
 								? new Date(field.value)
