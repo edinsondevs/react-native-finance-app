@@ -16,7 +16,7 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
 	// 1. Llama al hook useFonts y mapea un nombre a la ruta del archivo.
-	const [fontsLoaded] = useFonts({
+	const [fontsLoaded, fontError] = useFonts({
 		"Inter_18pt-Bold": require("../assets/fonts/Inter_18pt-Bold.ttf"),
 		"Inter_18pt-ExtraBold": require("../assets/fonts/Inter_18pt-ExtraBold.ttf"),
 		"Inter_18pt-Medium": require("../assets/fonts/Inter_18pt-Medium.ttf"),
@@ -32,19 +32,29 @@ export default function RootLayout() {
 		"Rubik-Medium": require("../assets/fonts/Rubik-Medium.ttf"),
 		"Rubik-Regular": require("../assets/fonts/Rubik-Regular.ttf"),
 		"Rubik-SemiBold": require("../assets/fonts/Rubik-SemiBold.ttf"),
-		// Añade aquí todas las variaciones de fuente que planeas usar.
 	});
 
 	useEffect(() => {
-		if (fontsLoaded) {
-			// 2. Una vez que las fuentes están listas, oculta la pantalla de presentación.
-			SplashScreen.hideAsync();
-		}
-	}, [fontsLoaded]);
+		// Fallback: Ocultar después de 5 segundos si algo falla
+		const timeout = setTimeout(() => {
+			SplashScreen.hideAsync().catch(() => {});
+		}, 5000);
 
-	// 3. Muestra un cargador o null si las fuentes aún no están listas.
-	if (!fontsLoaded) {
-		return null; // O un componente de carga si lo prefieres
+		if (fontsLoaded || fontError) {
+			clearTimeout(timeout);
+			// 2. Una vez que las fuentes están listas (o fallan), oculta la pantalla de presentación.
+			SplashScreen.hideAsync().catch((err) => {
+				console.warn("Failed to hide splash screen:", err);
+			});
+		}
+
+		return () => clearTimeout(timeout);
+	}, [fontsLoaded, fontError]);
+
+	// 3. Si hay un error con las fuentes, podemos decidir si continuar (con fuentes del sistema) o mostrar un error.
+	// Por ahora, continuaremos para evitar que la app se quede bloqueada.
+	if (!fontsLoaded && !fontError) {
+		return null;
 	}
 
 	return (
