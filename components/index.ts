@@ -16,4 +16,4 @@ export { default as ModalComponent } from "./ModalComponent";
 export { default as CustomSelector } from "./CustomSelector";
 export { default as TitleOpcionInput } from "./TitleOpcionInput";
 export { default as DividerComponent } from "./DividerComponent";
-
+export { default as IconPicker } from "./IconPicker";
