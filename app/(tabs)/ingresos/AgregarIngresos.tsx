@@ -15,7 +15,8 @@ import {
 	MontoField,
 } from "@/components/form-fields";
 import { useFormMutation, useFormValidation } from "@/hooks";
-import { IngresoForm } from "./ingresos.interfaces";
+import { IngresoForm } from "@/interfaces";
+
 
 const AgregarIngresos = () => {
 	const { control, handleSubmit, reset, watch, setValue } =
