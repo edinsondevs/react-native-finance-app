@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Finzanzas App",
-    "slug": "Finzanzas App",
-    "version": "1.0.0",
+    "name": "Finanzas App",
+    "slug": "finanzas-app",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "Finzanzas App",
+    "scheme": "finanzas-app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "autor": "Edinson Madrid",
@@ -14,10 +14,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE"        
+        "backgroundColor": "#E6F4FE"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.edinsondevs.finanzasapp"
     },
     "web": {
       "output": "static",
@@ -29,7 +30,7 @@
       }
     },
     "splash": {
-      "image": "./assets/images/favicon.png", 
+      "image": "./assets/images/favicon.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
@@ -51,6 +52,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a7ee85c4-0c43-44dd-90b9-cf6e2e2bd9e2"
+      }
+    },
+    "owner": "edinsondevs"
   }
 }
