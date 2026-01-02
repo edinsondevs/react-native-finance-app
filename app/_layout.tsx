@@ -51,6 +51,12 @@ export default function RootLayout() {
 					edges={["top", "right", "left"]}>
 					<Stack>
 						<Stack.Screen
+							name='index'
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
 							name='login/index'
 							options={{
 								headerShown: false,
