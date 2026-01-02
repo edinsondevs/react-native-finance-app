@@ -1,21 +1,33 @@
 import {
 	ButtomComponent,
 	LinkComponent,
-	SeparatorComponent,
 	TextInputComponent,
 } from "@/components";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const LoginScreen = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const { signIn, loading } = useAuthStore();
 
-	function onPressFunction() {
-		router.push("/(tabs)/gastos");
+	async function onPressFunction() {
+		if (!email || !password) {
+			Alert.alert("Error", "Por favor ingresa correo y contraseña");
+			return;
+		}
+
+		await signIn(email, password);
+		const { error, user } = useAuthStore.getState();
+
+		if (error) {
+			Alert.alert("Error al iniciar sesión", error);
+		} else if (user) {
+			router.replace("/(tabs)/gastos");
+		}
 	}
-
 
 	return (
 		<View className='flex-1 justify-center items-center '>
@@ -33,6 +45,7 @@ const LoginScreen = () => {
 					onChangeText={setEmail}
 					icon='alternate-email'
 					placeholder='Introduce tu correo electrónico'
+					keyboardType='email-address'
 				/>
 				<Text className='text-text-gray font-Inter-ExtraBold'>
 					Contraseña
@@ -42,6 +55,7 @@ const LoginScreen = () => {
 					onChangeText={setPassword}
 					icon='lock'
 					placeholder='Introduce tu contraseña'
+					secureTextEntry
 				/>
 
 				<LinkComponent
@@ -52,12 +66,12 @@ const LoginScreen = () => {
 				<View className='mt-4 items-center'>
 					<ButtomComponent
 						onPressFunction={onPressFunction}
-						text='Iniciar Sesión'
+						text={loading ? "Cargando..." : "Iniciar Sesión"}
 					/>
 				</View>
 			</View>
 
-			<SeparatorComponent />
+			{/* <SeparatorComponent />
 			<View className='mt-4 items-center gap-2'>
 				<ButtomComponent
 					onPressFunction={onPressFunction}
@@ -73,7 +87,7 @@ const LoginScreen = () => {
 					textColor='text-text-black'
 					width='w-96'
 				/>
-			</View>
+			</View> */}
 			<View className='mt-6 flex-row justify-center items-center gap-2'>
 				<Text className='text-text-gray font-Inter-Medium'>
 					¿No tienes una cuenta?

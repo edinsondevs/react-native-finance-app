@@ -1,14 +1,22 @@
-import { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { useState } from "react";
 import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { postAppSettingsServices } from "@/api/services/settingsApp/post.app.settings.services";
-import { ButtomComponent, DividerComponent, IconPicker, InputComponent, TitleOpcionInput } from "@/components";
+import {
+	ButtomComponent,
+	DividerComponent,
+	IconPicker,
+	InputComponent,
+	TitleOpcionInput,
+} from "@/components";
 
-import ThemedView from "@/presentation/ThemedView";
 import { useCapitalize } from "@/hooks";
+import ThemedView from "@/presentation/ThemedView";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const AjustesScreen = () => {
 	const queryClient = useQueryClient();
@@ -110,6 +118,26 @@ const AjustesScreen = () => {
 		mutate({ origen, ...payload });
 	};
 
+	const { signOut } = useAuthStore();
+
+	const handleLogout = async () => {
+		Alert.alert(
+			"Cerrar Sesión",
+			"¿Estás seguro de que quieres cerrar sesión?",
+			[
+				{ text: "Cancelar", style: "cancel" },
+				{
+					text: "Salir",
+					style: "destructive",
+					onPress: async () => {
+						await signOut();
+						router.replace("/login");
+					},
+				},
+			]
+		);
+	};
+
 	return (
 		<KeyboardAwareScrollView
 			keyboardShouldPersistTaps='handled'
@@ -171,6 +199,17 @@ const AjustesScreen = () => {
 						text={isPending ? "Creando..." : "Crear Metodo de Pago"}
 						color='bg-primary'
 						disabled={isPending}
+					/>
+				</View>
+
+				<DividerComponent />
+
+				<View className='gap-4 mb-6'>
+					<TitleOpcionInput title='Sesión' />
+					<ButtomComponent
+						onPressFunction={handleLogout}
+						text='Cerrar Sesión'
+						color='bg-google-red'
 					/>
 				</View>
 			</ThemedView>

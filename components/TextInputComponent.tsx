@@ -1,8 +1,7 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
 import { TextInput, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-type widthType = 24 | 32 | 40 | 48 | 64 | 80 | 96 ;
-
+type widthType = 24 | 32 | 40 | 48 | 64 | 80 | 96;
 
 // TODO:  CAMBIAR AL COMPONENTE INPUTCOMPONENT Y ELIMINAR ESTE
 
@@ -18,7 +17,8 @@ interface TextInputComponentProps {
 		| "web-search"
 		| "twitter";
 	width?: widthType;
-	icon?: ComponentProps<typeof MaterialIcons>['name'];
+	icon?: ComponentProps<typeof MaterialIcons>["name"];
+	secureTextEntry?: boolean;
 }
 
 const TextInputComponent = ({
@@ -28,9 +28,8 @@ const TextInputComponent = ({
 	keyboardType = "default",
 	width = 96,
 	icon = "person",
+	secureTextEntry = false,
 }: TextInputComponentProps) => {
-
-	
 	return (
 		// El View actúa como contenedor principal del input
 		<View className='flex-row items-center border border-gray-300 rounded-lg p-3 bg-white'>
@@ -48,6 +47,7 @@ const TextInputComponent = ({
 				value={text}
 				placeholder={placeholder}
 				keyboardType={keyboardType}
+				secureTextEntry={secureTextEntry}
 			/>
 			{/* <MaterialIcons
 				name={icon}

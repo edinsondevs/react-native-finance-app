@@ -1,66 +1,99 @@
-import { useAuthStore } from "@/store/useAuthStore";
-import React, { useState } from "react";
-import { Button, Text, TextInput, View } from "react-native";
+import {
+	ButtomComponent,
+	LinkComponent,
+	TextInputComponent,
+} from "@/components";
+import { router } from "expo-router";
+import { useState } from "react";
+import { Alert, Text, View } from "react-native";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const RegisterScreen = () => {
-	const { signUp, loading, error, user } = useAuthStore();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const { signUp, loading } = useAuthStore();
 
-	const handleRegister = async () => {
-		if (password !== confirmPassword) {
-			alert("Las contraseñas no coinciden");
+	async function onRegister() {
+		if (!email || !password || !confirmPassword) {
+			Alert.alert("Error", "Por favor completa todos los campos");
 			return;
 		}
-		await signUp(email.trim(), password);
-		
-	};
+		if (password !== confirmPassword) {
+			Alert.alert("Error", "Las contraseñas no coinciden");
+			return;
+		}
+
+		await signUp(email, password);
+		const { error, user } = useAuthStore.getState();
+
+		if (error) {
+			Alert.alert("Error al registrarse", error);
+		} else if (user) {
+			Alert.alert("Éxito", "Usuario creado correctamente", [
+				{ text: "OK", onPress: () => router.replace("/(tabs)/gastos") },
+			]);
+		}
+	}
 
 	return (
-		<View style={{ padding: 20 }}>
-			<Text style={{ fontSize: 22, marginBottom: 20 }}>Crear cuenta</Text>
-
-			<TextInput
-				placeholder='Email'
-				keyboardType='email-address'
-				autoCapitalize='none'
-				value={email}
-				onChangeText={setEmail}
-				style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-			/>
-
-			<TextInput
-				placeholder='Contraseña'
-				secureTextEntry
-				value={password}
-				onChangeText={setPassword}
-				style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-			/>
-
-			<TextInput
-				placeholder='Confirmar contraseña'
-				secureTextEntry
-				value={confirmPassword}
-				onChangeText={setConfirmPassword}
-				style={{ borderWidth: 1, marginBottom: 20, padding: 8 }}
-			/>
-
-			<Button
-				title={loading ? "Registrando..." : "Registrarse"}
-				onPress={handleRegister}
-			/>
-
-			{error && (
-				<Text style={{ color: "red", marginTop: 10 }}>{error}</Text>
-			)}
-
-			{user && (
-				<Text style={{ marginTop: 10 }}>
-					✅ Usuario registrado: {user.email}
+		<View className='flex-1 justify-center items-center '>
+			<View className='mb-4 max-w-xs  '>
+				<Text className='text-4xl text-center font-Nunito-ExtraBold '>
+					Crear Cuenta
 				</Text>
-			)}
+			</View>
+			<View className='gap-4 mt-8'>
+				<Text className='text-text-gray font-Inter-ExtraBold'>
+					Correo Eléctronico
+				</Text>
+				<TextInputComponent
+					text={email}
+					onChangeText={setEmail}
+					icon='alternate-email'
+					placeholder='Introduce tu correo electrónico'
+					keyboardType='email-address'
+				/>
+				<Text className='text-text-gray font-Inter-ExtraBold'>
+					Contraseña
+				</Text>
+				<TextInputComponent
+					text={password}
+					onChangeText={setPassword}
+					icon='lock'
+					placeholder='Introduce tu contraseña'
+					secureTextEntry
+				/>
+				<Text className='text-text-gray font-Inter-ExtraBold'>
+					Confirmar Contraseña
+				</Text>
+				<TextInputComponent
+					text={confirmPassword}
+					onChangeText={setConfirmPassword}
+					icon='lock'
+					placeholder='Confirma tu contraseña'
+					secureTextEntry
+				/>
+
+				<View className='mt-4 items-center'>
+					<ButtomComponent
+						onPressFunction={onRegister}
+						text={loading ? "Registrando..." : "Registrarse"}
+					/>
+				</View>
+			</View>
+
+			<View className='mt-6 flex-row justify-center items-center gap-2'>
+				<Text className='text-text-gray font-Inter-Medium'>
+					¿Ya tienes una cuenta?
+				</Text>
+				<LinkComponent
+					text='Inicia Sesión'
+					onPress={() => router.back()}
+				/>
+			</View>
 		</View>
 	);
 };
+
 export default RegisterScreen;
