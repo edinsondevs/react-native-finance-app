@@ -2,7 +2,7 @@
   "expo": {
     "name": "Finanzas App",
     "slug": "finanzas-app",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "finanzas-app",
@@ -55,6 +55,8 @@
     },
     "extra": {
       "router": {},
+      "supabaseUrl": "https://sipqakcxjvzjmxywypfw.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpcHFha2N4anZ6am14eXd5cGZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc3OTUxNjQsImV4cCI6MjA3MzM3MTE2NH0.sFJ7tuhgGQMXRkqgMM_uA1UEJPEaNsPmx7mY1eP26sU",
       "eas": {
         "projectId": "a7ee85c4-0c43-44dd-90b9-cf6e2e2bd9e2"
       }
