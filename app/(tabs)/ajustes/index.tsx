@@ -2,21 +2,47 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Alert, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { postAppSettingsServices } from "@/api/services/settingsApp/post.app.settings.services";
 import {
 	ButtomComponent,
 	DividerComponent,
-	IconPicker,
+	IconPickerModal,
+	IconTrigger,
 	InputComponent,
 	TitleOpcionInput,
 } from "@/components";
-
 import { useCapitalize } from "@/hooks";
-import ThemedView from "@/presentation/ThemedView";
 import { useAuthStore } from "@/store/useAuthStore";
+
+import ThemedView from "@/presentation/ThemedView";
+
+const TitleEditScreen = ({
+	title,
+	origen,
+}: {
+	title: string;
+	origen: string;
+}) => {
+	return (
+		<View className='flex-row justify-between items-center'>
+			<TitleOpcionInput title={title} />
+			<FontAwesome
+				name='edit'
+				size={24}
+				color='#333'
+				onPress={() =>
+					router.push({
+						pathname: "/ajustes/settings",
+						params: { origen },
+					})
+				}
+			/>
+		</View>
+	);
+};
 
 const AjustesScreen = () => {
 	const queryClient = useQueryClient();
@@ -149,8 +175,10 @@ const AjustesScreen = () => {
 				margin
 				className='gap-4 mt-6'>
 				<View className='gap-4'>
-					<TitleOpcionInput title='Agregar Categoria' />
-
+					<TitleEditScreen
+						title='Agregar Categoria'
+						origen='categorias'
+					/>
 					<InputComponent
 						value={form.categoria}
 						setValue={(text) => handleChange("categoria", text)}
@@ -180,7 +208,10 @@ const AjustesScreen = () => {
 				<DividerComponent />
 
 				<View className='gap-4'>
-					<TitleOpcionInput title='Agregar Metodo de Pago' />
+					<TitleEditScreen
+						title='Agregar Metodo de Pago'
+						origen='metodos_pago'
+					/>
 					<InputComponent
 						value={form.metodoPago}
 						autoCapitalize='words'
@@ -204,8 +235,7 @@ const AjustesScreen = () => {
 
 				<DividerComponent />
 
-				<View className='gap-4 mb-6'>
-					<TitleOpcionInput title='Sesión' />
+				<View className='mt-6'>
 					<ButtomComponent
 						onPressFunction={handleLogout}
 						text='Cerrar Sesión'
@@ -215,74 +245,20 @@ const AjustesScreen = () => {
 			</ThemedView>
 
 			{/* Modal para el IconPicker */}
-			<Modal
+			<IconPickerModal
 				visible={showIconPicker}
-				animationType='slide'
-				onRequestClose={() => setShowIconPicker(false)}>
-				<View className='flex-1 bg-white pt-12 px-4'>
-					<View className='flex-row justify-between items-center mb-4'>
-						<Text className='text-xl font-bold'>
-							Seleccionar Icono
-						</Text>
-						<TouchableOpacity
-							onPress={() => setShowIconPicker(false)}>
-							<FontAwesome
-								name='times'
-								size={24}
-								color='#333'
-							/>
-						</TouchableOpacity>
-					</View>
-
-					<IconPicker
-						selectedIcon={
-							activeIconField ? form[activeIconField] : ""
-						}
-						onSelectIcon={(icon) => {
-							if (activeIconField) {
-								handleChange(activeIconField, icon);
-							}
-							setShowIconPicker(false);
-							setActiveIconField(null);
-						}}
-					/>
-				</View>
-			</Modal>
+				onClose={() => setShowIconPicker(false)}
+				selectedIcon={activeIconField ? form[activeIconField] : ""}
+				onSelectIcon={(icon) => {
+					if (activeIconField) {
+						handleChange(activeIconField, icon);
+					}
+					setShowIconPicker(false);
+					setActiveIconField(null);
+				}}
+			/>
 		</KeyboardAwareScrollView>
 	);
 };
 
 export default AjustesScreen;
-
-const IconTrigger = ({
-	icon,
-	onPress,
-}: {
-	icon: string;
-	onPress: () => void;
-}) => (
-	<TouchableOpacity
-		onPress={onPress}
-		className='p-4 border border-gray-300 rounded-lg flex-row items-center gap-3 bg-white'>
-		{icon ? (
-			<>
-				<FontAwesome
-					name={icon as any}
-					size={24}
-					color='#333'
-				/>
-				<Text className='text-base flex-1'>{icon}</Text>
-				<Text className='text-gray-500'>Cambiar</Text>
-			</>
-		) : (
-			<>
-				<FontAwesome
-					name='question-circle'
-					size={24}
-					color='#999'
-				/>
-				<Text className='text-gray-500 flex-1'>Seleccionar icono</Text>
-			</>
-		)}
-	</TouchableOpacity>
-);

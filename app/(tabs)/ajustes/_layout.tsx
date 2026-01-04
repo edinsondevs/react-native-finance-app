@@ -9,6 +9,12 @@ export default function _layout() {
                     title: "Ajustes" 
                 }}
 			/>
+			<Stack.Screen
+				name='settings'
+				options={{ 
+                    title: "Configuración" 
+                }}
+			/>
 		</Stack>
 	);
 }
