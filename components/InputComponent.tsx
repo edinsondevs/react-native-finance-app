@@ -1,7 +1,8 @@
-import { Text, TextInput, TextInputProps, View } from "react-native";
+import { useState } from "react";
+import { Pressable, Text, TextInput, TextInputProps, View } from "react-native";
 
 import { formatCurrency, handleChangeText } from "@/helpers";
-
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 interface InputComponentProps extends TextInputProps {
 	value: string;
 	setValue: (value: string) => void;
@@ -14,9 +15,10 @@ const InputComponent = ({
 	setValue,
 	className,
 	iconDollar = false,
+	secureTextEntry = false,
 	...props
 }: InputComponentProps) => {
-
+	const [isSecure, setIsSecure] = useState(secureTextEntry);
 	const pl = iconDollar ? "pl-8" : "pl-4";
 
 	// Usar valor formateado solo si iconDollar está activo
@@ -33,12 +35,32 @@ const InputComponent = ({
 						: setValue
 				}
 				keyboardType={iconDollar ? "decimal-pad" : props.keyboardType}
+				secureTextEntry={isSecure}
 				{...props}
 			/>
 			{iconDollar && (
 				<Text className='absolute left-3 top-3.5 text-xl font-semibold text-text-dark'>
 					$
 				</Text>
+			)}
+			{secureTextEntry && (
+				<Pressable onPress={() => setIsSecure(!isSecure)}>
+					<Text className='absolute right-4 bottom-3.5 text-xl font-semibold text-text-dark'>
+						{isSecure ? (
+							<FontAwesome
+								name='eye'
+								size={24}
+								color='black'
+							/>
+						) : (
+							<FontAwesome
+								name='eye-slash'
+								size={24}
+								color='black'
+							/>
+						)}
+					</Text>
+				</Pressable>
 			)}
 		</View>
 	);
