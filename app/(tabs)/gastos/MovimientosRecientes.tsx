@@ -3,7 +3,7 @@ import { ItemMovimientosCards } from "@/components";
 import ThemedView from "@/presentation/ThemedView";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Alert, TouchableOpacity } from "react-native";
+import { Alert, Pressable } from "react-native";
 import ModalEdicionMovimiento from "./ModalEdicionMovimiento";
 
 /**
@@ -61,7 +61,7 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 
 	return (
 		<>
-			<TouchableOpacity onPress={() => setModalVisible(true)}>
+			<Pressable onPress={() => setModalVisible(true)}>
 				<ThemedView margin>
 					<ItemMovimientosCards
 						description={descripcion}
@@ -69,7 +69,7 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 						icon={icon}
 					/>
 				</ThemedView>
-			</TouchableOpacity>
+			</Pressable>
 
 			<ModalEdicionMovimiento
 				modalVisible={modalVisible}
