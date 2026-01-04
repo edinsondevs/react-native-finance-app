@@ -1,5 +1,5 @@
-	// Formatear el monto con el signo y decimales
-export const useFormatNumber = (number: number | undefined) => {
+// Formatear el monto con el signo y decimales
+export const useFormatoMoneda = (number: number | undefined) => {
 	if (!number) return "";
 	const formatNumber = new Intl.NumberFormat("es-AR", {
 		style: "currency",

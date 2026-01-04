@@ -1,13 +1,28 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
+import {
+	ActivityIndicator,
+	FlatList,
+	RefreshControl,
+	Text,
+	View,
+} from "react-native";
 
-import { CardsComponent, CircleButton, HeaderComponent, TitleOpcionInput } from "@/components";
-import { useFormatNumber } from "@/hooks";
+import {
+	CardsComponent,
+	CircleButton,
+	HeaderComponent,
+	TitleOpcionInput,
+} from "@/components";
+import { useFormatoMoneda } from "@/hooks";
 import { colors } from "@/styles/constants";
 
-import { getAllGastosServices, getResumeGastosServices, getResumeIngresosServices } from "@/api/services/dashboard/get.alls.services";
+import {
+	getAllGastosServices,
+	getResumeGastosServices,
+	getResumeIngresosServices,
+} from "@/api/services/dashboard/get.alls.services";
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
 
 const GastosScreen = () => {
@@ -97,7 +112,7 @@ const GastosScreen = () => {
 										{isLoadingResumeIngresos ? (
 											<ActivityIndicator />
 										) : (
-											useFormatNumber(resumeIngresos)
+											useFormatoMoneda(resumeIngresos)
 										)}
 									</Text>
 								</CardsComponent>
@@ -118,7 +133,7 @@ const GastosScreen = () => {
 										{isLoadingResumeGastos ? (
 											<ActivityIndicator />
 										) : (
-											useFormatNumber(resumeGastos)
+											useFormatoMoneda(resumeGastos)
 										)}
 									</Text>
 								</CardsComponent>

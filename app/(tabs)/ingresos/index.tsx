@@ -1,11 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
+import {
+	ActivityIndicator,
+	FlatList,
+	RefreshControl,
+	Text,
+	View,
+} from "react-native";
 
-import { getIngresosServices, IngresoInterfaces } from "@/api/services/ingreso/get.ingresos.services";
+import {
+	getIngresosServices,
+	IngresoInterfaces,
+} from "@/api/services/ingreso/get.ingresos.services";
 import { CircleButton } from "@/components";
-import { useFormatNumber } from "@/hooks";
+import { useFormatoMoneda } from "@/hooks";
 
 const Item = ({
 	monto,
@@ -13,13 +22,12 @@ const Item = ({
 	origen,
 	descripcion,
 }: Partial<IngresoInterfaces>) => {
-	
 	const height = descripcion ? "h-28" : "h-18";
 	return (
 		<View className={`flex p-4 border border-border-light ${height} gap-5`}>
 			<View className='flex flex-row justify-between align-bottom'>
 				<Text className='w-1/3 text-center'>
-					{monto && useFormatNumber(monto)}
+					{monto && useFormatoMoneda(monto)}
 				</Text>
 				<Text className='w-1/3 text-center'>
 					{fecha ? dayjs(fecha).format("DD/MM/YYYY") : ""}
