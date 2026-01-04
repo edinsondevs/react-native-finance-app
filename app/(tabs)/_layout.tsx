@@ -1,6 +1,6 @@
-import { Tabs } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import { colors } from "@/styles/constants";
+import { FontAwesome } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
 
 export default function TabLayout() {
 	return (
@@ -9,9 +9,9 @@ export default function TabLayout() {
 				tabBarActiveTintColor: colors.primary,
 				headerShown: false,
 				animation: "shift",
-				tabBarStyle:{
+				tabBarStyle: {
 					minHeight: 80,
-				}
+				},
 			}}>
 			<Tabs.Screen
 				name='gastos'
@@ -41,6 +41,19 @@ export default function TabLayout() {
 						<FontAwesome
 							size={28}
 							name='dollar'
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name='estadisticas/index'
+				options={{
+					title: "Estadísticas",
+					tabBarIcon: ({ color }) => (
+						<FontAwesome
+							size={28}
+							name='bar-chart'
 							color={color}
 						/>
 					),

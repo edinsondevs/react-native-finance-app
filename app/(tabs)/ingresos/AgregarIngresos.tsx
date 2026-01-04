@@ -17,8 +17,11 @@ import {
 import { useFormMutation, useFormValidation } from "@/hooks";
 import { IngresoForm } from "@/interfaces";
 
+import { useAuthStore } from "@/store/useAuthStore";
+// ... imports
 
 const AgregarIngresos = () => {
+	const { user } = useAuthStore();
 	const { control, handleSubmit, reset, watch, setValue } =
 		useForm<IngresoForm>({
 			defaultValues: {
@@ -34,6 +37,7 @@ const AgregarIngresos = () => {
 				monto: Number(data.monto),
 				fecha: dayjs(data.fecha).format("YYYY-MM-DD"),
 				descripcion: data.descripcion,
+				user_id: user?.id,
 			});
 		},
 		queryKeys: [["ingresos"], ["resumeIngresos"]],

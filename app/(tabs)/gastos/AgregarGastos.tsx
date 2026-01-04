@@ -18,14 +18,11 @@ import {
 	MontoField,
 } from "@/components/form-fields";
 import { useFormMutation, useFormValidation } from "@/hooks";
+import { useAuthStore } from "@/store/useAuthStore";
+// ...
 
-/**
- * Pantalla para registrar nuevos gastos.
- *
- * Utiliza React Hook Form para la gestión del formulario y TanStack Query para
- * obtener datos (categorías, métodos de pago) y persistir el nuevo gasto.
- */
 const AgregarGastosScreen = () => {
+	const { user } = useAuthStore();
 	const { control, handleSubmit, reset, watch, setValue } =
 		useForm<GastoFormData>({
 			defaultValues: {
@@ -77,8 +74,9 @@ const AgregarGastosScreen = () => {
 			monto: parseFloat(data.monto),
 			fecha: data.fecha ? dayjs(data.fecha).format("YYYY-MM-DD") : "",
 			categoria_id: data.categoria.id,
-			icon: data.categoria.icon || "",
+			icon: data.categoria.icon || "category",
 			metodo_pago_id: data.metodo_pago_id.id,
+			user_id: user?.id,
 		};
 		crearGasto(formattedData);
 	};
