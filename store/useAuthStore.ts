@@ -60,7 +60,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 			email,
 			password,
 		});
-		// console.log({data})
+
 		if (error) set({ error: "El correo o la contraseña son incorrectos" });
 		else
 			set({

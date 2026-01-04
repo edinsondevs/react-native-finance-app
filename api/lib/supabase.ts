@@ -5,9 +5,6 @@ import Constants from "expo-constants";
 const URL = Constants.expoConfig?.extra?.supabaseUrl || "";
 const SUPABASE_ANON_KEY = Constants.expoConfig?.extra?.supabaseAnonKey || "";
 
-console.log("🔹 Supabase URL:", URL);
-console.log("🔹 Supabase Key Length:", SUPABASE_ANON_KEY?.length);
-
 if (!URL || !SUPABASE_ANON_KEY) {
 	console.error(
 		"⚠️ Supabase environment variables are missing! Check your app.json extra fields."

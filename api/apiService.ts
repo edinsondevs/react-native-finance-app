@@ -11,9 +11,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 	console.log("📋 Available config:", Constants.expoConfig?.extra);
 } else {
 	console.log("✅ Supabase credentials loaded successfully");
-	console.log("🔗 URL:", supabaseUrl);
-	// NO imprimas la key completa en producción, solo para debugging:
-	// console.log("🔑 Key (first 20 chars):", supabaseAnonKey?.substring(0, 20) + "...");
 }
 
 // Crear instancia de axios
@@ -32,9 +29,9 @@ export const instance = axios.create({
 instance.interceptors.response.use(
 	(response) => {
 		// Log exitoso (puedes comentar esto en producción)
-		console.log(
-			`✅ ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status}`
-		);
+		// console.log(
+		// 	`✅ ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status}`
+		// );
 		return response;
 	},
 	(error) => {

@@ -2,14 +2,12 @@ import { instance } from "../../api/apiService";
 
 
 const get = async () => {
-    try {
-        
+    try {        
         const { data } = await instance.get("/productos", {
 			params: {
 				limit: 1,
 			},
 		});
-        // console.log(JSON.stringify(data, null, 4))
         return data
     } catch (error) {
         console.log(error)

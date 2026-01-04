@@ -1,9 +1,10 @@
-import { ButtomComponent, InputComponent, LinkComponent } from "@/components";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useAuthStore } from "../../store/useAuthStore";
+
+import { ButtomComponent, InputComponent, LinkComponent } from "@/components";
 
 const RegisterScreen = () => {
 	const [name, setName] = useState("");
