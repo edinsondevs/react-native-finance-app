@@ -6,13 +6,14 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useAuthStore } from "../../store/useAuthStore";
 
 const RegisterScreen = () => {
+	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const { signUp, loading } = useAuthStore();
 
 	async function onRegister() {
-		if (!email || !password || !confirmPassword) {
+		if (!name || !email || !password || !confirmPassword) {
 			Alert.alert("Error", "Por favor completa todos los campos");
 			return;
 		}
@@ -21,7 +22,7 @@ const RegisterScreen = () => {
 			return;
 		}
 
-		await signUp(email, password);
+		await signUp(email, password, name);
 		const { error, user } = useAuthStore.getState();
 
 		if (error) {
@@ -52,6 +53,15 @@ const RegisterScreen = () => {
 					</Text>
 				</View>
 				<View className='gap-4 w-full px-6 mt-8'>
+					<Text className='text-text-gray font-Inter-ExtraBold'>
+						Nombre Completo
+					</Text>
+					<InputComponent
+						value={name}
+						setValue={setName}
+						placeholder='Introduce tu nombre completo'
+						autoCapitalize='words'
+					/>
 					<Text className='text-text-gray font-Inter-ExtraBold'>
 						Correo Eléctronico
 					</Text>
@@ -92,8 +102,20 @@ const RegisterScreen = () => {
 
 					<View className='mt-4 items-center'>
 						<ButtomComponent
-							disabled={loading || confirmPassword !== password || password.length < 5}
-							color={loading || confirmPassword !== password || password.length < 5 ? "bg-button-disabled" : "bg-primary"}
+							disabled={
+								loading ||
+								!name ||
+								confirmPassword !== password ||
+								password.length < 5
+							}
+							color={
+								loading ||
+								!name ||
+								confirmPassword !== password ||
+								password.length < 5
+									? "bg-button-disabled"
+									: "bg-primary"
+							}
 							onPressFunction={onRegister}
 							text={loading ? "Registrando..." : "Registrarse"}
 						/>

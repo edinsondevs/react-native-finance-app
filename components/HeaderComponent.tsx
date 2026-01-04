@@ -1,10 +1,14 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { Image } from 'expo-image';
+import { useAuthStore } from "@/store/useAuthStore";
+import { Image } from "expo-image";
+import React from "react";
+import { Text, View } from "react-native";
 // import { FontAwesome } from '@expo/vector-icons';
 
 const HeaderComponent = () => {
-  return (
+	const { user } = useAuthStore();
+	const displayName = user?.displayName || "Usuario";
+
+	return (
 		<View className='flex flex-row  justify-between p-4'>
 			<View className='flex flex-1 flex-row gap-4 items-stretch'>
 				<Text>
@@ -17,7 +21,7 @@ const HeaderComponent = () => {
 					/>
 				</Text>
 				<Text className='self-center font-Inter-Bold text-2xl '>
-					Hola, Edinson
+					Hola, {displayName}
 				</Text>
 			</View>
 
@@ -29,7 +33,7 @@ const HeaderComponent = () => {
 				/>
 			</View> */}
 		</View>
-  );
-}
+	);
+};
 
-export default HeaderComponent
+export default HeaderComponent;
