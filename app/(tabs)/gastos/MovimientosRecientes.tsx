@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Alert, Pressable } from "react-native";
 import ModalEdicionMovimiento from "./ModalEdicionMovimiento";
+import { useAuthStore } from "@/store/useAuthStore";
 
 /**
  * Propiedades para el componente MovimientosRecientes.
@@ -35,9 +36,10 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 	const [newDescripcion, setNewDescripcion] = useState(descripcion);
 
 	const queryClient = useQueryClient();
+	const { user } = useAuthStore();
 
 	const mutation = useMutation({
-		mutationFn: (data: { monto: number; descripcion: string }) =>
+		mutationFn: (data: { monto: number; descripcion: string; user_id?: string }) =>
 			updateGastoServices(id!, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["gastos", "all"] });
@@ -56,6 +58,7 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 		mutation.mutate({
 			monto: parseFloat(newMonto),
 			descripcion: newDescripcion,
+			user_id: user?.id,
 		});
 	};
 

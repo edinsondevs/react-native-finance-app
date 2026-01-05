@@ -4,10 +4,11 @@ import ThemedView from "@/presentation/ThemedView";
 import { colors } from "@/styles/constants";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
+import { LineChart } from "react-native-gifted-charts";
 
 const EstadisticasScreen = () => {
-	const { data: gastosData, isLoading } = useQuery({
+	const { data: gastosData, isLoading, refetch } = useQuery({
 		queryKey: ["estadisticasGastos"],
 		queryFn: getGastosPorDiaServices,
 	});
@@ -15,8 +16,24 @@ const EstadisticasScreen = () => {
 	// Calcular total
 	const total = gastosData?.reduce((acc, item) => acc + item.total, 0) || 0;
 
+	// Preparar datos para LineChart
+	const chartData =
+		gastosData?.map((item) => ({
+			value: item.total,
+			label: item.date,
+		})) || [];
+
 	return (
-		<ThemedView margin>
+		<ScrollView className="flex-1 px-4"
+			refreshControl={
+				<RefreshControl
+					refreshing={isLoading}
+					onRefresh={() => {
+						refetch();
+					}}
+				/>
+			}
+		>
 			<HeaderComponent />
 			<Text className='text-2xl font-bold mb-6 mt-4 text-text-black'>
 				Estadísticas de Gastos
@@ -41,6 +58,37 @@ const EstadisticasScreen = () => {
 							${total.toLocaleString("es-AR")}
 						</Text>
 					</View>
+
+					{chartData.length > 0 && (
+						<View className='bg-white rounded-2xl p-4 shadow-sm mb-4'>
+							<Text className='text-base font-semibold text-gray-500 mb-4'>
+								Tendencia de Gastos
+							</Text>
+							<LineChart
+								data={chartData}
+								areaChart
+								curved
+								height={200}
+								width={320}
+								color={colors.primary}
+								startFillColor={colors.primary}
+								endFillColor='rgba(19, 91, 236, 0.1)'
+								startOpacity={0.9}
+								endOpacity={0.2}
+								thickness={3}
+								hideDataPoints={false}
+								dataPointsColor={colors.primary}
+								dataPointsRadius={4}
+								textColor1='gray'
+								textFontSize={10}
+								hideRules
+								xAxisColor='lightgray'
+								yAxisColor='lightgray'
+								noOfSections={4}
+								isAnimated
+							/>
+						</View>
+					)}
 
 					<View className='bg-white rounded-2xl p-4 shadow-sm'>
 						<Text className='text-base font-semibold text-gray-500 mb-4'>
@@ -69,7 +117,7 @@ const EstadisticasScreen = () => {
 					</View>
 				</ScrollView>
 			)}
-		</ThemedView>
+		</ScrollView>
 	);
 };
 
