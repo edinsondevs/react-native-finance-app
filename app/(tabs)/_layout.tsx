@@ -47,7 +47,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name='estadisticas/index'
+				name='estadisticas'
 				options={{
 					title: "Estadísticas",
 					tabBarIcon: ({ color }) => (

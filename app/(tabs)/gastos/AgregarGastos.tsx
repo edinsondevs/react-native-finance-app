@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -7,19 +7,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { crearGastoServices, getCategoriasServices } from "@/api/services";
 import { Category, GastoData, GastoFormData } from "@/api/services/interfaces";
 import { getMetodosPagoServices } from "@/api/services/shared/get.metodos-pago.services";
-import {
-	ButtomComponent,
-	CustomSelector,
-	TitleOpcionInput,
-} from "@/components";
-import {
-	DescripcionField,
-	FechaField,
-	MontoField,
-} from "@/components/form-fields";
+import { ButtomComponent, CustomSelector, TitleOpcionInput } from "@/components";
+import { DescripcionField, FechaField, MontoField } from "@/components/form-fields";
 import { useFormMutation, useFormValidation } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
-// ...
+
 
 const AgregarGastosScreen = () => {
 	const { user } = useAuthStore();
@@ -30,6 +22,8 @@ const AgregarGastosScreen = () => {
 			},
 		});
 
+	const queryClient = useQueryClient();
+
 	// Usar el custom hook para la mutación
 	const { mutate: crearGasto, isPending: isCreating } =
 		useFormMutation<GastoData>({
@@ -37,7 +31,10 @@ const AgregarGastosScreen = () => {
 			queryKeys: [["gastos"], ["resumeGastos"]],
 			successMessage: "Gasto guardado correctamente",
 			errorMessage: "Error al crear gasto",
-			onSuccessCallback: reset,
+			onSuccessCallback: () => {
+				reset()
+				queryClient.invalidateQueries({queryKey: ["estadisticasGastos"]})
+			},
 		});
 
 	/**

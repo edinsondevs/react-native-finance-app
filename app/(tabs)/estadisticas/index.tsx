@@ -1,6 +1,5 @@
 import { getProfilesServices } from "@/api/services";
 import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
-import { HeaderComponent } from "@/components";
 import { useAuthStore } from "@/store/useAuthStore";
 import { colors } from "@/styles/constants";
 import { useQuery } from "@tanstack/react-query";
@@ -113,7 +112,6 @@ const EstadisticasScreen = () => {
 					}}
 				/>
 			}>
-			<HeaderComponent />
 			<Text className='text-2xl font-bold mb-6 mt-4 text-text-black'>
 				Estadísticas de Gastos
 			</Text>
