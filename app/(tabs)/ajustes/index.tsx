@@ -1,31 +1,22 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { useState } from "react";
 import { Alert, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import { postAppSettingsServices } from "@/api/services/settingsApp/post.app.settings.services";
-import {
-	ButtomComponent,
-	DividerComponent,
-	IconPickerModal,
-	IconTrigger,
-	InputComponent,
-	TitleOpcionInput,
-} from "@/components";
-import { useCapitalize } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
+
+import { postAppSettingsServices } from "@/api/services/settingsApp/post.app.settings.services";
+import { ButtomComponent, DividerComponent, HeaderComponent, IconPickerModal, IconTrigger, InputComponent, TitleOpcionInput } from "@/components";
+import { useCapitalize } from "@/hooks";
 
 import ThemedView from "@/presentation/ThemedView";
 
-const TitleEditScreen = ({
-	title,
-	origen,
-}: {
-	title: string;
-	origen: string;
-}) => {
+
+
+const TitleEditScreen = ({ title, origen }: { title: string; origen: string }) => {
+
 	return (
 		<View className='flex-row justify-between items-center'>
 			<TitleOpcionInput title={title} />
@@ -44,6 +35,7 @@ const TitleEditScreen = ({
 	);
 };
 
+
 const AjustesScreen = () => {
 	const queryClient = useQueryClient();
 
@@ -57,6 +49,9 @@ const AjustesScreen = () => {
 	});
 
 	const { capitalizeWords } = useCapitalize();
+
+	const pathName = usePathname();
+	const title = capitalizeWords(pathName.split("/").pop() || "");
 
 	const [showIconPicker, setShowIconPicker] = useState(false);
 	const [activeIconField, setActiveIconField] = useState<
@@ -167,10 +162,12 @@ const AjustesScreen = () => {
 	return (
 		<KeyboardAwareScrollView
 			keyboardShouldPersistTaps='handled'
-			contentContainerStyle={{ paddingTop: 16 }}
-			showsVerticalScrollIndicator={false}
+			contentContainerStyle={{ paddingTop: 0 }}
+			showsVerticalScrollIndicator={true}
 			extraScrollHeight={170}
 			enableOnAndroid={true}>
+			
+			<HeaderComponent title={title} />
 			<ThemedView
 				margin
 				className='gap-4 mt-6'>

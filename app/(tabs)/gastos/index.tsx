@@ -9,6 +9,7 @@ import { colors } from "@/styles/constants";
 
 import { getAllGastosServices, getResumeGastosServices, getResumeIngresosServices } from "@/api/services/dashboard/get.alls.services";
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const GastosScreen = () => {
 	const {
@@ -37,6 +38,9 @@ const GastosScreen = () => {
 		queryKey: ["gastos", "all"],
 		queryFn: getAllGastosServices,
 	});
+
+	const { user } = useAuthStore();
+	const displayName = user?.displayName || "Usuario";
 
 	return (
 		<View className='flex-1'>
@@ -77,7 +81,7 @@ const GastosScreen = () => {
 				showsVerticalScrollIndicator={false}
 				ListHeaderComponent={
 					<>
-						<HeaderComponent />
+						<HeaderComponent title={`Hola ${displayName} !!!`} icon/>
 
 						{/* Ingresos / Gastos */}
 						<View className='flex flex-row justify-around '>

@@ -13,7 +13,7 @@ import {
 	getIngresosServices,
 	IngresoInterfaces,
 } from "@/api/services/ingreso/get.ingresos.services";
-import { CircleButton } from "@/components";
+import { CircleButton, HeaderComponent } from "@/components";
 import { useFormatoMoneda } from "@/hooks";
 
 const Item = ({
@@ -82,6 +82,7 @@ const IngresosScreen = () => {
 
 	return (
 		<View className='flex-1'>
+			<HeaderComponent title='Ingresos' />
 			<HeaderList />
 			<FlatList
 				data={data}

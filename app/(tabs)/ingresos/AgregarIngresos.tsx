@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { postIngresoServices } from "@/api/services/ingreso/post.ingreso.services";
 import {
 	ButtomComponent,
+	HeaderComponent,
 	InputComponent,
 	TitleOpcionInput,
 } from "@/components";
@@ -36,8 +37,7 @@ const AgregarIngresos = () => {
 				origen: data.origen,
 				monto: Number(data.monto),
 				fecha: dayjs(data.fecha).format("YYYY-MM-DD"),
-				descripcion: data.descripcion,
-				user_id: user?.id,
+				descripcion: data.descripcion
 			});
 		},
 		queryKeys: [["ingresos"], ["resumeIngresos"]],
@@ -59,6 +59,7 @@ const AgregarIngresos = () => {
 
 	return (
 		<View className='flex-1 px-4'>
+			<HeaderComponent title='Agregar Nuevo Ingreso' />	
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps='handled'
 				contentContainerStyle={{ paddingTop: 16 }}
