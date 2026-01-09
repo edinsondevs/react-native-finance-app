@@ -12,7 +12,6 @@ export function useGetHoursCurrent() {
     // Para que todas las instancias de dayjs usen la zona horaria local por defecto
     // Intenta poner tu zona horaria específica aquí para probar
     const MI_ZONA = "America/Santiago"; // o "America/Argentina/Buenos_Aires"
-    // console.log("Hora en " + MI_ZONA + ":", dayjs().tz(MI_ZONA).hour());
 
     const horaActual = dayjs().tz(MI_ZONA).hour();
     if (horaActual >= 6 && horaActual < 12) {

@@ -45,7 +45,6 @@ const GastosScreen = () => {
 	const { user } = useAuthStore();
 	const displayName = user?.displayName || "Usuario";
 
-	console.log(displayName)
 	return (
 		<View className='flex-1'>
 			<FlatList
