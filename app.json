@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Finzanzas App",
-    "slug": "Finzanzas App",
-    "version": "1.0.0",
+    "name": "Finanzas App",
+    "slug": "finanzas-app",
+    "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "Finzanzas App",
+    "scheme": "finanzas-app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "autor": "Edinson Madrid",
@@ -14,10 +14,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE"        
+        "backgroundColor": "#E6F4FE"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.edinsondevs.finanzasapp"
     },
     "web": {
       "output": "static",
@@ -29,7 +30,7 @@
       }
     },
     "splash": {
-      "image": "./assets/images/favicon.png", 
+      "image": "./assets/images/favicon.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
@@ -51,6 +52,15 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "supabaseUrl": "https://sipqakcxjvzjmxywypfw.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpcHFha2N4anZ6am14eXd5cGZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc3OTUxNjQsImV4cCI6MjA3MzM3MTE2NH0.sFJ7tuhgGQMXRkqgMM_uA1UEJPEaNsPmx7mY1eP26sU",
+      "eas": {
+        "projectId": "a7ee85c4-0c43-44dd-90b9-cf6e2e2bd9e2"
+      }
+    },
+    "owner": "edinsondevs"
   }
 }

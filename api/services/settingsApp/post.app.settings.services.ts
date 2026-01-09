@@ -10,7 +10,7 @@ export interface DataSettingsInterface {
 export const postAppSettingsServices = async (data: DataSettingsInterface) => {
     
     const { origen, data: name, icon } = data
-    console.log(data)
+    
     try {
         const response = await instance.post(`/${origen}`, { 
             name,

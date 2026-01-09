@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-import { useFormatNumber } from "@/hooks";
+import { useFormatoMoneda } from "@/hooks";
 import { colors } from "@/styles/constants";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -10,7 +10,6 @@ import { FontAwesome } from "@expo/vector-icons";
  * Define la estructura de datos que representa una tarjeta de movimiento financiero.
  */
 interface ItemMovimientosCardsProps {
-	category: string;
 	description: string;
 	amount: number; // Por ejemplo: 45.50
 	icon: keyof typeof FontAwesome.glyphMap; // Nombre del icono de FontAwesome (ej: 'shopping-cart')
@@ -24,7 +23,6 @@ interface ItemMovimientosCardsProps {
  * @returns {JSX.Element} Elemento React que representa la tarjeta del movimiento
  */
 const ItemMovimientosCards = ({
-	category,
 	description,
 	amount,
 	icon,
@@ -45,12 +43,6 @@ const ItemMovimientosCards = ({
 				/>
 			</View>
 
-			{/* Columna 2: Texto de Categoría y Descripción */}
-			<View className='flex '>
-				{/* Categoría: Supermercado */}
-				<Text className='font-semibold text-[#111318]'>{category}</Text>
-			</View>
-
 			<View className='flex-1 '>
 				{/* Descripción: Comida */}
 				<Text className='text-sm text-[#616f89]  '>{description}</Text>
@@ -59,7 +51,7 @@ const ItemMovimientosCards = ({
 			{/* Columna 3: Monto */}
 			<View>
 				<Text className='font-bold text-alert'>
-					{useFormatNumber(amount)}
+					{useFormatoMoneda(amount)}
 				</Text>
 			</View>
 		</View>

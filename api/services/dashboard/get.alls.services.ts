@@ -24,8 +24,7 @@ export const getResumeIngresosServices = async (): Promise<number> => {
 		);
 		const data = response.data;
 		const total = data.reduce(
-			(acc: number, item: MontoItem) => acc + item.monto,
-			0
+			(acc: number, item: MontoItem) => acc + item.monto, 0
 		);
 		return total;
 	} catch (error) {
@@ -71,7 +70,7 @@ export const getAllGastosServices = async (): Promise<GastoData[]> => {
 
 	try {
 		const response = await instance.get<GastoData[]>(
-			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}`
+			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=fecha.desc`
 		);
 		const data = response.data;
 		return data;
@@ -80,12 +79,3 @@ export const getAllGastosServices = async (): Promise<GastoData[]> => {
 		throw error;
 	}
 };
-
-/*
-Modo: Full Stack General
-Modo: Code Review
-Modo: Arquitectura
-Modo: Debug
-Modo: Optimización
-Modo: Investigación
-*/

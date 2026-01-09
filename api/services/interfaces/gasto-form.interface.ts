@@ -1,4 +1,4 @@
-import { Category } from "./index";
+import { Category, IconName } from "./index";
 
 /**
  * Interfaz para el formulario de gastos
@@ -10,7 +10,7 @@ export interface GastoFormData {
 	metodo_pago_id: {
 		id: number;
 		name: string;
-		icon?: string;
+		icon?: IconName;
 	};
 	fecha: Date;
 	descripcion: string;

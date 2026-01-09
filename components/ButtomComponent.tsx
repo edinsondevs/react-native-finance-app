@@ -10,6 +10,7 @@ interface ButtomComponentProps extends PressableProps {
 		| "bg-secondary"
 		| "bg-google-red"
 		| "bg-github-dark"
+		| "bg-button-disabled"
 		| "transparent";
 	width?:
 		| "w-auto"

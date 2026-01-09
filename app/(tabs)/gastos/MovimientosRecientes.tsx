@@ -1,6 +1,11 @@
+import { updateGastoServices } from "@/api/services/gastos/update.gasto.services";
 import { ItemMovimientosCards } from "@/components";
 import ThemedView from "@/presentation/ThemedView";
-import { FontAwesome } from "@expo/vector-icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { Alert, Pressable } from "react-native";
+import ModalEdicionMovimiento from "./ModalEdicionMovimiento";
+import { useAuthStore } from "@/store/useAuthStore";
 
 /**
  * Propiedades para el componente MovimientosRecientes.
@@ -8,10 +13,12 @@ import { FontAwesome } from "@expo/vector-icons";
  */
 interface MovimientosRecientesProps {
 	item: {
-		categoria: string;
+		id?: number;
+		categoria?: string;
 		descripcion: string;
 		monto: number;
-		icon: keyof typeof FontAwesome.glyphMap;
+		icon: any;
+		iconName?: string;
 	};
 }
 /**
@@ -23,16 +30,61 @@ interface MovimientosRecientesProps {
  * @returns {JSX.Element} Vista del movimiento reciente envolviendo la tarjeta de detalles
  */
 const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
-	const { monto, categoria, descripcion, icon } = item;
+	const { id, monto, descripcion, icon } = item;
+	const [modalVisible, setModalVisible] = useState(false);
+	const [newMonto, setNewMonto] = useState(monto.toString());
+	const [newDescripcion, setNewDescripcion] = useState(descripcion);
+
+	const queryClient = useQueryClient();
+	const { user } = useAuthStore();
+
+	const mutation = useMutation({
+		mutationFn: (data: { monto: number; descripcion: string; user_id?: string }) =>
+			updateGastoServices(id!, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["gastos", "all"] });
+			queryClient.invalidateQueries({ queryKey: ["resumeGastos"] });
+			setModalVisible(false);
+			Alert.alert("Éxito", "El movimiento ha sido actualizado.");
+		},
+		onError: (error) => {
+			Alert.alert("Error", "No se pudo actualizar el movimiento.");
+			console.error(error);
+		},
+	});
+
+	const handleUpdate = () => {
+		if (!id) return;
+		mutation.mutate({
+			monto: parseFloat(newMonto),
+			descripcion: newDescripcion,
+			user_id: user?.id,
+		});
+	};
+
 	return (
-		<ThemedView margin>
-			<ItemMovimientosCards
-				category={categoria}
-				description={descripcion}
-				amount={monto}
-				icon={icon}
+		<>
+			<Pressable onPress={() => setModalVisible(true)}>
+				<ThemedView margin>
+					<ItemMovimientosCards
+						description={descripcion}
+						amount={monto}
+						icon={icon}
+					/>
+				</ThemedView>
+			</Pressable>
+
+			<ModalEdicionMovimiento
+				modalVisible={modalVisible}
+				setModalVisible={setModalVisible}
+				newMonto={newMonto}
+				setNewMonto={setNewMonto}
+				newDescripcion={newDescripcion}
+				setNewDescripcion={setNewDescripcion}
+				mutation={mutation}
+				handleUpdate={handleUpdate}
 			/>
-		</ThemedView>
+		</>
 	);
 };
 
