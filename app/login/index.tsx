@@ -51,6 +51,7 @@ const LoginScreen = () => {
 					<InputComponent
 						value={email}
 						setValue={setEmail}
+						autoComplete='email'
 						placeholder='Introduce tu correo electrónico'
 						keyboardType='email-address'
 					/>

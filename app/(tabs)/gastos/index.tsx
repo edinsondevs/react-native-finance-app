@@ -10,8 +10,11 @@ import { colors } from "@/styles/constants";
 import { getAllGastosServices, getResumeGastosServices, getResumeIngresosServices } from "@/api/services/dashboard/get.alls.services";
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useGetHoursCurrent } from "@/hooks/useGetHoursCurrent";
 
 const GastosScreen = () => {
+	const {saludo} = useGetHoursCurrent();	
+	
 	const {
 		data: resumeIngresos,
 		isLoading: isLoadingResumeIngresos,
@@ -42,6 +45,7 @@ const GastosScreen = () => {
 	const { user } = useAuthStore();
 	const displayName = user?.displayName || "Usuario";
 
+	console.log(displayName)
 	return (
 		<View className='flex-1'>
 			<FlatList
@@ -81,7 +85,7 @@ const GastosScreen = () => {
 				showsVerticalScrollIndicator={false}
 				ListHeaderComponent={
 					<>
-						<HeaderComponent title={`Hola ${displayName} !!!`} icon/>
+						<HeaderComponent title={`${saludo} ${displayName.split(' ')[0]}`} icon/>
 
 						{/* Ingresos / Gastos */}
 						<View className='flex flex-row justify-around '>
