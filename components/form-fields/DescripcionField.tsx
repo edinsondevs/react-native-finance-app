@@ -9,6 +9,7 @@ interface DescripcionFieldProps<
 	name?: Path<TFieldValues>;
 	title?: string;
 	placeholder?: string;
+	maxLength?: number;
 }
 
 /**
@@ -22,6 +23,7 @@ export const DescripcionField = <
 	name = "descripcion" as Path<TFieldValues>,
 	title = "Descripción (Opcional)",
 	placeholder = "Añade una nota...",
+	maxLength = 50,
 }: DescripcionFieldProps<TFieldValues>) => {
 	return (
 		<View className='mb-5'>
@@ -35,7 +37,8 @@ export const DescripcionField = <
 						multiline
 						value={field.value}
 						setValue={field.onChange}
-						className='h-40 pl-3'
+						className='h-20 pl-3'
+						maxLength={maxLength}
 						style={{ textAlignVertical: "top" }}
 					/>
 				)}

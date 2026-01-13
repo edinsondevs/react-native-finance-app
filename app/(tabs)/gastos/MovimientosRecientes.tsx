@@ -1,11 +1,12 @@
+import { deleteGastoServices } from "@/api/services/gastos/delete.gasto.services";
 import { updateGastoServices } from "@/api/services/gastos/update.gasto.services";
 import { ItemMovimientosCards } from "@/components";
 import ThemedView from "@/presentation/ThemedView";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Alert, Pressable } from "react-native";
+import { Alert, Pressable, View } from "react-native";
 import ModalEdicionMovimiento from "./ModalEdicionMovimiento";
-import { useAuthStore } from "@/store/useAuthStore";
 
 /**
  * Propiedades para el componente MovimientosRecientes.
@@ -39,8 +40,11 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 	const { user } = useAuthStore();
 
 	const mutation = useMutation({
-		mutationFn: (data: { monto: number; descripcion: string; user_id?: string }) =>
-			updateGastoServices(id!, data),
+		mutationFn: (data: {
+			monto: number;
+			descripcion: string;
+			user_id?: string;
+		}) => updateGastoServices(id!, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["gastos", "all"] });
 			queryClient.invalidateQueries({ queryKey: ["resumeGastos"] });
@@ -49,6 +53,20 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 		},
 		onError: (error) => {
 			Alert.alert("Error", "No se pudo actualizar el movimiento.");
+			console.error(error);
+		},
+	});
+
+	const deleteMutation = useMutation({
+		mutationFn: () => deleteGastoServices(id!),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["gastos", "all"] });
+			queryClient.invalidateQueries({ queryKey: ["resumeGastos"] });
+			setModalVisible(false);
+			Alert.alert("Éxito", "El movimiento ha sido eliminado.");
+		},
+		onError: (error) => {
+			Alert.alert("Error", "No se pudo eliminar el movimiento.");
 			console.error(error);
 		},
 	});
@@ -62,8 +80,28 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 		});
 	};
 
+	const handleDelete = () => {
+		if (!id) return;
+
+		Alert.alert(
+			"Confirmar Eliminación",
+			"¿Estás seguro de que deseas eliminar este movimiento? Esta acción no se puede deshacer.",
+			[
+				{
+					text: "Cancelar",
+					style: "cancel",
+				},
+				{
+					text: "Eliminar",
+					style: "destructive",
+					onPress: () => deleteMutation.mutate(),
+				},
+			]
+		);
+	};
+
 	return (
-		<>
+		<View className='h-18'>
 			<Pressable onPress={() => setModalVisible(true)}>
 				<ThemedView margin>
 					<ItemMovimientosCards
@@ -82,9 +120,11 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 				newDescripcion={newDescripcion}
 				setNewDescripcion={setNewDescripcion}
 				mutation={mutation}
+				deleteMutation={deleteMutation}
 				handleUpdate={handleUpdate}
+				handleDelete={handleDelete}
 			/>
-		</>
+		</View>
 	);
 };
 

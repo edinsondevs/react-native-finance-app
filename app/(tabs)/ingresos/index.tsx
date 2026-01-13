@@ -22,10 +22,9 @@ const Item = ({
 	origen,
 	descripcion,
 }: Partial<IngresoInterfaces>) => {
-	const height = descripcion ? "h-28" : "h-18";
 	return (
-		<View className={`flex p-4 border border-border-light ${height} gap-5`}>
-			<View className='flex flex-row justify-between align-bottom'>
+		<View className='flex p-4 border border-border-light min-h-[72px] gap-3'>
+			<View className='flex flex-row justify-between items-center'>
 				<Text className='w-1/3 text-center'>
 					{monto && useFormatoMoneda(monto)}
 				</Text>
@@ -35,8 +34,8 @@ const Item = ({
 				<Text className='w-1/3 text-center'>{origen}</Text>
 			</View>
 			{descripcion && (
-				<View className='flex flex-row justify-end '>
-					<Text className='font-Inter-Regular text-right'>
+				<View className='flex flex-row justify-end'>
+					<Text className='font-Inter-Regular text-right flex-1 text-text-muted text-sm'>
 						{descripcion}
 					</Text>
 				</View>

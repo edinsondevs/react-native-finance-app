@@ -1,6 +1,6 @@
-import { View, Text, Modal } from 'react-native'
-import React from 'react'
-import { ButtomComponent, InputComponent } from '@/components';
+import { ButtomComponent, InputComponent } from "@/components";
+import React from "react";
+import { Modal, Text, View } from "react-native";
 
 interface Props {
 	modalVisible: boolean;
@@ -10,7 +10,9 @@ interface Props {
 	newDescripcion: string;
 	setNewDescripcion: (descripcion: string) => void;
 	mutation: any;
+	deleteMutation: any;
 	handleUpdate: () => void;
+	handleDelete: () => void;
 }
 
 const ModalEdicionMovimiento = ({
@@ -21,8 +23,12 @@ const ModalEdicionMovimiento = ({
 	newDescripcion,
 	setNewDescripcion,
 	mutation,
+	deleteMutation,
 	handleUpdate,
+	handleDelete,
 }: Props) => {
+	const isAnyPending = mutation.isPending || deleteMutation.isPending;
+
 	return (
 		<Modal
 			animationType='slide'
@@ -42,6 +48,7 @@ const ModalEdicionMovimiento = ({
 						setValue={setNewMonto}
 						keyboardType='numeric'
 						iconDollar
+						editable={!isAnyPending}
 					/>
 
 					<Text className='font-bold'>Descripción</Text>
@@ -49,6 +56,7 @@ const ModalEdicionMovimiento = ({
 						placeholder='Descripción'
 						value={newDescripcion}
 						setValue={setNewDescripcion}
+						editable={!isAnyPending}
 					/>
 
 					<View className='mt-4 gap-2'>
@@ -60,14 +68,33 @@ const ModalEdicionMovimiento = ({
 							}
 							onPressFunction={handleUpdate}
 							color='bg-primary'
-							disabled={mutation.isPending}
+							disabled={isAnyPending}
 						/>
-						<ButtomComponent
-							text='Cancelar'
-							onPressFunction={() => setModalVisible(false)}
-							color='transparent'
-							textColor='text-text-black'
-						/>
+						<View className='flex-row gap-2'>
+							<View className='flex-1'>
+								<ButtomComponent
+									text={
+										deleteMutation.isPending
+											? "Eliminando..."
+											: "Eliminar"
+									}
+									onPressFunction={handleDelete}
+									color='bg-red-500'
+									disabled={isAnyPending}
+								/>
+							</View>
+							<View className='flex-1'>
+								<ButtomComponent
+									text='Cancelar'
+									onPressFunction={() =>
+										setModalVisible(false)
+									}
+									color='transparent'
+									textColor='text-text-black'
+									disabled={isAnyPending}
+								/>
+							</View>
+						</View>
 					</View>
 				</View>
 			</View>
@@ -75,4 +102,4 @@ const ModalEdicionMovimiento = ({
 	);
 };
 
-export default ModalEdicionMovimiento
+export default ModalEdicionMovimiento;

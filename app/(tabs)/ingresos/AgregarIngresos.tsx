@@ -96,7 +96,7 @@ const AgregarIngresos = () => {
 					/>
 
 					{/* Descripción - Componente reutilizable */}
-					<DescripcionField control={control} />
+					<DescripcionField control={control}  />
 				</View>
 			</KeyboardAwareScrollView>
 

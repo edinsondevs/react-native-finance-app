@@ -54,6 +54,14 @@ const ItemMovimientosCards = ({
 					{useFormatoMoneda(amount)}
 				</Text>
 			</View>
+			{/* Columna 3: Monto */}
+			<View>
+				<FontAwesome
+					name='edit'
+					size={24}
+					color={colors.alert}
+				/>
+			</View>
 		</View>
 	);
 };
