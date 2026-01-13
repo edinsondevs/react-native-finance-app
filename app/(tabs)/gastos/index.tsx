@@ -1,20 +1,35 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
+import {
+	ActivityIndicator,
+	FlatList,
+	RefreshControl,
+	Text,
+	View,
+} from "react-native";
 
-import { CardsComponent, CircleButton, HeaderComponent, TitleOpcionInput } from "@/components";
+import {
+	CardsComponent,
+	CircleButton,
+	HeaderComponent,
+	TitleOpcionInput,
+} from "@/components";
 import { useFormatoMoneda } from "@/hooks";
 import { colors } from "@/styles/constants";
 
-import { getAllGastosServices, getResumeGastosServices, getResumeIngresosServices } from "@/api/services/dashboard/get.alls.services";
+import {
+	getAllGastosServices,
+	getResumeGastosServices,
+	getResumeIngresosServices,
+} from "@/api/services/dashboard/get.alls.services";
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useGetHoursCurrent } from "@/hooks/useGetHoursCurrent";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const GastosScreen = () => {
-	const {saludo} = useGetHoursCurrent();	
-	
+	const { saludo } = useGetHoursCurrent();
+
 	const {
 		data: resumeIngresos,
 		isLoading: isLoadingResumeIngresos,
@@ -59,7 +74,9 @@ const GastosScreen = () => {
 						}}
 					/>
 				}
-				keyExtractor={(_item, index) => index.toString()}
+				keyExtractor={(item) =>
+					item.id?.toString() || Math.random().toString()
+				}
 				renderItem={({ item }) => (
 					<MovimientosRecientes
 						item={{
@@ -84,7 +101,10 @@ const GastosScreen = () => {
 				showsVerticalScrollIndicator={false}
 				ListHeaderComponent={
 					<>
-						<HeaderComponent title={`${saludo} ${displayName.split(' ')[0]}`} icon/>
+						<HeaderComponent
+							title={`${saludo} ${displayName.split(" ")[0]}`}
+							icon
+						/>
 
 						{/* Ingresos / Gastos */}
 						<View className='flex flex-row justify-around '>
