@@ -1,8 +1,9 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Constants from "expo-constants";
 import { router, usePathname } from "expo-router";
 import { useState } from "react";
-import { Alert, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { useAuthStore } from "@/store/useAuthStore";
@@ -34,7 +35,6 @@ const TitleEditScreen = ({ title, origen }: { title: string; origen: string }) =
 		</View>
 	);
 };
-
 
 const AjustesScreen = () => {
 	const queryClient = useQueryClient();
@@ -166,7 +166,6 @@ const AjustesScreen = () => {
 			showsVerticalScrollIndicator={true}
 			extraScrollHeight={170}
 			enableOnAndroid={true}>
-			
 			<HeaderComponent title={title} />
 			<ThemedView
 				margin
@@ -238,6 +237,12 @@ const AjustesScreen = () => {
 						text='Cerrar Sesión'
 						color='bg-google-red'
 					/>
+				</View>
+
+				<View className='mt-10 mb-6 items-center'>
+					<Text className='text-text-muted text-xs font-Inter-Regular'>
+						Versión {Constants.expoConfig?.version || "1.0.0"}
+					</Text>
 				</View>
 			</ThemedView>
 
