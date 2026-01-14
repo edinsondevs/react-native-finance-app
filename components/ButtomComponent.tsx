@@ -11,6 +11,7 @@ interface ButtomComponentProps extends PressableProps {
 		| "bg-google-red"
 		| "bg-github-dark"
 		| "bg-button-disabled"
+		| "bg-red-500"
 		| "transparent";
 	width?:
 		| "w-auto"
@@ -49,9 +50,9 @@ const ButtomComponent = ({
 			rounded-${"lg"} 
 			justify-center items-center ${border} ${className} `}
 			onPress={onPressFunction}
-			disabled={disabled}
-			>
-			<Text className={`${textColor} text-center font-Inter-Bold text-lg`}>
+			disabled={disabled}>
+			<Text
+				className={`${textColor} text-center font-Inter-Bold text-lg`}>
 				{text}
 			</Text>
 		</Pressable>

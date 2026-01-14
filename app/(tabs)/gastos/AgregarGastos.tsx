@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { crearGastoServices, getCategoriasServices } from "@/api/services";
 import { Category, GastoData, GastoFormData } from "@/api/services/interfaces";
 import { getMetodosPagoServices } from "@/api/services/shared/get.metodos-pago.services";
-import { ButtomComponent, CustomSelector, TitleOpcionInput } from "@/components";
+import { ButtomComponent, CustomSelector, HeaderComponent, TitleOpcionInput } from "@/components";
 import { DescripcionField, FechaField, MontoField } from "@/components/form-fields";
 import { useFormMutation, useFormValidation } from "@/hooks";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -80,6 +80,7 @@ const AgregarGastosScreen = () => {
 
 	return (
 		<View className='flex-1 bg-background-light px-4'>
+			<HeaderComponent title='Agregar Nuevo Gasto' />
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps='handled'
 				contentContainerStyle={{ paddingTop: 16 }}

@@ -11,10 +11,8 @@ interface IngresoData {
 
 export const postIngresoServices = async (data: IngresoData) => {
 	const mapperData = { ...data, id: Math.floor(Math.random() * 10000) };
-
 	try {
 		const response = await instance.post("/ingresos", mapperData);
-
 		return response.data;
 	} catch (error: unknown) {
 		if (axios.isAxiosError(error)) {

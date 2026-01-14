@@ -1,9 +1,11 @@
 import { getProfilesServices } from "@/api/services";
 import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
+import { HeaderComponent } from "@/components";
 import { useAuthStore } from "@/store/useAuthStore";
 import { colors } from "@/styles/constants";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import "dayjs/locale/es";
 import {
 	ActivityIndicator,
 	RefreshControl,
@@ -12,6 +14,8 @@ import {
 	View,
 } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
+
+dayjs.locale("es");
 
 const EstadisticasScreen = () => {
 	const {
@@ -84,9 +88,9 @@ const EstadisticasScreen = () => {
 	];
 
 	const dataSets = Array.from(userIds).map((userId, index) => {
-		const userData = monthLabels.map((date) => ({
+		const userData = monthLabels.map((date, idx) => ({
 			value: expensesByUser[userId][date] || 0,
-			label: date,
+			label: (idx + 1).toString(),
 		}));
 
 		return {
@@ -112,9 +116,10 @@ const EstadisticasScreen = () => {
 					}}
 				/>
 			}>
-			<Text className='text-2xl font-bold mb-6 mt-4 text-text-black'>
+			{/* <Text className='text-2xl font-bold mb-6 mt-4 text-text-black'>
 				Estadísticas de Gastos
-			</Text>
+			</Text> */}
+			<HeaderComponent title='Estadísticas de Gastos' />
 
 			{isLoading ? (
 				<View className='flex-1 justify-center items-center h-64'>
@@ -168,28 +173,146 @@ const EstadisticasScreen = () => {
 								))}
 							</View>
 
-							<LineChart
-								data={mainData}
-								dataSet={dataSets} // Usamos dataSet para múltiples líneas
-								areaChart
-								curved
-								height={200}
-								width={320}
-								startFillColor={colors.primary}
-								endFillColor='rgba(9, 255, 91, 0.1)'
-								startOpacity={0.4}
-								endOpacity={0.1}
-								thickness={3}
-								hideDataPoints={false}
-								dataPointsRadius={4}
-								textColor1='gray'
-								textFontSize={10}
-								hideRules
-								xAxisColor='lightgray'
-								yAxisColor='lightgray'
-								noOfSections={4}
-								isAnimated
-							/>
+							<ScrollView
+								horizontal
+								showsHorizontalScrollIndicator={false}>
+								<View style={{ paddingBottom: 10 }}>
+									<LineChart
+										data={mainData}
+										dataSet={dataSets}
+										areaChart
+										curved
+										height={220}
+										width={monthLabels.length * 40 + 60} // Ancho dinámico basado en días
+										spacing={40}
+										initialSpacing={20}
+										endSpacing={40}
+										yAxisLabelWidth={55}
+										startFillColor={colors.primary}
+										endFillColor='rgba(9, 255, 91, 0.1)'
+										startOpacity={0.4}
+										endOpacity={0.1}
+										thickness={3}
+										hideDataPoints={false}
+										dataPointsRadius={4}
+										textColor1='gray'
+										textFontSize={10}
+										hideRules
+										xAxisColor='lightgray'
+										yAxisColor='lightgray'
+										noOfSections={4}
+										isAnimated
+										formatYLabel={(value) => {
+											if (Number(value) >= 1000000)
+												return `${(
+													Number(value) / 1000000
+												).toFixed(1)}M`;
+											if (Number(value) >= 1000)
+												return `${(
+													Number(value) / 1000
+												).toFixed(0)}k`;
+											return value;
+										}}
+										xAxisLabelsVerticalShift={10}
+										xAxisLabelsHeight={30}
+										xAxisLabelTextStyle={{
+											color: "gray",
+											fontSize: 12,
+										}}
+										pointerConfig={{
+											pointerStripColor: "lightgray",
+											pointerStripWidth: 2,
+											pointerColor: colors.primary,
+											radius: 6,
+											pointerLabelComponent: (
+												items: any
+											) => {
+												return (
+													<View
+														style={{
+															backgroundColor:
+																"white",
+															padding: 8,
+															borderRadius: 8,
+															minWidth: 120,
+															shadowColor: "#000",
+															shadowOffset: {
+																width: 0,
+																height: 2,
+															},
+															shadowOpacity: 0.25,
+															shadowRadius: 3.84,
+															elevation: 5,
+															borderWidth: 1,
+															borderColor:
+																"#f0f0f0",
+														}}>
+														<Text
+															style={{
+																fontWeight:
+																	"bold",
+																fontSize: 12,
+																marginBottom: 4,
+																textAlign:
+																	"center",
+															}}>
+															Día {items[0].label}
+														</Text>
+														{items.map(
+															(
+																item: any,
+																index: number
+															) => (
+																<View
+																	key={index}
+																	style={{
+																		flexDirection:
+																			"row",
+																		alignItems:
+																			"center",
+																		justifyContent:
+																			"center",
+																		marginTop: 2,
+																	}}>
+																	<Text
+																		style={{
+																			fontSize: 16,
+																			color: chartColors[
+																				index %
+																					chartColors.length
+																			],
+																			marginRight: 6,
+																			lineHeight: 16,
+																		}}>
+																		●
+																	</Text>
+																	<Text
+																		style={{
+																			fontSize: 11,
+																			color: "#333",
+																			fontWeight:
+																				"500",
+																		}}>
+																		$
+																		{item.value.toLocaleString(
+																			"es-AR"
+																		)}
+																	</Text>
+																</View>
+															)
+														)}
+													</View>
+												);
+											},
+										}}
+									/>
+								</View>
+							</ScrollView>
+							<View className='mt-4 mb-2'>
+								<Text className='text-center text-[11px] text-gray-500 font-bold capitalize italic'>
+									Días del mes de {dayjs().format("MMMM")}
+								</Text>
+							</View>
 						</View>
 					)}
 

@@ -1,10 +1,19 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import "dayjs/locale/es"; // Importar el idioma español
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { initialWindowMetrics, SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import {
+	initialWindowMetrics,
+	SafeAreaProvider,
+	SafeAreaView,
+} from "react-native-safe-area-context";
 import "../global.css";
+
+// Configurar dayjs a español globalmente
+dayjs.locale("es");
 
 // Mantiene la pantalla de presentación visible hasta que las fuentes estén cargadas.
 SplashScreen.preventAutoHideAsync();

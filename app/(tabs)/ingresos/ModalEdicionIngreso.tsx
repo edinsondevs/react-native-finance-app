@@ -15,7 +15,7 @@ interface Props {
 	handleDelete: () => void;
 }
 
-const ModalEdicionMovimiento = ({
+const ModalEdicionIngreso = ({
 	modalVisible,
 	setModalVisible,
 	newMonto,
@@ -38,7 +38,7 @@ const ModalEdicionMovimiento = ({
 			<View className='flex-1 justify-center items-center bg-black/50'>
 				<View className='bg-white w-[90%] p-6 rounded-lg gap-4'>
 					<Text className='text-xl font-bold text-center mb-4'>
-						Editar Movimiento
+						Editar Ingreso
 					</Text>
 
 					<Text className='font-bold'>Monto</Text>
@@ -102,4 +102,4 @@ const ModalEdicionMovimiento = ({
 	);
 };
 
-export default ModalEdicionMovimiento;
+export default ModalEdicionIngreso;

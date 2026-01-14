@@ -8,6 +8,7 @@ interface InputComponentProps extends TextInputProps {
 	setValue: (value: string) => void;
 	className?: string;
 	iconDollar?: boolean;
+	showCounter?: boolean;
 }
 
 const InputComponent = ({
@@ -16,6 +17,8 @@ const InputComponent = ({
 	className,
 	iconDollar = false,
 	secureTextEntry = false,
+	showCounter = true,
+	maxLength,
 	...props
 }: InputComponentProps) => {
 	const [isSecure, setIsSecure] = useState(secureTextEntry);
@@ -36,6 +39,7 @@ const InputComponent = ({
 				}
 				keyboardType={iconDollar ? "decimal-pad" : props.keyboardType}
 				secureTextEntry={isSecure}
+				maxLength={maxLength}
 				{...props}
 			/>
 			{iconDollar && (
@@ -61,6 +65,17 @@ const InputComponent = ({
 						)}
 					</Text>
 				</Pressable>
+			)}
+
+			{showCounter && maxLength && (
+				<Text
+					className={`absolute right-2 bottom-1 text-[10px] ${
+						(value || "").length >= maxLength
+							? "text-red-500"
+							: "text-text-muted"
+					} opacity-70`}>
+					{(value || "").length}/{maxLength}
+				</Text>
 			)}
 		</View>
 	);
