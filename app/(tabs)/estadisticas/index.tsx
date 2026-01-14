@@ -228,8 +228,34 @@ const EstadisticasScreen = () => {
 												items: any
 											) => {
 												return (
-													<View className='bg-white p-2 rounded-lg shadow-md border border-gray-100'>
-														<Text className='font-bold text-xs'>
+													<View
+														style={{
+															backgroundColor:
+																"white",
+															padding: 8,
+															borderRadius: 8,
+															minWidth: 120,
+															shadowColor: "#000",
+															shadowOffset: {
+																width: 0,
+																height: 2,
+															},
+															shadowOpacity: 0.25,
+															shadowRadius: 3.84,
+															elevation: 5,
+															borderWidth: 1,
+															borderColor:
+																"#f0f0f0",
+														}}>
+														<Text
+															style={{
+																fontWeight:
+																	"bold",
+																fontSize: 12,
+																marginBottom: 4,
+																textAlign:
+																	"center",
+															}}>
 															Día {items[0].label}
 														</Text>
 														{items.map(
@@ -237,17 +263,42 @@ const EstadisticasScreen = () => {
 																item: any,
 																index: number
 															) => (
-																<Text
+																<View
 																	key={index}
-																	className='text-xs'
 																	style={{
-																		color: item.color,
+																		flexDirection:
+																			"row",
+																		alignItems:
+																			"center",
+																		justifyContent:
+																			"center",
+																		marginTop: 2,
 																	}}>
-																	$
-																	{item.value.toLocaleString(
-																		"es-AR"
-																	)}
-																</Text>
+																	<Text
+																		style={{
+																			fontSize: 16,
+																			color: chartColors[
+																				index %
+																					chartColors.length
+																			],
+																			marginRight: 6,
+																			lineHeight: 16,
+																		}}>
+																		●
+																	</Text>
+																	<Text
+																		style={{
+																			fontSize: 11,
+																			color: "#333",
+																			fontWeight:
+																				"500",
+																		}}>
+																		$
+																		{item.value.toLocaleString(
+																			"es-AR"
+																		)}
+																	</Text>
+																</View>
 															)
 														)}
 													</View>
