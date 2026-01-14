@@ -2,33 +2,17 @@ import dayjs from "dayjs";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useFormMutation, useFormValidation } from "@/hooks";
 
 import { postIngresoServices } from "@/api/services/ingreso/post.ingreso.services";
-import {
-	ButtomComponent,
-	HeaderComponent,
-	InputComponent,
-	TitleOpcionInput,
-} from "@/components";
-import {
-	DescripcionField,
-	FechaField,
-	MontoField,
-} from "@/components/form-fields";
-import { useFormMutation, useFormValidation } from "@/hooks";
+import { ButtomComponent, HeaderComponent, InputComponent, TitleOpcionInput } from "@/components";
+import { DescripcionField, FechaField, MontoField } from "@/components/form-fields";
+
 import { IngresoForm } from "@/interfaces";
 
-import { useAuthStore } from "@/store/useAuthStore";
-// ... imports
-
 const AgregarIngresos = () => {
-	const { user } = useAuthStore();
-	const { control, handleSubmit, reset, watch, setValue } =
-		useForm<IngresoForm>({
-			defaultValues: {
-				fecha: new Date(),
-			},
-		});
+
+	const { control, handleSubmit, reset, watch, setValue } = useForm<IngresoForm>({ defaultValues: { fecha: new Date() } });
 
 	// Usar el custom hook para la mutación
 	const { mutate: crearIngreso, isPending } = useFormMutation<IngresoForm>({

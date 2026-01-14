@@ -1,13 +1,12 @@
-import { deleteGastoServices } from "@/api/services/gastos/delete.gasto.services";
-import { updateGastoServices } from "@/api/services/gastos/update.gasto.services";
-import { useFormatoMoneda } from "@/hooks";
-import { useAuthStore } from "@/store/useAuthStore";
-import { FontAwesome } from "@expo/vector-icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { useEffect, useState } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+
+import { useAuthStore } from "@/store/useAuthStore";
+import { FnGastos } from "@/helpers/functions/gastos";
+import { useFormatoMoneda, useGastosMutations } from "@/hooks";
 import ModalEdicionMovimiento from "./ModalEdicionMovimiento";
 
 dayjs.locale("es");
@@ -40,27 +39,12 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [newMonto, setNewMonto] = useState(monto.toString());
 	const [newDescripcion, setNewDescripcion] = useState(descripcion);
-
-	const queryClient = useQueryClient();
 	const { user } = useAuthStore();
 
-	const mutation = useMutation({
-		mutationFn: (data: {
-			monto: number;
-			descripcion: string;
-			user_id?: string;
-		}) => updateGastoServices(id!, data),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["gastos", "all"] });
-			queryClient.invalidateQueries({ queryKey: ["resumeGastos"] });
-			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
-			setModalVisible(false);
-			Alert.alert("Éxito", "El movimiento ha sido actualizado.");
-		},
-		onError: (error) => {
-			Alert.alert("Error", "No se pudo actualizar el movimiento.");
-			console.error(error);
-		},
+	// Usar el custom hook para las mutaciones
+	const { updateMutation, deleteMutation } = useGastosMutations({
+		id,
+		onSuccessCallback: () => setModalVisible(false),
 	});
 
 	// Actualizar el estado local cuando cambian los props (tras el refetch de React Query)
@@ -68,50 +52,6 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 		setNewMonto(monto.toString());
 		setNewDescripcion(descripcion);
 	}, [monto, descripcion]);
-
-	const deleteMutation = useMutation({
-		mutationFn: () => deleteGastoServices(id!),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["gastos", "all"] });
-			queryClient.invalidateQueries({ queryKey: ["resumeGastos"] });
-			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
-			setModalVisible(false);
-			Alert.alert("Éxito", "El movimiento ha sido eliminado.");
-		},
-		onError: (error) => {
-			Alert.alert("Error", "No se pudo eliminar el movimiento.");
-			console.error(error);
-		},
-	});
-
-	const handleUpdate = () => {
-		if (!id) return;
-		mutation.mutate({
-			monto: parseFloat(newMonto),
-			descripcion: newDescripcion,
-			user_id: user?.id,
-		});
-	};
-
-	const handleDelete = () => {
-		if (!id) return;
-
-		Alert.alert(
-			"Confirmar Eliminación",
-			"¿Estás seguro de que deseas eliminar este movimiento? Esta acción no se puede deshacer.",
-			[
-				{
-					text: "Cancelar",
-					style: "cancel",
-				},
-				{
-					text: "Eliminar",
-					style: "destructive",
-					onPress: () => deleteMutation.mutate(),
-				},
-			]
-		);
-	};
 
 	return (
 		<View>
@@ -163,10 +103,10 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 				setNewMonto={setNewMonto}
 				newDescripcion={newDescripcion}
 				setNewDescripcion={setNewDescripcion}
-				mutation={mutation}
+				mutation={updateMutation}
 				deleteMutation={deleteMutation}
-				handleUpdate={handleUpdate}
-				handleDelete={handleDelete}
+				handleUpdate={() => FnGastos.handleUpdate( { id, updateMutation, user_id: user?.id }, newMonto, newDescripcion ) }
+				handleDelete={() => FnGastos.handleDelete({ id, deleteMutation }) }
 			/>
 		</View>
 	);
