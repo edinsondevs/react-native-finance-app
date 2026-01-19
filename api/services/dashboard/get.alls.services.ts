@@ -70,7 +70,7 @@ export const getAllGastosServices = async (): Promise<GastoData[]> => {
 
 	try {
 		const response = await instance.get<GastoData[]>(
-			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=id.desc`
+			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=fecha.desc`
 		);
 		const data = response.data;
 		return data;
