@@ -1,10 +1,8 @@
-import { instance } from "@/api/apiService";
 import dayjs from "dayjs";
-import { GastoData } from "../interfaces";
+import { instance } from "@/api/apiService";
+import { GastoData, MontoItem } from "../interfaces";
 
-interface MontoItem {
-	monto: number;
-}
+
 
 export const getResumeIngresosServices = async (): Promise<number> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
