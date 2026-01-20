@@ -1,25 +1,8 @@
+import { InterfaceDeleteProps, InterfaceUpdateProps } from "@/interfaces";
 import { Alert } from "react-native";
 
-interface DeleteProps {
-	id: number | undefined;
-	deleteMutation: {
-		mutate: () => void;
-	};
-}
 
-interface UpdateProps {
-	id: number | undefined;
-	updateMutation: {
-		mutate: (data: {
-			monto: number;
-			descripcion: string;
-			user_id?: string;
-		}) => void;
-	};
-	user_id?: string;
-}
-
-const handleDelete = ({ id, deleteMutation }: DeleteProps) => {
+const handleDelete = ({ id, deleteMutation }: InterfaceDeleteProps) => {
 	if (!id) return;
 
 	Alert.alert(
@@ -37,7 +20,7 @@ const handleDelete = ({ id, deleteMutation }: DeleteProps) => {
 };
 
 const handleUpdate = (
-	{ id, updateMutation, user_id }: UpdateProps,
+	{ id, updateMutation, user_id }: InterfaceUpdateProps,
 	newMonto: string,
 	newDescripcion: string
 ) => {

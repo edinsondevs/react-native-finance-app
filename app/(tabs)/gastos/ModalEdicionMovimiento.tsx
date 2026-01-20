@@ -1,19 +1,7 @@
 import { ButtomComponent, InputComponent } from "@/components";
+import { InterfaceModalEdicionProps } from "@/interfaces";
 import React from "react";
 import { Modal, Text, View } from "react-native";
-
-interface Props {
-	modalVisible: boolean;
-	setModalVisible: (visible: boolean) => void;
-	newMonto: string;
-	setNewMonto: (monto: string) => void;
-	newDescripcion: string;
-	setNewDescripcion: (descripcion: string) => void;
-	mutation: any;
-	deleteMutation: any;
-	handleUpdate: () => void;
-	handleDelete: () => void;
-}
 
 const ModalEdicionMovimiento = ({
 	modalVisible,
@@ -26,7 +14,7 @@ const ModalEdicionMovimiento = ({
 	deleteMutation,
 	handleUpdate,
 	handleDelete,
-}: Props) => {
+}: InterfaceModalEdicionProps) => {
 	const isAnyPending = mutation.isPending || deleteMutation.isPending;
 
 	return (

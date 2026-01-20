@@ -1,14 +1,8 @@
+import { InterfaceUseFormMutationProps } from "@/interfaces";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 
-interface UseFormMutationProps<TData> {
-	mutationFn: (data: TData) => Promise<any>;
-	queryKeys: string[][];
-	successMessage: string;
-	errorMessage?: string;
-	onSuccessCallback?: () => void;
-}
 
 /**
  * Custom hook para manejar mutaciones de formularios con lógica común
@@ -23,7 +17,7 @@ export const useFormMutation = <TData>({
 	successMessage,
 	errorMessage = "No se pudo guardar",
 	onSuccessCallback,
-}: UseFormMutationProps<TData>) => {
+}: InterfaceUseFormMutationProps<TData>) => {
 	const queryClient = useQueryClient();
 	const router = useRouter();
 

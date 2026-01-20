@@ -1,14 +1,7 @@
 import { DateTimePickerComponent, ModalComponent } from "@/components";
+import { InterfaceDatePickerModalProps } from "@/interfaces";
 import { DateType } from "react-native-ui-datepicker";
 
-interface DatePickerModalProps {
-	visible: boolean;
-	value: Date;
-	onClose: () => void;
-	onSelect: (date: Date) => void;
-	maximumDate?: Date;
-	minimumDate?: Date;
-}
 
 /**
  * Componente reutilizable para el modal de selección de fecha
@@ -21,7 +14,7 @@ export const DatePickerModal = ({
 	onSelect,
 	maximumDate = new Date(),
 	minimumDate = new Date(2020, 0, 1),
-}: DatePickerModalProps) => {
+}: InterfaceDatePickerModalProps) => {
 	const handleSelect = (selectedDate: DateType) => {
 		const dateToSave =
 			selectedDate instanceof Date ? selectedDate : new Date();

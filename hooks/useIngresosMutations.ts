@@ -1,18 +1,14 @@
 import { deleteIngresoServices } from "@/api/services/ingreso/delete.ingreso.services";
 import { IngresoInterfaces } from "@/api/services/ingreso/get.ingresos.services";
 import { updateIngresoServices } from "@/api/services/ingreso/update.ingreso.services";
+import { InterfaceUseMutationsProps } from "@/interfaces";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
-
-interface UseIngresosMutationsProps {
-	id: number | undefined;
-	onSuccessCallback?: () => void;
-}
 
 export const useIngresosMutations = ({
 	id,
 	onSuccessCallback,
-}: UseIngresosMutationsProps) => {
+}: InterfaceUseMutationsProps) => {
 	const queryClient = useQueryClient();
 
 	const updateMutation = useMutation({

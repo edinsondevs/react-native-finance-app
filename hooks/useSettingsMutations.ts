@@ -3,21 +3,13 @@ import { Alert } from "react-native";
 import { postAppSettingsServices } from "@/api/services/settingsApp/post.app.settings.services";
 import { useCapitalize } from "@/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-interface SettingsForm {
-	categoria: string;
-	categoriaIcon: string;
-	fuenteIngreso: string;
-	fuenteIngresoIcon: string;
-	metodoPago: string;
-	metodoPagoIcon: string;
-}
+import { InterfaceSettingsForm } from "@/interfaces";
 
 export const useSettingsMutations = () => {
 	const queryClient = useQueryClient();
 	const { capitalizeWords } = useCapitalize();
 
-	const [form, setForm] = useState<SettingsForm>({
+	const [form, setForm] = useState<InterfaceSettingsForm>({
 		categoria: "",
 		categoriaIcon: "",
 		fuenteIngreso: "",
@@ -28,10 +20,10 @@ export const useSettingsMutations = () => {
 
 	const [showIconPicker, setShowIconPicker] = useState(false);
 	const [activeIconField, setActiveIconField] = useState<
-		keyof SettingsForm | null
+		keyof InterfaceSettingsForm | null
 	>(null);
 
-	const handleChange = (name: keyof SettingsForm, text: string) => {
+	const handleChange = (name: keyof InterfaceSettingsForm, text: string) => {
 		setForm((prev) => ({
 			...prev,
 			[name]: name.endsWith("Icon")
@@ -40,7 +32,7 @@ export const useSettingsMutations = () => {
 		}));
 	};
 
-	const openIconPicker = (field: keyof SettingsForm) => {
+	const openIconPicker = (field: keyof InterfaceSettingsForm) => {
 		setActiveIconField(field);
 		setShowIconPicker(true);
 	};
@@ -68,13 +60,13 @@ export const useSettingsMutations = () => {
 			}
 
 			// Limpia el campo correspondiente y su icono
-			const fieldMap: Record<string, keyof SettingsForm> = {
+			const fieldMap: Record<string, keyof InterfaceSettingsForm> = {
 				categorias: "categoria",
 				origen_ingreso: "fuenteIngreso",
 				metodos_pago: "metodoPago",
 			};
 
-			const iconFieldMap: Record<string, keyof SettingsForm> = {
+			const iconFieldMap: Record<string, keyof InterfaceSettingsForm> = {
 				categorias: "categoriaIcon",
 				origen_ingreso: "fuenteIngresoIcon",
 				metodos_pago: "metodoPagoIcon",
@@ -103,7 +95,7 @@ export const useSettingsMutations = () => {
 	) => {
 		if (!data.trim()) return;
 
-		const iconFieldMap: Record<string, keyof SettingsForm> = {
+		const iconFieldMap: Record<string, keyof InterfaceSettingsForm> = {
 			categorias: "categoriaIcon",
 			origen: "fuenteIngresoIcon",
 			metodos_pago: "metodoPagoIcon",

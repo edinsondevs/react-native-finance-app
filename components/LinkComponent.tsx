@@ -1,15 +1,18 @@
 import { Text, Pressable } from "react-native";
-import React from "react";
+import { InterfaceLinkComponentProps } from "@/interfaces";
 
-interface LinkComponentProps {
-    // Define aquí las props que necesites
-    text: string;
-    onPress: () => void;
-}
+/*
+ * @component LinkComponent
+ * Componente que permite crear un link.
+ * @param {string} text - Texto que se muestra en el link.
+ * @param {function} onPress - Función que se ejecuta al presionar el link.
+ */
 
-const LinkComponent = ({text, onPress} : LinkComponentProps) => {
+const LinkComponent = ({ text, onPress }: InterfaceLinkComponentProps) => {
 	return (
-		<Pressable className='' onPress={onPress}>
+		<Pressable
+			className=''
+			onPress={onPress}>
 			<Text className='text-primary underline text-right font-Inter-Medium'>
 				{text}
 			</Text>

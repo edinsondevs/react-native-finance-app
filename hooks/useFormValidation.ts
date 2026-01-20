@@ -1,30 +1,19 @@
-import { FieldValues, Path, UseFormWatch } from "react-hook-form";
+import { InterfaceUseFormValidationProps } from "@/interfaces";
+import { FieldValues } from "react-hook-form";
 
-interface UseFormValidationProps<
-	TFieldValues extends FieldValues = FieldValues
-> {
-	requiredFields: Path<TFieldValues>[];
-	watch: UseFormWatch<TFieldValues>;
-	isPending: boolean;
-	saveButtonText?: string;
-	savingButtonText?: string;
-}
-
-/**
+/*
  * Custom hook para validar formularios y manejar el estado del botón de guardar
  * - Valida que todos los campos requeridos tengan valor
  * - Calcula si el botón debe estar deshabilitado
  * - Proporciona el color y texto del botón dinámicamente
  */
-export const useFormValidation = <
-	TFieldValues extends FieldValues = FieldValues
->({
+export const useFormValidation = <TFieldValues extends FieldValues = FieldValues>({
 	requiredFields,
 	watch,
 	isPending,
 	saveButtonText = "Guardar",
 	savingButtonText = "Guardando...",
-}: UseFormValidationProps<TFieldValues>) => {
+}: InterfaceUseFormValidationProps<TFieldValues>) => {
 	// Observar todos los campos requeridos
 	const fieldValues = requiredFields.map((field) => watch(field));
 

@@ -8,33 +8,20 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { FnGastos } from "@/helpers/functions/gastos";
 import { useFormatoMoneda, useGastosMutations } from "@/hooks";
 import ModalEdicionMovimiento from "./ModalEdicionMovimiento";
+import { InterfaceMovimientosRecientesProps } from "@/interfaces";
 
 dayjs.locale("es");
 
-/**
- * Propiedades para el componente MovimientosRecientes.
- * Contiene la información de un movimiento individual para ser visualizado.
- */
-interface MovimientosRecientesProps {
-	item: {
-		id?: number;
-		categoria?: string;
-		descripcion: string;
-		monto: number;
-		icon: any;
-		iconName?: string;
-		fecha?: string;
-	};
-}
+
 /**
  * Componente que muestra una lista de movimientos recientes.
  * Actúa como un contenedor temático para el componente ItemMovimientosCards,
  * asegurando que la presentación se adhiera al tema de la aplicación.
  *
- * @param {MovimientosRecientesProps} props - Propiedades que incluyen los datos del movimiento
+ * @param {InterfaceMovimientosRecientesProps} props - Propiedades que incluyen los datos del movimiento
  * @returns {JSX.Element} Vista del movimiento reciente envolviendo la tarjeta de detalles
  */
-const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
+const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 	const { id, monto, descripcion, icon } = item;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [newMonto, setNewMonto] = useState(monto.toString());
@@ -105,8 +92,16 @@ const MovimientosRecientes = ({ item }: MovimientosRecientesProps) => {
 				setNewDescripcion={setNewDescripcion}
 				mutation={updateMutation}
 				deleteMutation={deleteMutation}
-				handleUpdate={() => FnGastos.handleUpdate( { id, updateMutation, user_id: user?.id }, newMonto, newDescripcion ) }
-				handleDelete={() => FnGastos.handleDelete({ id, deleteMutation }) }
+				handleUpdate={() =>
+					FnGastos.handleUpdate(
+						{ id, updateMutation, user_id: user?.id },
+						newMonto,
+						newDescripcion
+					)
+				}
+				handleDelete={() =>
+					FnGastos.handleDelete({ id, deleteMutation })
+				}
 			/>
 		</View>
 	);

@@ -1,11 +1,7 @@
 import React from 'react'
 import { PieChart } from 'react-native-gifted-charts';
 
-interface CharstComponentProps {
-    data: any
-}
-
-const CharstComponent = ({data}: CharstComponentProps ) => {
+const CharstComponent = ({data}: any ) => {
   return (
 		<PieChart
 			data={data}

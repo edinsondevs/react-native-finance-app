@@ -1,17 +1,13 @@
 import { deleteGastoServices } from "@/api/services/gastos/delete.gasto.services";
 import { updateGastoServices } from "@/api/services/gastos/update.gasto.services";
+import { InterfaceUseMutationsProps } from "@/interfaces";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
-
-interface UseGastosMutationsProps {
-	id: number | undefined;
-	onSuccessCallback?: () => void;
-}
 
 export const useGastosMutations = ({
 	id,
 	onSuccessCallback,
-}: UseGastosMutationsProps) => {
+}: InterfaceUseMutationsProps) => {
 	const queryClient = useQueryClient();
 
 	const updateMutation = useMutation({

@@ -1,21 +1,17 @@
 import { useState } from "react";
-import {
-	FlatList,
-	TextInput,
-	TouchableOpacity,
-	View,
-	Text,
-	StyleSheet,
-} from "react-native";
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import FontAwesomeGlyphs from "@expo/vector-icons/build/vendor/react-native-vector-icons/glyphmaps/FontAwesome.json";
+import { InterfaceIconPickerProps } from "@/interfaces";
 
-interface IconPickerProps {
-	onSelectIcon: (iconName: string) => void;
-	selectedIcon?: string;
-}
+/*
+ * @component IconPicker
+ * Componente que permite seleccionar un icono.
+ * @param {function} onSelectIcon - Función que se ejecuta al seleccionar un icono.
+ * @param {string} selectedIcon - Icono seleccionado.
+ */
 
-const IconPicker = ({ onSelectIcon, selectedIcon }: IconPickerProps) => {
+const IconPicker = ({ onSelectIcon, selectedIcon }: InterfaceIconPickerProps) => {
 	const [search, setSearch] = useState("");
 	const availableIcons = Object.keys(FontAwesomeGlyphs);
 

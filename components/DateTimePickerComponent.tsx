@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import DateTimePicker, {
-	DateType,
-	useDefaultClassNames,
-} from "react-native-ui-datepicker";
+import DateTimePicker, { DateType, useDefaultClassNames } from "react-native-ui-datepicker";
 
-interface DateTimePickerComponentProps {
-	onRequestClose: (date: DateType) => void;
-	cancelRequestClose: () => void;
-	value?: DateType;
-	maximumDate?: Date;
-	minimumDate?: Date;
-}
+import { InterfaceDateTimePickerComponentProps } from "@/interfaces";
+
+/*
+ * @component DateTimePickerComponent
+ * Componente que permite seleccionar una fecha.
+ * @param {function} onRequestClose - Función que se ejecuta al cerrar el date picker.
+ * @param {function} cancelRequestClose - Función que se ejecuta al cancelar el date picker.
+ * @param {DateType} value - Fecha seleccionada.
+ * @param {Date} maximumDate - Fecha máxima permitida.
+ * @param {Date} minimumDate - Fecha mínima permitida.
+ */
 
 const DateTimePickerComponent = ({
 	onRequestClose,
@@ -19,7 +20,7 @@ const DateTimePickerComponent = ({
 	value,
 	maximumDate = new Date(),
 	minimumDate = new Date(2020, 0, 1),
-}: DateTimePickerComponentProps) => {
+}: InterfaceDateTimePickerComponentProps) => {
 	const [selected, setSelected] = useState<DateType>(value || new Date());
 	const defaultClassNames = useDefaultClassNames();
 

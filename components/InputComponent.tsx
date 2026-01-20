@@ -1,15 +1,21 @@
 import { useState } from "react";
-import { Pressable, Text, TextInput, TextInputProps, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 import { formatCurrency, handleChangeText } from "@/helpers";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-interface InputComponentProps extends TextInputProps {
-	value: string;
-	setValue: (value: string) => void;
-	className?: string;
-	iconDollar?: boolean;
-	showCounter?: boolean;
-}
+import { InterfaceInputComponentProps } from "@/interfaces";
+
+/*
+ * @component InputComponent
+ * Componente que permite ingresar texto.
+ * @param {function} setValue - Función que se ejecuta al cambiar el valor.
+ * @param {string} value - Valor del input.
+ * @param {string} className - Clase CSS del input.
+ * @param {boolean} iconDollar - Indica si el input tiene un icono de dólar.
+ * @param {boolean} secureTextEntry - Indica si el input es seguro.
+ * @param {boolean} showCounter - Indica si el input muestra un contador.
+ * @param {number} maxLength - Longitud máxima del input.
+ */
 
 const InputComponent = ({
 	value,
@@ -20,7 +26,7 @@ const InputComponent = ({
 	showCounter = true,
 	maxLength,
 	...props
-}: InputComponentProps) => {
+}: InterfaceInputComponentProps) => {
 	const [isSecure, setIsSecure] = useState(secureTextEntry);
 	const pl = iconDollar ? "pl-8" : "pl-4";
 
