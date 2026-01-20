@@ -1,12 +1,15 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { Text, TouchableOpacity } from "react-native";
+import { InterfaceIconTriggerProps } from "@/interfaces";
 
-interface IconTriggerProps {
-	icon: string;
-	onPress: () => void;
-}
+/*
+ * @component IconTrigger
+ * Componente que permite seleccionar un icono.
+ * @param {function} onPressFunction - Función que se ejecuta al cerrar el date picker.
+ * @param {string} text - Texto que se muestra en el chip.
+ */
 
-const IconTrigger = ({ icon, onPress }: IconTriggerProps) => {
+const IconTrigger = ({ icon, onPress }: InterfaceIconTriggerProps) => {
 	return (
 		<TouchableOpacity
 			onPress={onPress}

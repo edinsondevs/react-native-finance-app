@@ -1,10 +1,14 @@
-import React from "react";
-import { Modal, ModalProps, View } from "react-native";
+import { Modal, View } from "react-native";
+import { InterfaceModalComponentProps } from "@/interfaces";
 
-interface Props extends ModalProps {
-	children: React.ReactNode;
-}
-const ModalComponent = ({ children, ...props }: Props) => {
+/*
+ * @component ModalComponent
+ * Componente que permite crear un modal.
+ * @param {React.ReactNode} children - Contenido del modal.
+ * @param {ModalProps} props - Propiedades del modal.
+ */
+
+const ModalComponent = ({ children, ...props }: InterfaceModalComponentProps) => {
 	return (
 		<Modal
 			animationType='slide'

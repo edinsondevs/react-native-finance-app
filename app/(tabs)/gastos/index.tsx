@@ -1,61 +1,18 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useQuery } from "@tanstack/react-query";
+import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
 import { router } from "expo-router";
-import {
-	ActivityIndicator,
-	FlatList,
-	RefreshControl,
-	Text,
-	View,
-} from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-import {
-	CardsComponent,
-	CircleButton,
-	HeaderComponent,
-	TitleOpcionInput,
-} from "@/components";
-import { useFormatoMoneda } from "@/hooks";
-import { colors } from "@/styles/constants";
-
-import {
-	getAllGastosServices,
-	getResumeGastosServices,
-	getResumeIngresosServices,
-} from "@/api/services/dashboard/get.alls.services";
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
+import { CardsComponent, CircleButton, HeaderComponent, TitleOpcionInput } from "@/components";
+import { useDashboardData, useFormatoMoneda } from "@/hooks";
 import { useGetHoursCurrent } from "@/hooks/useGetHoursCurrent";
 import { useAuthStore } from "@/store/useAuthStore";
+import { colors } from "@/styles/constants";
 
 const GastosScreen = () => {
 	const { saludo } = useGetHoursCurrent();
 
-	const {
-		data: resumeIngresos,
-		isLoading: isLoadingResumeIngresos,
-		refetch: refetchResumeIngresos,
-	} = useQuery({
-		queryKey: ["resumeIngresos"],
-		queryFn: getResumeIngresosServices,
-	});
-
-	const {
-		data: resumeGastos,
-		isLoading: isLoadingResumeGastos,
-		refetch: refetchResumeGastos,
-	} = useQuery({
-		queryKey: ["resumeGastos"],
-		queryFn: getResumeGastosServices,
-	});
-
-	const {
-		data: allGastos,
-		isLoading: isLoadingAllGastos,
-		refetch,
-	} = useQuery({
-		queryKey: ["gastos", "all"],
-		queryFn: getAllGastosServices,
-	});
+	const { resumeIngresos, isLoadingResumeIngresos, resumeGastos, isLoadingResumeGastos, allGastos, isLoadingAllGastos, refreshAll, } = useDashboardData();
 
 	const { user } = useAuthStore();
 	const displayName = user?.displayName || "Usuario";
@@ -67,11 +24,7 @@ const GastosScreen = () => {
 				refreshControl={
 					<RefreshControl
 						refreshing={isLoadingAllGastos}
-						onRefresh={() => {
-							refetch();
-							refetchResumeGastos();
-							refetchResumeIngresos();
-						}}
+						onRefresh={refreshAll}
 					/>
 				}
 				keyExtractor={(item) =>

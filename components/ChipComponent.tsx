@@ -1,15 +1,16 @@
-import React from "react";
 import { Pressable, Text, useWindowDimensions, View } from "react-native";
 
-interface ChipComponentProps {
-	// Define las props que necesites para el ChipComponent
-	onPressFunction: () => void;
-	text: string;
-}
+import { ChipComponentProps } from "@/interfaces";
 
 // Umbral de ancho para considerar la pantalla como "grande" (equivale a 'md:')
 const DESKTOP_WIDTH_THRESHOLD = 768;
 
+/*
+ * @component ChipComponent
+ * Componente que permite seleccionar una fecha.
+ * @param {function} onPressFunction - Función que se ejecuta al cerrar el date picker.
+ * @param {string} text - Texto que se muestra en el chip.
+ */
 const ChipComponent = ({ onPressFunction, text }: ChipComponentProps) => {
 	// Obtener el ancho actual de la ventana
 	const { width } = useWindowDimensions();

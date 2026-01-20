@@ -1,10 +1,9 @@
 import {instance} from "@/api/apiService";
+import { DataSettingsInterface } from "../interfaces";
 
-interface DataSettingsInterface {
-    origen: "categorias" | "metodos_pago";
-}
 
-export const getSettingsServices = async ({origen}: DataSettingsInterface) => {
+
+export const getSettingsServices = async ({origen}: Omit<DataSettingsInterface,'data' | 'icon'>) => {
     try {
         const response = await instance.get(`/${origen}`);
         return response.data;

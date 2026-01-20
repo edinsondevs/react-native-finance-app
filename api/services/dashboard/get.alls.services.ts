@@ -1,10 +1,8 @@
-import { instance } from "@/api/apiService";
 import dayjs from "dayjs";
-import { GastoData } from "../interfaces";
+import { instance } from "@/api/apiService";
+import { GastoData, MontoItem } from "../interfaces";
 
-interface MontoItem {
-	monto: number;
-}
+
 
 export const getResumeIngresosServices = async (): Promise<number> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
@@ -70,7 +68,7 @@ export const getAllGastosServices = async (): Promise<GastoData[]> => {
 
 	try {
 		const response = await instance.get<GastoData[]>(
-			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=id.desc`
+			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=fecha.desc`
 		);
 		const data = response.data;
 		return data;

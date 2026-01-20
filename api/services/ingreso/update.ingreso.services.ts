@@ -1,5 +1,5 @@
 import { instance } from "@/api/apiService";
-import { IngresoInterfaces } from "./get.ingresos.services";
+import { IngresoInterfaces } from "../interfaces";
 
 export const updateIngresoServices = async (
 	id: number,

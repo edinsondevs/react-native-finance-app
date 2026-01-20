@@ -1,95 +1,26 @@
-import { deleteIngresoServices } from "@/api/services/ingreso/delete.ingreso.services";
-import {
-	getIngresosServices,
-	IngresoInterfaces,
-} from "@/api/services/ingreso/get.ingresos.services";
-import { updateIngresoServices } from "@/api/services/ingreso/update.ingreso.services";
-import { CircleButton, HeaderComponent } from "@/components";
-import { useFormatoMoneda } from "@/hooks";
-import { FontAwesome } from "@expo/vector-icons";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { router } from "expo-router";
 import { useState } from "react";
-import {
-	ActivityIndicator,
-	Alert,
-	FlatList,
-	Pressable,
-	RefreshControl,
-	Text,
-	View,
-} from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import { useQuery,  } from "@tanstack/react-query";
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
+
+import { getIngresosServices, IngresoInterfaces } from "@/api/services/ingreso/get.ingresos.services";
+import { CircleButton, HeaderComponent } from "@/components";
+import { FnIngresos } from "@/helpers/functions/ingresos";
+import { useFormatoMoneda, useIngresosMutations } from "@/hooks";
 import ModalEdicionIngreso from "./ModalEdicionIngreso";
 
 dayjs.locale("es");
 
-const Item = ({
-	id,
-	monto = 0,
-	fecha,
-	origen,
-	descripcion = "",
-}: Partial<IngresoInterfaces>) => {
+const Item = ({ id, monto = 0, fecha, origen, descripcion = "" }: Partial<IngresoInterfaces>) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [newMonto, setNewMonto] = useState(monto.toString());
 	const [newDescripcion, setNewDescripcion] = useState(descripcion);
-	const queryClient = useQueryClient();
 
-	const updateMutation = useMutation({
-		mutationFn: (data: Partial<IngresoInterfaces>) =>
-			updateIngresoServices(id!, data),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["ingresos"] });
-			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
-			setModalVisible(false);
-			Alert.alert("Éxito", "El ingreso ha sido actualizado.");
-		},
-		onError: (error) => {
-			Alert.alert("Error", "No se pudo actualizar el ingreso.");
-			console.error(error);
-		},
-	});
-
-	const deleteMutation = useMutation({
-		mutationFn: () => deleteIngresoServices(id!),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["ingresos"] });
-			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
-			setModalVisible(false);
-			Alert.alert("Éxito", "El ingreso ha sido eliminado.");
-		},
-		onError: (error) => {
-			Alert.alert("Error", "No se pudo eliminar el ingreso.");
-			console.error(error);
-		},
-	});
-
-	const handleUpdate = () => {
-		if (!id) return;
-		updateMutation.mutate({
-			monto: parseFloat(newMonto),
-			descripcion: newDescripcion,
-		});
-	};
-
-	const handleDelete = () => {
-		if (!id) return;
-
-		Alert.alert(
-			"Confirmar Eliminación",
-			"¿Estás seguro de que deseas eliminar este ingreso? Esta acción no se puede deshacer.",
-			[
-				{ text: "Cancelar", style: "cancel" },
-				{
-					text: "Eliminar",
-					style: "destructive",
-					onPress: () => deleteMutation.mutate(),
-				},
-			]
-		);
-	};
+	// Usar el custom hook para las mutaciones
+	const { updateMutation, deleteMutation } = useIngresosMutations({ id, onSuccessCallback: () => setModalVisible(false), });
 
 	return (
 		<>
@@ -149,8 +80,8 @@ const Item = ({
 				setNewDescripcion={setNewDescripcion}
 				mutation={updateMutation}
 				deleteMutation={deleteMutation}
-				handleUpdate={handleUpdate}
-				handleDelete={handleDelete}
+				handleUpdate={() => FnIngresos.handleUpdate( { id, updateMutation }, newMonto, newDescripcion ) }
+				handleDelete={() => FnIngresos.handleDelete({ id, deleteMutation }) }
 			/>
 		</>
 	);

@@ -1,15 +1,9 @@
-import { instance } from "@/api/apiService";
 import axios from "axios";
+import { instance } from "@/api/apiService";
+import { IngresoInterfaces } from "../interfaces";
 
-interface IngresoData {
-	origen: string;
-	monto: number;
-	fecha: string;
-	descripcion: string;
-	user_id?: string;
-}
 
-export const postIngresoServices = async (data: IngresoData) => {
+export const postIngresoServices = async (data: Omit<IngresoInterfaces,'id' | 'createdAt'>) => {
 	const mapperData = { ...data, id: Math.floor(Math.random() * 10000) };
 	try {
 		const response = await instance.post("/ingresos", mapperData);

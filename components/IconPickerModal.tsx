@@ -1,20 +1,21 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { Modal, Text, TouchableOpacity, View } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import IconPicker from "./IconPicker";
+import { InterfaceIconPickerModalProps } from "@/interfaces";
 
-interface IconPickerModalProps {
-	visible: boolean;
-	onClose: () => void;
-	selectedIcon: string;
-	onSelectIcon: (icon: string) => void;
-}
+/*
+ * @component IconPickerModal
+ * Componente que permite seleccionar un icono.
+ * @param {function} onPressFunction - Función que se ejecuta al cerrar el date picker.
+ * @param {string} text - Texto que se muestra en el chip.
+ */
 
 const IconPickerModal = ({
 	visible,
 	onClose,
 	selectedIcon,
 	onSelectIcon,
-}: IconPickerModalProps) => {
+}: InterfaceIconPickerModalProps) => {
 	return (
 		<Modal
 			visible={visible}

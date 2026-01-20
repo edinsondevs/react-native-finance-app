@@ -1,33 +1,13 @@
-import React from "react";
 import { Pressable, Text } from "react-native";
-import { PressableProps } from "react-native/Libraries/Components/Pressable/Pressable";
 
-interface ButtomComponentProps extends PressableProps {
-	onPressFunction: () => void;
-	text: string;
-	color?:
-		| "bg-primary"
-		| "bg-secondary"
-		| "bg-google-red"
-		| "bg-github-dark"
-		| "bg-button-disabled"
-		| "bg-red-500"
-		| "transparent";
-	width?:
-		| "w-auto"
-		| "w-24"
-		| "w-32"
-		| "w-40"
-		| "w-48"
-		| "w-64"
-		| "w-80"
-		| "w-96"
-		| "w-full";
-	circular?: boolean;
-	textColor?: "text-text-white" | "text-text-black";
-	className?: string;
-	disabled?: boolean;
-}
+import { ButtomComponentProps } from "@/interfaces";
+
+/*
+ * @component ButtomComponent
+ * Componente que permite seleccionar una fecha.
+ * @param {function} onPressFunction - Función que se ejecuta al cerrar el date picker.
+ * @param {string} text - Texto que se muestra en el chip.
+ */
 
 const ButtomComponent = ({
 	onPressFunction,

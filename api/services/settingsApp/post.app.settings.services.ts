@@ -1,11 +1,6 @@
 import { instance } from "@/api/apiService"
 import axios from "axios";
-
-export interface DataSettingsInterface {
-    origen: "categorias" | "origen" | "metodos_pago";
-    data: string;
-    icon?: string;
-}
+import { DataSettingsInterface } from "../interfaces";
 
 export const postAppSettingsServices = async (data: DataSettingsInterface) => {
     

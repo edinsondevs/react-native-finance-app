@@ -1,30 +1,19 @@
 import { InputComponent, TitleOpcionInput } from "@/components";
+import { InterfaceDescripcionFieldProps } from "@/interfaces";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { View } from "react-native";
-
-interface DescripcionFieldProps<
-	TFieldValues extends FieldValues = FieldValues
-> {
-	control: Control<TFieldValues>;
-	name?: Path<TFieldValues>;
-	title?: string;
-	placeholder?: string;
-	maxLength?: number;
-}
 
 /**
  * Componente reutilizable para el campo de descripción
  * Campo multilinea opcional para notas adicionales
  */
-export const DescripcionField = <
-	TFieldValues extends FieldValues = FieldValues
->({
+export const DescripcionField = <TFieldValues extends FieldValues = FieldValues>({
 	control,
 	name = "descripcion" as Path<TFieldValues>,
 	title = "Descripción (Opcional)",
 	placeholder = "Añade una nota...",
 	maxLength = 50,
-}: DescripcionFieldProps<TFieldValues>) => {
+}: InterfaceDescripcionFieldProps<TFieldValues>) => {
 	return (
 		<View className='mb-5'>
 			<TitleOpcionInput title={title} />

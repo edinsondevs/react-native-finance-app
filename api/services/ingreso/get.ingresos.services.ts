@@ -1,14 +1,7 @@
-import { instance } from "@/api/apiService";
 import axios from "axios";
+import { instance } from "@/api/apiService";
+import { IngresoInterfaces } from "../interfaces";
 
-export interface IngresoInterfaces {
-	id: number;
-	createdAt: Date;
-	origen: string;
-	monto: number;
-	fecha: Date;
-	descripcion: string;
-}
 
 export const getIngresosServices = async (): Promise<IngresoInterfaces[]> => {
 	try {

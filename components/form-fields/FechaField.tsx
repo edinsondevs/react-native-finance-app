@@ -1,29 +1,15 @@
-import { InputComponent, TitleOpcionInput } from "@/components";
-import { FontAwesome } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import { useState } from "react";
-import {
-	Control,
-	Controller,
-	FieldValues,
-	Path,
-	PathValue,
-	UseFormSetValue,
-	UseFormWatch,
-} from "react-hook-form";
+import { Controller, FieldValues, Path, PathValue } from "react-hook-form";
 import { Pressable, View } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+
 import { DatePickerModal } from "./DatePickerModal";
+import { InputComponent, TitleOpcionInput } from "@/components";
+import { InterfaceFechaFieldProps } from "@/interfaces";
 
-interface FechaFieldProps<TFieldValues extends FieldValues = FieldValues> {
-	control: Control<TFieldValues>;
-	watch: UseFormWatch<TFieldValues>;
-	setValue: UseFormSetValue<TFieldValues>;
-	name?: Path<TFieldValues>;
-	title?: string;
-	defaultValue?: Date;
-}
 
-/**
+/*
  * Componente reutilizable para el campo de fecha
  * Incluye modal de selección de fecha y formato de visualización
  */
@@ -34,7 +20,7 @@ export const FechaField = <TFieldValues extends FieldValues = FieldValues>({
 	name = "fecha" as Path<TFieldValues>,
 	title = "Fecha",
 	defaultValue = new Date(),
-}: FechaFieldProps<TFieldValues>) => {
+}: InterfaceFechaFieldProps<TFieldValues>) => {
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const handleSelectDate = (date: Date) => {
@@ -47,8 +33,8 @@ export const FechaField = <TFieldValues extends FieldValues = FieldValues>({
 		fieldValue && (fieldValue as any) instanceof Date
 			? (fieldValue as unknown as Date)
 			: typeof fieldValue === "string" || typeof fieldValue === "number"
-			? new Date(fieldValue)
-			: defaultValue;
+				? new Date(fieldValue)
+				: defaultValue;
 
 	return (
 		<>
@@ -68,9 +54,9 @@ export const FechaField = <TFieldValues extends FieldValues = FieldValues>({
 							field.value && (field.value as any) instanceof Date
 								? (field.value as unknown as Date)
 								: typeof field.value === "string" ||
-								  typeof field.value === "number"
-								? new Date(field.value)
-								: defaultValue;
+									  typeof field.value === "number"
+									? new Date(field.value)
+									: defaultValue;
 
 						return (
 							<Pressable onPress={() => setModalVisible(true)}>

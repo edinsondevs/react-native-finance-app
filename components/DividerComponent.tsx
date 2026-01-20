@@ -1,5 +1,11 @@
 import { View } from 'react-native'
-import React from 'react'
+
+/*
+ * @component DividerComponent
+ * Componente que permite seleccionar una fecha.
+ * @param {function} onPressFunction - Función que se ejecuta al cerrar el date picker.
+ * @param {string} text - Texto que se muestra en el chip.
+ */
 
 const DividerComponent = () => {
   return (

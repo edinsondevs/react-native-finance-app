@@ -1,13 +1,15 @@
 import { Image } from "expo-image";
-import React from "react";
 import { Text, View } from "react-native";
 
-interface Props {
-	title: string;
-	icon?: boolean;
-}
+import { InterfaceHeaderComponentProps } from "@/interfaces";
 
-const HeaderComponent = ({ title, icon = false }: Props) => {
+/*
+ * @component HeaderComponent
+ * Componente que permite seleccionar una fecha.
+ * @param {function} onPressFunction - Función que se ejecuta al cerrar el date picker.
+ * @param {string} text - Texto que se muestra en el chip.
+ */
+const HeaderComponent = ({ title, icon = false }: InterfaceHeaderComponentProps) => {
 	return (
 		<View className='flex flex-row justify-between p-4'>
 			<View className='flex flex-1 flex-row items-center '>

@@ -1,11 +1,16 @@
 import { Text } from 'react-native'
-import React, { JSX } from 'react'
+import { JSX } from 'react'
+import { InterfaceHeaderComponentProps } from '@/interfaces';
 
-interface PropsTitle {
-    title: string;
-}
+/*
+ * @component TitleOpcionInput
+ * Componente que permite crear un título.
+ * @param {string} title - Título que se muestra en el componente.
+ */
 
-const TitleOpcionInput = ({ title }: PropsTitle): JSX.Element => {
+const TitleOpcionInput = ({
+	title,
+}: Pick<InterfaceHeaderComponentProps, 'title'>): JSX.Element => {
 	return (
 		<Text className='text-lg font-Inter-Bold pb-2 text-text-dark'>
 			{title}

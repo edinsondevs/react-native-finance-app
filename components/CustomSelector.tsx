@@ -1,46 +1,24 @@
+import { useEffect, useState } from "react";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
-import {
-	ActivityIndicator,
-	FlatList,
-	Modal,
-	Pressable,
-	StyleSheet,
-	Text,
-	TextStyle,
-	View,
-	ViewStyle,
-} from "react-native";
+import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
 
-/**
- * Propiedades del componente CustomSelector.
- * @template T - El tipo de objeto que representa cada opción.
- */
-interface CustomSelectorProps<T> {
-	/** Array de opciones a mostrar */
-	data?: T[];
-	/** Callback que se ejecuta al seleccionar una opción */
-	onSelect?: (item: T) => void;
-	/** Texto a mostrar cuando no hay ninguna opción seleccionada */
-	placeholder?: string;
-	/** Nombre de la propiedad del objeto a usar como etiqueta (display) */
-	labelKey?: keyof T;
-	/** Nombre de la propiedad del objeto a usar como valor único (id) */
-	valueKey?: keyof T;
-	/** Nombre de la propiedad del objeto que contiene el nombre del icono */
-	iconKey?: keyof T;
-	/** Indica si se están cargando los datos */
-	isLoading?: boolean;
-	/** Mensaje de error a mostrar */
-	error?: string | null;
-	/** Valor actualmente seleccionado (controlado externamente) */
-	value?: T | null;
-}
+import { InterfaceCustomSelectorProps } from "@/interfaces";
 
-/**
+
+/*
+ * @component CustomSelector
  * Componente de selector personalizado reutilizable (generico).
  * Soporta iconos personalizados, estados de carga, error y selección tipada.
  * Se comporta como un Select/Dropdown que abre un Modal en dispositivos móviles.
+ * @param {T[]} data - Array de opciones a mostrar.
+ * @param {function} onSelect - Callback que se ejecuta al seleccionar una opción.
+ * @param {string} placeholder - Texto a mostrar cuando no hay ninguna opción seleccionada.
+ * @param {string} labelKey - Nombre de la propiedad del objeto a usar como etiqueta (display).
+ * @param {string} valueKey - Nombre de la propiedad del objeto a usar como valor único (id).
+ * @param {string} iconKey - Nombre de la propiedad del objeto que contiene el nombre del icono.
+ * @param {boolean} isLoading - Indica si se están cargando los datos.
+ * @param {string} error - Mensaje de error a mostrar.
+ * @param {T} value - Valor actualmente seleccionado (controlado externamente).
  */
 const CustomSelector = <T extends object>({
 	data = [],
@@ -52,7 +30,7 @@ const CustomSelector = <T extends object>({
 	isLoading = false,
 	error = null,
 	value = null,
-}: CustomSelectorProps<T>): React.ReactElement => {
+}: InterfaceCustomSelectorProps<T>): React.ReactElement => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [selected, setSelected] = useState<T | null>(null);
 

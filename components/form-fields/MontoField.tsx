@@ -1,12 +1,8 @@
 import { InputComponent, TitleOpcionInput } from "@/components";
+import { InterfaceMontoFieldProps } from "@/interfaces";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { View } from "react-native";
 
-interface MontoFieldProps<TFieldValues extends FieldValues = FieldValues> {
-	control: Control<TFieldValues>;
-	name?: Path<TFieldValues>;
-	title?: string;
-}
 
 /**
  * Componente reutilizable para el campo de monto
@@ -16,7 +12,7 @@ export const MontoField = <TFieldValues extends FieldValues = FieldValues>({
 	control,
 	name = "monto" as Path<TFieldValues>,
 	title = "Monto",
-}: MontoFieldProps<TFieldValues>) => {
+}: InterfaceMontoFieldProps<TFieldValues>) => {
 	return (
 		<View className='mb-5'>
 			<TitleOpcionInput title={title} />

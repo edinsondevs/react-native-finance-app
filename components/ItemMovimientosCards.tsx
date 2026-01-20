@@ -1,19 +1,10 @@
-import React from "react";
 import { Text, View } from "react-native";
 
 import { useFormatoMoneda } from "@/hooks";
 import { colors } from "@/styles/constants";
 import { FontAwesome } from "@expo/vector-icons";
+import { InterfaceItemMovimientosCardsProps } from "@/interfaces";
 
-/**
- * Interfaz que define las propiedades para el componente ItemMovimientosCards.
- * Define la estructura de datos que representa una tarjeta de movimiento financiero.
- */
-interface ItemMovimientosCardsProps {
-	description: string;
-	amount: number; // Por ejemplo: 45.50
-	icon: keyof typeof FontAwesome.glyphMap; // Nombre del icono de FontAwesome (ej: 'shopping-cart')
-}
 
 /**
  * Componente que renderiza una tarjeta individual para un movimiento financiero.
@@ -26,7 +17,7 @@ const ItemMovimientosCards = ({
 	description,
 	amount,
 	icon,
-}: ItemMovimientosCardsProps) => {
+}: InterfaceItemMovimientosCardsProps) => {
 	// Nota: La clase 'text-expense' se reemplaza aquí por 'text-red-500' o el color que definas para gastos
 	// Y los colores como 'bg-primary/10' se usan directamente.
 

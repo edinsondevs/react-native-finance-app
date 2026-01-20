@@ -1,9 +1,7 @@
 import { instance } from "@/api/apiService";
+import { Profile } from "../interfaces";
 
-export interface Profile {
-	id: string;
-	display_name: string;
-}
+
 
 export const getProfilesServices = async (): Promise<Profile[]> => {
 	try {

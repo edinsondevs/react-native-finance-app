@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useState } from "react";
+import { InterfaceTabButtonProps } from "@/interfaces";
 
 // 1. Definir los períodos disponibles
 const periods = [
@@ -9,14 +10,9 @@ const periods = [
 ];
 
 // Componente reutilizable para cada pestaña
-interface TabButtonProps {
-	label: string;
-	value: string;
-	isSelected: boolean;
-	onPress: (value: string) => void;
-}
 
-const TabButton = ({ label, value, isSelected, onPress }: TabButtonProps) => {
+
+const TabButton = ({ label, value, isSelected, onPress }: InterfaceTabButtonProps) => {
 	// Clases base y condicionales
 
 	// Clase base para la etiqueta (reemplaza 'label' y 'grow')
