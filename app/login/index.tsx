@@ -1,6 +1,7 @@
 import { ButtomComponent, InputComponent, LinkComponent } from "@/components";
+import * as Linking from "expo-linking";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -9,6 +10,46 @@ const LoginScreen = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const { signIn, loading } = useAuthStore();
+
+	// Efecto para detectar si venimos de un reset de contraseña
+	useEffect(() => {
+		const checkDeepLink = async () => {
+			const url = await Linking.getInitialURL();
+			if (url) handleUrl(url);
+		};
+
+		const handleUrl = (url: string) => {
+			// Si la URL tiene access_token, es probable que sea un reset de password
+			if (url.includes("access_token") && url.includes("refresh_token")) {
+				// Extraer tokens manualmente
+				let accessToken = null;
+				let refreshToken = null;
+
+				// Intentar parsear fragmento o query
+				const safeUrl = url.includes("#") ? url : url.replace("?", "#"); // Normalizar a hash si es necesario
+				if (safeUrl.includes("#")) {
+					const fragment = safeUrl.split("#")[1];
+					const params = new URLSearchParams(fragment);
+					accessToken = params.get("access_token");
+					refreshToken = params.get("refresh_token");
+				}
+
+				if (accessToken && refreshToken) {
+					router.replace({
+						pathname: "/login/updatePassword",
+						params: {
+							access_token: accessToken,
+							refresh_token: refreshToken,
+						},
+					});
+				}
+			}
+		};
+
+		checkDeepLink();
+		const sub = Linking.addEventListener("url", (e) => handleUrl(e.url));
+		return () => sub.remove();
+	}, []);
 
 	async function onPressFunction() {
 		if (!email || !password) {
@@ -67,13 +108,17 @@ const LoginScreen = () => {
 
 					<LinkComponent
 						text='¿Olvidaste tu contraseña?'
-						onPress={() => {}}
+						onPress={() => router.push("/login/resetPassword")}
 					/>
 
 					<View className='mt-4 items-center'>
 						<ButtomComponent
 							disabled={loading || !email || !password}
-							color={loading || !email || !password ? "bg-button-disabled" : "bg-primary"}
+							color={
+								loading || !email || !password
+									? "bg-button-disabled"
+									: "bg-primary"
+							}
 							onPressFunction={onPressFunction}
 							text={loading ? "Cargando..." : "Iniciar Sesión"}
 						/>

@@ -1,8 +1,6 @@
-import dayjs from "dayjs";
 import { instance } from "@/api/apiService";
+import dayjs from "dayjs";
 import { GastoData, MontoItem } from "../interfaces";
-
-
 
 export const getResumeIngresosServices = async (): Promise<number> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
@@ -18,11 +16,12 @@ export const getResumeIngresosServices = async (): Promise<number> => {
 				params: {
 					select: "monto",
 				},
-			}
+			},
 		);
 		const data = response.data;
 		const total = data.reduce(
-			(acc: number, item: MontoItem) => acc + item.monto, 0
+			(acc: number, item: MontoItem) => acc + item.monto,
+			0,
 		);
 		return total;
 	} catch (error) {
@@ -45,12 +44,12 @@ export const getResumeGastosServices = async (): Promise<number> => {
 				params: {
 					select: "monto",
 				},
-			}
+			},
 		);
 		const data = response.data;
 		const total = data.reduce(
 			(acc: number, item: MontoItem) => acc + item.monto,
-			0
+			0,
 		);
 		return total;
 	} catch (error) {
@@ -68,7 +67,7 @@ export const getAllGastosServices = async (): Promise<GastoData[]> => {
 
 	try {
 		const response = await instance.get<GastoData[]>(
-			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=fecha.desc`
+			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=fecha.desc`,
 		);
 		const data = response.data;
 		return data;

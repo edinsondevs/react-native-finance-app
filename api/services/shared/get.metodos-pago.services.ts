@@ -22,7 +22,7 @@ export const getMetodosPagoServices = async () => {
 			console.error("Response data:", error.response?.data);
 			throw new Error(
 				"Error al obtener los metodos de pago",
-				error.response?.data
+				error.response?.data,
 			);
 		} else {
 			console.error("Unexpected error:", error);
