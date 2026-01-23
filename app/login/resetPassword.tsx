@@ -62,9 +62,9 @@ export default function ResetPassword() {
 				redirectUrl = `exp://192.168.1.9:8081`;
 			}
 
-			// En producción sí mantenemos el path
+			// En producción también usamos la raíz para consistencia con la lógica del Login
 			if (!__DEV__) {
-				redirectUrl = "finanzas-app://login/updatePassword";
+				redirectUrl = "finanzas-app://";
 			}
 
 			console.log("🚀 Enviando a Supabase redirectTo:", redirectUrl);
