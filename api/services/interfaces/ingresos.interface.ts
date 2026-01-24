@@ -10,4 +10,5 @@ export interface IngresoInterfaces {
     monto: number;
     fecha: Date;
     descripcion: string;
+    user_id: string;
 }

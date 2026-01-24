@@ -25,7 +25,6 @@ export const getResumeIngresosServices = async (): Promise<number> => {
 		);
 		return total;
 	} catch (error) {
-		console.log(error);
 		throw error;
 	}
 };
@@ -53,7 +52,6 @@ export const getResumeGastosServices = async (): Promise<number> => {
 		);
 		return total;
 	} catch (error) {
-		console.log(error);
 		throw error;
 	}
 };
@@ -72,7 +70,6 @@ export const getAllGastosServices = async (): Promise<GastoData[]> => {
 		const data = response.data;
 		return data;
 	} catch (error) {
-		console.log(error);
 		throw error;
 	}
 };

@@ -67,7 +67,6 @@ export default function ResetPassword() {
 				redirectUrl = "finanzas-app://";
 			}
 
-			console.log("🚀 Enviando a Supabase redirectTo:", redirectUrl);
 
 			// Enviar email de reset de contraseña usando Supabase
 			const { error } = await supabase.auth.resetPasswordForEmail(email, {

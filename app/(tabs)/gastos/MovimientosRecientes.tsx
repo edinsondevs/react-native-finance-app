@@ -12,7 +12,6 @@ import { InterfaceMovimientosRecientesProps } from "@/interfaces";
 
 dayjs.locale("es");
 
-
 /**
  * Componente que muestra una lista de movimientos recientes.
  * Actúa como un contenedor temático para el componente ItemMovimientosCards,
@@ -22,7 +21,7 @@ dayjs.locale("es");
  * @returns {JSX.Element} Vista del movimiento reciente envolviendo la tarjeta de detalles
  */
 const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
-	const { id, monto, descripcion, icon } = item;
+	const { id, monto, descripcion, icon, user_id } = item;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [newMonto, setNewMonto] = useState(monto.toString());
 	const [newDescripcion, setNewDescripcion] = useState(descripcion);
@@ -34,6 +33,9 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 		onSuccessCallback: () => setModalVisible(false),
 	});
 
+	// Validar si el movimiento es del usuario actual
+	const bgColorAvailable = user_id === user?.id ? "bg-white" : "bg-button-disabled";
+
 	// Actualizar el estado local cuando cambian los props (tras el refetch de React Query)
 	useEffect(() => {
 		setNewMonto(monto.toString());
@@ -42,8 +44,8 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 
 	return (
 		<View>
-			<Pressable onPress={() => setModalVisible(true)}>
-				<View className='flex mx-4 my-2 p-4 border border-border-light rounded-2xl bg-white shadow-sm'>
+			<Pressable onPress={() => setModalVisible(true)} disabled={user_id !== user?.id}>
+				<View className={`flex mx-4 my-2 p-4 border border-border-light rounded-2xl ${bgColorAvailable} shadow-sm`}>
 					<View className='flex flex-row items-center gap-4'>
 						{/* Icono de Gasto */}
 						<View className='size-12 rounded-full bg-red-100 items-center justify-center'>
