@@ -24,7 +24,6 @@ export const useGastosMutations = ({
 			Alert.alert("Éxito", "El gasto ha sido actualizado.");
 		},
 		onError: (error) => {
-			console.log(error);
 			onSuccessCallback?.();
 			Alert.alert("Error", `${error}`);
 		},
