@@ -7,7 +7,6 @@
 
 export interface DataSettingsInterface {
 	origen: "categorias" | "metodos_pago";
-	data: string;
 	icon?: string;
 	name?: string;
     id?: number;

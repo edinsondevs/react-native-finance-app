@@ -1,6 +1,7 @@
 import { instance } from "@/api/apiService";
 import { GastoData } from "../interfaces";
 
+//* Actualizar Un Gasto
 export const updateGastoServices = async (
 	id: number,
 	data: Partial<GastoData>,

@@ -34,5 +34,6 @@ export const useFormValidation = <TFieldValues extends FieldValues = FieldValues
 		isButtonDisabled,
 		buttonColor,
 		textButton,
+		isPending
 	};
 };

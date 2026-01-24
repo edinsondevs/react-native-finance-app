@@ -3,6 +3,7 @@ import { instance } from "@/api/apiService";
 import { IngresoInterfaces } from "../interfaces";
 
 
+//* Crear Un Ingreso
 export const postIngresoServices = async (data: Omit<IngresoInterfaces,'id' | 'createdAt'>) => {
 	const mapperData = { ...data, id: Math.floor(Math.random() * 10000) };
 	try {

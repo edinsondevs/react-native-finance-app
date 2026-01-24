@@ -11,6 +11,8 @@ import axios from "axios";
  *
  * @returns Promesa con la lista de métodos de pago con iconos
  */
+
+//* Consulta de Metodos de Pago
 export const getMetodosPagoServices = async () => {
 	try {
 		const response = await instance.get("/metodos_pago");

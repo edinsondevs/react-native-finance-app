@@ -5,10 +5,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useFormMutation, useFormValidation } from "@/hooks";
 
 import { postIngresoServices } from "@/api/services/ingreso/post.ingreso.services";
-import { ButtomComponent, HeaderComponent, InputComponent, TitleOpcionInput } from "@/components";
+import { ButtomComponent, HeaderComponent, InputComponent, ModalsAlerts, TitleOpcionInput } from "@/components";
 import { DescripcionField, FechaField, MontoField } from "@/components/form-fields";
 
 import { IngresoForm } from "@/interfaces";
+import { Colors } from "@/styles/constants";
 
 const AgregarIngresos = () => {
 
@@ -43,6 +44,12 @@ const AgregarIngresos = () => {
 
 	return (
 		<View className='flex-1 px-4'>
+			<ModalsAlerts
+				visible={isPending}
+				color={Colors.primary}
+				text='Guardando Nuevo Ingreso...'
+				transparent={true}
+			/>
 			<HeaderComponent title='Agregar Nuevo Ingreso' />	
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps='handled'

@@ -1,7 +1,7 @@
 import { instance } from "@/api/apiService";
 import { DataSettingsInterface } from "../interfaces";
 
-
+//* Actualizar Un Ajuste App
 export const updateSettingsServices = async ({
 	origen,
 	id,

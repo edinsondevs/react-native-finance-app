@@ -2,6 +2,7 @@ import { instance } from "@/api/apiService"
 import axios from "axios";
 import { DataSettingsInterface } from "../interfaces";
 
+//* Crear Un Ajuste App
 export const postAppSettingsServices = async (data: DataSettingsInterface) => {
     
     const { origen, data: name, icon } = data
