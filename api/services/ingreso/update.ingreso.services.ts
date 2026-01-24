@@ -1,6 +1,7 @@
 import { instance } from "@/api/apiService";
 import { IngresoInterfaces } from "../interfaces";
 
+//* Actualizar Un Ingreso
 export const updateIngresoServices = async (
 	id: number,
 	data: Partial<IngresoInterfaces>

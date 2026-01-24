@@ -1,10 +1,12 @@
-import { ButtomComponent, InputComponent, LinkComponent } from "@/components";
+import { ButtomComponent, InputComponent, LinkComponent, ModalsAlerts } from "@/components";
 import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useAuthStore } from "../../store/useAuthStore";
+
+import { Colors } from "@/styles/constants";
 
 const LoginScreen = () => {
 	const [email, setEmail] = useState("");
@@ -69,6 +71,12 @@ const LoginScreen = () => {
 
 	return (
 		<View className='flex-1'>
+			<ModalsAlerts
+				visible={loading}
+				color={Colors.primary}
+				text='Iniciando Sesión...'
+				transparent={false}
+			/>
 			<KeyboardAwareScrollView
 				className='flex-1'
 				keyboardShouldPersistTaps='handled'
@@ -125,23 +133,6 @@ const LoginScreen = () => {
 					</View>
 				</View>
 
-				{/* <SeparatorComponent />
-			<View className='mt-4 items-center gap-2'>
-				<ButtomComponent
-					onPressFunction={onPressFunction}
-					text='Continuar con Google'
-					color='transparent'
-					textColor='text-text-black'
-					width='w-96'
-				/>
-				<ButtomComponent
-					onPressFunction={onPressFunction}
-					text='Continuar con GitHub'
-					color='transparent'
-					textColor='text-text-black'
-					width='w-96'
-				/>
-			</View> */}
 				<View className='mt-6 flex-row justify-center items-center gap-2'>
 					<Text className='text-text-gray font-Inter-Medium'>
 						¿No tienes una cuenta?

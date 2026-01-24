@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert } from "react-native";
-import { postAppSettingsServices } from "@/api/services/settingsApp/post.app.settings.services";
+import { postAppSettingsServices } from "@/api/services/settingsApp/post.settings.services";
 import { useCapitalize } from "@/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InterfaceSettingsForm } from "@/interfaces";

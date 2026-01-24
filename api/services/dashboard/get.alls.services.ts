@@ -2,6 +2,7 @@ import { instance } from "@/api/apiService";
 import dayjs from "dayjs";
 import { GastoData, MontoItem } from "../interfaces";
 
+//* Consulta de Ingresos
 export const getResumeIngresosServices = async (): Promise<number> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
 	const fechaAnterior = dayjs()
@@ -30,6 +31,7 @@ export const getResumeIngresosServices = async (): Promise<number> => {
 	}
 };
 
+//* Consulta de Gastos
 export const getResumeGastosServices = async (): Promise<number> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
 	const fechaAnterior = dayjs()
@@ -57,6 +59,8 @@ export const getResumeGastosServices = async (): Promise<number> => {
 		throw error;
 	}
 };
+
+//* Consulta de Gastos Completos
 
 export const getAllGastosServices = async (): Promise<GastoData[]> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");

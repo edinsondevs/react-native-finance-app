@@ -2,6 +2,7 @@ import { instance } from "@/api/apiService";
 import { GastoData } from "../interfaces";
 import axios from "axios";
 
+//* Crear Un Gasto
 export const crearGastoServices = async (data: GastoData) => {
 	try {
 		const response = await instance.post("/gastos", data);

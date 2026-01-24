@@ -6,10 +6,11 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useCapitalize, useSettingsMutations } from "@/hooks";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import { ButtomComponent, DividerComponent, HeaderComponent, IconPickerModal, IconTrigger, InputComponent, TitleOpcionInput } from "@/components";
+import { ButtomComponent, DividerComponent, HeaderComponent, IconPickerModal, IconTrigger, InputComponent, ModalsAlerts, TitleOpcionInput } from "@/components";
 import { useAuthStore } from "@/store/useAuthStore";
 
 import ThemedView from "@/presentation/ThemedView";
+import { Colors } from "@/styles/constants";
 
 const TitleEditScreen = ({ title, origen }: { title: string; origen: string }) => {
 	return (
@@ -74,6 +75,12 @@ const AjustesScreen = () => {
 			extraScrollHeight={170}
 			enableOnAndroid={true}>
 			<HeaderComponent title={title} />
+			<ModalsAlerts
+				visible={isPending}
+				color={Colors.primary}
+				text='Creando...'
+				transparent={true}
+			/>
 			<ThemedView
 				margin
 				className='gap-4 mt-6'>

@@ -8,6 +8,6 @@ export interface IngresoInterfaces {
     createdAt: Date;
     origen: string;
     monto: number;
-    fecha: Date;
+    fecha: Date | string;
     descripcion: string;
 }
