@@ -24,8 +24,9 @@ export const useGastosMutations = ({
 			Alert.alert("Éxito", "El gasto ha sido actualizado.");
 		},
 		onError: (error) => {
-			Alert.alert("Error", "No se pudo actualizar el gasto.");
-			console.error(error);
+			console.log(error);
+			onSuccessCallback?.();
+			Alert.alert("Error", `${error}`);
 		},
 	});
 
@@ -39,8 +40,8 @@ export const useGastosMutations = ({
 			Alert.alert("Éxito", "El gasto ha sido eliminado.");
 		},
 		onError: (error) => {
-			Alert.alert("Error", "No se pudo eliminar el gasto.");
-			console.error(error);
+			onSuccessCallback?.();
+			Alert.alert("Error", `${error}`);
 		},
 	});
 

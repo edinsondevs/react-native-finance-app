@@ -1,91 +1,16 @@
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { router } from "expo-router";
-import { useState } from "react";
-import { FontAwesome } from "@expo/vector-icons";
 import { useQuery,  } from "@tanstack/react-query";
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
 
-import { getIngresosServices, IngresoInterfaces } from "@/api/services/ingreso/get.ingresos.services";
+import { getIngresosServices } from "@/api/services/ingreso/get.ingresos.services";
 import { CircleButton, HeaderComponent } from "@/components";
-import { FnIngresos } from "@/helpers/functions/ingresos";
-import { useFormatoMoneda, useIngresosMutations } from "@/hooks";
-import ModalEdicionIngreso from "./ModalEdicionIngreso";
+import { IngresoInterfaces } from "@/api/services/interfaces"
+import { ItemIngreso } from "./ItemIngreso";
 
 dayjs.locale("es");
 
-const Item = ({ id, monto = 0, fecha, origen, descripcion = "" }: Partial<IngresoInterfaces>) => {
-	const [modalVisible, setModalVisible] = useState(false);
-	const [newMonto, setNewMonto] = useState(monto.toString());
-	const [newDescripcion, setNewDescripcion] = useState(descripcion);
-
-	// Usar el custom hook para las mutaciones
-	const { updateMutation, deleteMutation } = useIngresosMutations({ id, onSuccessCallback: () => setModalVisible(false), });
-
-	return (
-		<>
-			<Pressable onPress={() => setModalVisible(true)}>
-				<View className='flex mx-4 my-2 p-4 border border-border-light rounded-2xl bg-white shadow-sm'>
-					<View className='flex flex-row items-center gap-4'>
-						{/* Icono de Ingreso */}
-						<View className='size-12 rounded-full bg-green-100 items-center justify-center'>
-							<FontAwesome
-								name='arrow-up'
-								size={20}
-								color='#10b981'
-							/>
-						</View>
-
-						{/* Información Central */}
-						<View className='flex-1'>
-							<Text className='font-Inter-Bold text-lg text-text-dark'>
-								{origen}
-							</Text>
-							<Text className='font-Inter-Regular text-xs text-text-muted'>
-								{fecha
-									? dayjs(fecha).format("DD [de] MMMM, YYYY")
-									: ""}
-							</Text>
-						</View>
-
-						{/* Monto y Acción */}
-						<View className='items-end gap-1'>
-							<Text className='font-Inter-Bold text-xl text-green-600'>
-								+ {useFormatoMoneda(monto)}
-							</Text>
-							<FontAwesome
-								name='chevron-right'
-								size={14}
-								color='#d1d5db'
-							/>
-						</View>
-					</View>
-
-					{descripcion ? (
-						<View className='mt-3 pt-3 border-t border-gray-50'>
-							<Text className='font-Inter-Regular text-sm text-text-muted italic'>
-								{descripcion}
-							</Text>
-						</View>
-					) : null}
-				</View>
-			</Pressable>
-
-			<ModalEdicionIngreso
-				modalVisible={modalVisible}
-				setModalVisible={setModalVisible}
-				newMonto={newMonto}
-				setNewMonto={setNewMonto}
-				newDescripcion={newDescripcion}
-				setNewDescripcion={setNewDescripcion}
-				mutation={updateMutation}
-				deleteMutation={deleteMutation}
-				handleUpdate={() => FnIngresos.handleUpdate( { id, updateMutation }, newMonto, newDescripcion ) }
-				handleDelete={() => FnIngresos.handleDelete({ id, deleteMutation }) }
-			/>
-		</>
-	);
-};
 
 // Eliminamos HeaderList ya que no es necesario en el nuevo diseño de tarjetas.
 
@@ -127,12 +52,13 @@ const IngresosScreen = () => {
 					/>
 				}
 				renderItem={({ item }: { item: IngresoInterfaces }) => (
-					<Item
+					<ItemIngreso
 						monto={item.monto}
 						fecha={item.fecha}
 						origen={item.origen}
 						descripcion={item.descripcion}
 						id={item.id}
+						user_id={item.user_id}
 					/>
 				)}
 				keyExtractor={(item) => item.id.toString()}

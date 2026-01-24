@@ -45,5 +45,6 @@ export interface InterfaceMovimientosRecientesProps {
 		icon: any;
 		iconName?: string;
 		fecha?: string;
+		user_id?: string;
 	};
 }
