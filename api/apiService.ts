@@ -1,5 +1,6 @@
 import axios from "axios";
 import Constants from "expo-constants";
+import { supabase } from "./lib/supabase";
 
 // Obtener credenciales desde app config
 const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl;
@@ -52,6 +53,22 @@ instance.interceptors.response.use(
 		return Promise.reject(error);
 	}
 );
+
+// INTERCEPTOR PARA OBTENER EL TOKEN DE SESIÓN
+instance.interceptors.request.use(async (config) => {
+    // 1. Obtenemos la sesión actual de Supabase
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    // 2. Si hay un token (usuario logueado), lo ponemos en el Authorization
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    } else {
+        // Si no hay sesión, usamos la anon key como respaldo
+        config.headers.Authorization = `Bearer ${supabaseAnonKey}`;
+    }
+    
+    return config;
+});
 
 // Helper para autenticación (si usas auth)
 export const setAuthToken = (token: string) => {

@@ -1,17 +1,18 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import { crearGastoServices, getCategoriasServices } from "@/api/services";
+import { crearGastoServices, getCategoriasServices, getMetodosPagoServices } from "@/api/services";
 import { Category, GastoData, GastoFormData } from "@/api/services/interfaces";
-import { getMetodosPagoServices } from "@/api/services/shared/get.metodos-pago.services";
-import { ButtomComponent, CustomSelector, HeaderComponent, TitleOpcionInput } from "@/components";
-import { DescripcionField, FechaField, MontoField } from "@/components/form-fields";
-import { useFormMutation, useFormValidation } from "@/hooks";
-import { useAuthStore } from "@/store/useAuthStore";
 
+import { useAuthStore } from "@/store/useAuthStore";
+import { useFormMutation, useFormValidation } from "@/hooks";
+import { Colors } from "@/styles/constants";
+
+import { ButtomComponent, CustomSelector, HeaderComponent, ModalsAlerts, TitleOpcionInput } from "@/components";
+import { DescripcionField, FechaField, MontoField } from "@/components/form-fields";
 
 const AgregarGastosScreen = () => {
 	const { user } = useAuthStore();
@@ -80,6 +81,12 @@ const AgregarGastosScreen = () => {
 
 	return (
 		<View className='flex-1 bg-background-light px-4'>
+			<ModalsAlerts
+				visible={isCreating}
+				color={Colors.primary}
+				text='Guardando Nuevo Gasto...'
+				transparent={true}
+			/>
 			<HeaderComponent title='Agregar Nuevo Gasto' />
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps='handled'

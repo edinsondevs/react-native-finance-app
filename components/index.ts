@@ -15,6 +15,7 @@ export { default as InputComponent } from "./InputComponent";
 export { default as ItemMovimientosCards } from "./ItemMovimientosCards";
 export { default as LinkComponent } from "./LinkComponent";
 export { default as ModalComponent } from "./ModalComponent";
+export { default as ModalsAlerts } from "./ModalsAlerts";
 export { default as PeriodSelector } from "./PeriodSelector";
 export { default as SeparatorComponent } from "./SeparatorComponent";
 export { default as TitleOpcionInput } from "./TitleOpcionInput";

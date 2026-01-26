@@ -72,6 +72,18 @@ export default function RootLayout() {
 							}}
 						/>
 						<Stack.Screen
+							name='login/resetPassword'
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name='login/updatePassword'
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
 							name='register/index'
 							options={{
 								headerShown: false,

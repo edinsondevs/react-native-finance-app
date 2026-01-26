@@ -1,9 +1,8 @@
-import dayjs from "dayjs";
 import { instance } from "@/api/apiService";
+import dayjs from "dayjs";
 import { GastoData, MontoItem } from "../interfaces";
 
-
-
+//* Consulta de Ingresos
 export const getResumeIngresosServices = async (): Promise<number> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
 	const fechaAnterior = dayjs()
@@ -18,19 +17,20 @@ export const getResumeIngresosServices = async (): Promise<number> => {
 				params: {
 					select: "monto",
 				},
-			}
+			},
 		);
 		const data = response.data;
 		const total = data.reduce(
-			(acc: number, item: MontoItem) => acc + item.monto, 0
+			(acc: number, item: MontoItem) => acc + item.monto,
+			0,
 		);
 		return total;
 	} catch (error) {
-		console.log(error);
 		throw error;
 	}
 };
 
+//* Consulta de Gastos
 export const getResumeGastosServices = async (): Promise<number> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
 	const fechaAnterior = dayjs()
@@ -45,19 +45,20 @@ export const getResumeGastosServices = async (): Promise<number> => {
 				params: {
 					select: "monto",
 				},
-			}
+			},
 		);
 		const data = response.data;
 		const total = data.reduce(
 			(acc: number, item: MontoItem) => acc + item.monto,
-			0
+			0,
 		);
 		return total;
 	} catch (error) {
-		console.log(error);
 		throw error;
 	}
 };
+
+//* Consulta de Gastos Completos
 
 export const getAllGastosServices = async (): Promise<GastoData[]> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
@@ -68,12 +69,11 @@ export const getAllGastosServices = async (): Promise<GastoData[]> => {
 
 	try {
 		const response = await instance.get<GastoData[]>(
-			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=fecha.desc`
+			`/gastos?fecha=gt.${fechaAnterior}&fecha=lte.${fechaActual}&order=fecha.desc`,
 		);
 		const data = response.data;
 		return data;
 	} catch (error) {
-		console.log(error);
 		throw error;
 	}
 };

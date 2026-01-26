@@ -3,6 +3,7 @@ import { instance } from "@/api/apiService";
 import { IngresoInterfaces } from "../interfaces";
 
 
+//* Consulta de Ingresos
 export const getIngresosServices = async (): Promise<IngresoInterfaces[]> => {
 	try {
 		const response = await instance.get("/ingresos", {

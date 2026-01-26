@@ -1,23 +1,11 @@
-import { getSettingsServices } from "@/api/services/settingsApp/get.settings.services";
-import { updateSettingsServices } from "@/api/services/settingsApp/update.settings.services";
-import {
-	ButtomComponent,
-	IconPickerModal,
-	IconTrigger,
-	InputComponent,
-} from "@/components";
-import { FontAwesome } from "@expo/vector-icons";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import {
-	ActivityIndicator,
-	FlatList,
-	Modal,
-	Text,
-	TouchableOpacity,
-	View,
-} from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { ActivityIndicator, FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FontAwesome } from "@expo/vector-icons";
+
+import { ButtomComponent, IconPickerModal, IconTrigger, InputComponent } from "@/components";
+import { getSettingsServices, updateSettingsServices } from "@/api/services";
 
 const Settings = () => {
 	const { origen } = useLocalSearchParams();
@@ -84,6 +72,7 @@ const Settings = () => {
 
 	return (
 		<View className='flex-1 bg-white px-4 pt-4'>
+
 			<FlatList
 				data={data}
 				keyExtractor={(item) => item.id.toString()}

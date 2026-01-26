@@ -1,6 +1,7 @@
 import { instance } from "@/api/apiService";
-import { Category } from "../interfaces";
+import { Category } from "../interfaces/IconType";
 
+//* Consulta de Categorias
 export const getCategoriasServices = async (): Promise<Category[]> => {
 	try {
 		const { data } = await instance.get("/categorias");

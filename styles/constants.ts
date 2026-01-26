@@ -14,6 +14,26 @@ export interface ColorsInterfaces {
 	"text-black": string;
 }
 
+export const Colors = {
+	primary: "#135bec",
+	secondary: "#28a745",
+	alert: "#dc3545",
+	backgroundLight: "#f6f6f8",
+	backgroundDark: "#101622",
+	calendarPrimary: "#10b981",
+	buttonDisabled: "#D1D5DB",
+	textDark: "#1F2937",
+	textLight: "#fafafa",
+	borderLight: "#D1D5DB",
+	googleRed: "#DB4437",
+	githubDark: "#333333",
+	textWhite: "#FFFFFF",
+	textGray: "#6B7280",
+	inputPlaceholder: "#9CA3AF",
+	textBlack: "#9f9f9f",
+};
+
+
 export const ColorsTheme = {
 	light: {
 		primary: "#49129c",
@@ -39,24 +59,25 @@ export const ColorsTheme = {
 
 export const colors: ColorsInterfaces = {
 	// Color principal de la marca (el azul fuerte del botón 'Iniciar sesión')
-	primary: "#135bec",
-	secondary: "#28a745",
-	alert: "#dc3545",
+	primary: Colors.primary,
+	secondary: Colors.secondary,
+	alert: Colors.alert,
 	// Color para el fondo o elementos muy sutiles
-	"background-light": "#f6f6f8",
-	"background-dark": "#101622",
+	"background-light": Colors.backgroundLight,
+	"background-dark": Colors.backgroundDark,
 
 	// Color para textos principales o encabezados
-	"text-dark": "#1F2937",
+	"text-dark": Colors.textDark,
 
 	// Color para bordes de inputs (el gris claro)
-	"border-light": "#D1D5DB",
+	"border-light": Colors.borderLight,
 
 	// Colores específicos para botones de terceros (Google, GitHub)
-	"google-red": "#DB4437",
-	"github-dark": "#333333",
-	"text-white": "#FFFFFF",
-	"text-gray": "#6B7280",
-	"input-placeholder": "#9CA3AF",
-	"text-black": "#9f9f9f",
+	"google-red": Colors.googleRed,
+	"github-dark": Colors.githubDark,
+	"text-white": Colors.textWhite,
+	"text-gray": Colors.textGray,
+	"input-placeholder": Colors.inputPlaceholder,
+	"text-black": Colors.textBlack,
 };
+
