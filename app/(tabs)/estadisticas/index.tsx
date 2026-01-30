@@ -1,39 +1,23 @@
-import {
-	getCategoriasServices,
-	getMetodosPagoServices,
-	getProfilesServices,
-} from "@/api/services";
-import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
-import {
-	GastosPorCategoria,
-	GastosPorTipoPago,
-	GastosPorUsuario,
-	GastosXdia,
-	HeaderComponent,
-	LineChartComponent,
-} from "@/components";
-import { useAuthStore } from "@/store/useAuthStore";
-import { colors } from "@/styles/constants";
-import { styles } from "@/styles/estadisticas.styles";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { useMemo, useState } from "react";
-import {
-	ActivityIndicator,
-	RefreshControl,
-	ScrollView,
-	Text,
-	TouchableOpacity,
-	View,
-} from "react-native";
-
 dayjs.locale("es");
+
+import { ActivityIndicator, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { getCategoriasServices, getMetodosPagoServices, getProfilesServices } from "@/api/services";
+import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
+import { GastosPorCategoria, GastosPorTipoPago, GastosPorUsuario, GastosXdia, HeaderComponent, LineChartComponent, PieChartComponent, TabSelectorEstadisticas } from "@/components";
+import { useAuthStore } from "@/store/useAuthStore";
+import { colors } from "@/styles/constants";
+import { styles } from "@/styles/estadisticas.styles";
+
 
 const EstadisticasScreen = () => {
 	const [activeTab, setActiveTab] = useState<
 		"diario" | "usuario" | "tipo_pago" | "categoria"
 	>("diario");
+	const [activeChart, setActiveChart] = useState<"line" | "pie">("line");
 
 	const {
 		data: gastosData,
@@ -263,134 +247,152 @@ const EstadisticasScreen = () => {
 				</Text>
 			</View>
 
+			{/* Chart Selector (Fuera de la card) */}
+			{gastosData && gastosData.length > 0 && (
+				<View
+					style={{
+						flexDirection: "row",
+						backgroundColor: "#f3f4f6",
+						padding: 4,
+						borderRadius: 12,
+						marginBottom: 12,
+					}}>
+					<TouchableOpacity
+						onPress={() => setActiveChart("line")}
+						style={{
+							flex: 1,
+							paddingVertical: 8,
+							borderRadius: 8,
+							alignItems: "center",
+							backgroundColor:
+								activeChart === "line"
+									? "white"
+									: "transparent",
+							shadowColor:
+								activeChart === "line" ? "#000" : "transparent",
+							shadowOffset: { width: 0, height: 1 },
+							shadowOpacity: 0.1,
+							shadowRadius: 2,
+							elevation: activeChart === "line" ? 2 : 0,
+						}}>
+						<Text
+							style={{
+								fontSize: 14,
+								fontWeight: "600",
+								color:
+									activeChart === "line"
+										? colors.primary
+										: "#9ca3af",
+							}}>
+							Gráfico de Líneas
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => setActiveChart("pie")}
+						style={{
+							flex: 1,
+							paddingVertical: 8,
+							borderRadius: 8,
+							alignItems: "center",
+							backgroundColor:
+								activeChart === "pie" ? "white" : "transparent",
+							shadowColor:
+								activeChart === "pie" ? "#000" : "transparent",
+							shadowOffset: { width: 0, height: 1 },
+							shadowOpacity: 0.1,
+							shadowRadius: 2,
+							elevation: activeChart === "pie" ? 2 : 0,
+						}}>
+						<Text
+							style={{
+								fontSize: 14,
+								fontWeight: "600",
+								color:
+									activeChart === "pie"
+										? colors.primary
+										: "#9ca3af",
+							}}>
+							Gráfico de Torta
+						</Text>
+					</TouchableOpacity>
+				</View>
+			)}
+
 			{/* Chart Card */}
 			{gastosData && gastosData.length > 0 && (
 				<View style={styles.chartCard}>
 					<Text style={styles.chartLabel}>
-						Tendencia de Gastos por Usuario
+						{activeChart === "line"
+							? "Tendencia de Gastos por Usuario"
+							: "Distribución por Categoría"}
 					</Text>
 
-					{/* Leyenda */}
-					<View style={styles.legendContainer}>
-						{Array.from(userIds).map((userId, index) => (
-							<View
-								key={userId}
-								style={styles.legendItem}>
-								<View
-									style={[
-										styles.legendDot,
-										{
-											backgroundColor:
-												chartColors[
-													index % chartColors.length
-												],
-										},
-									]}
-								/>
-								<Text style={styles.legendText}>
-									{userId === user?.id
-										? user?.displayName || "Yo"
-										: profileMap[userId] ||
-											`User: ${userId.slice(0, 8)}...`}
-								</Text>
+					{activeChart === "line" ? (
+						<>
+							{/* Leyenda solo para LineChart */}
+							<View style={styles.legendContainer}>
+								{Array.from(userIds).map((userId, index) => (
+									<View
+										key={userId}
+										style={styles.legendItem}>
+										<View
+											style={[
+												styles.legendDot,
+												{
+													backgroundColor:
+														chartColors[
+															index %
+																chartColors.length
+														],
+												},
+											]}
+										/>
+										<Text style={styles.legendText}>
+											{userId === user?.id
+												? user?.displayName || "Yo"
+												: profileMap[userId] ||
+													`User: ${userId.slice(
+														0,
+														8,
+													)}...`}
+										</Text>
+									</View>
+								))}
 							</View>
-						))}
-					</View>
 
-					{/* Gráfico */}
-					<ScrollView
-						horizontal
-						showsHorizontalScrollIndicator={false}
-						scrollEnabled={dataSets.length > 0}>
-						<View style={styles.chartContainer}>
-							{dataSets.length > 0 && (
-								<LineChartComponent
-									mainData={mainData}
-									dataSets={dataSets}
-									monthLabels={monthLabels}
-									chartColors={chartColors}
-								/>
-							)}
+							<ScrollView
+								horizontal
+								showsHorizontalScrollIndicator={false}
+								scrollEnabled={dataSets.length > 0}>
+								<View style={styles.chartContainer}>
+									{dataSets.length > 0 && (
+										<LineChartComponent
+											mainData={mainData}
+											dataSets={dataSets}
+											monthLabels={monthLabels}
+											chartColors={chartColors}
+										/>
+									)}
+								</View>
+							</ScrollView>
+
+							<Text style={styles.monthLabel}>
+								Días del mes de {dayjs().format("MMMM")}
+							</Text>
+						</>
+					) : (
+						<View style={{ alignItems: "center" }}>
+							<PieChartComponent data={gastosPorCategoriaData} />
 						</View>
-					</ScrollView>
-
-					<Text style={styles.monthLabel}>
-						Días del mes de {dayjs().format("MMMM")}
-					</Text>
+					)}
 				</View>
 			)}
 
 			{/* Tabs */}
-			<View style={styles.tabsContainer}>
-				<TouchableOpacity
-					onPress={() => setActiveTab("diario")}
-					style={[
-						styles.tabButton,
-						activeTab === "diario" && styles.tabButtonActive,
-					]}
-					activeOpacity={0.7}>
-					<Text
-						style={[
-							styles.tabText,
-							activeTab === "diario" && {
-								color: colors.primary,
-							},
-						]}>
-						Diario
-					</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => setActiveTab("usuario")}
-					style={[
-						styles.tabButton,
-						activeTab === "usuario" && styles.tabButtonActive,
-					]}
-					activeOpacity={0.7}>
-					<Text
-						style={[
-							styles.tabText,
-							activeTab === "usuario" && {
-								color: colors.primary,
-							},
-						]}>
-						Usuario
-					</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => setActiveTab("tipo_pago")}
-					style={[
-						styles.tabButton,
-						activeTab === "tipo_pago" && styles.tabButtonActive,
-					]}
-					activeOpacity={0.7}>
-					<Text
-						style={[
-							styles.tabText,
-							activeTab === "tipo_pago" && {
-								color: colors.primary,
-							},
-						]}>
-						Pago
-					</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => setActiveTab("categoria")}
-					style={[
-						styles.tabButton,
-						activeTab === "categoria" && styles.tabButtonActive,
-					]}
-					activeOpacity={0.7}>
-					<Text
-						style={[
-							styles.tabText,
-							activeTab === "categoria" && {
-								color: colors.primary,
-							},
-						]}>
-						Categoría
-					</Text>
-				</TouchableOpacity>
-			</View>
+			<TabSelectorEstadisticas
+				activeTab={activeTab}
+				setActiveTab={setActiveTab}
+			/>
 
 			{/* Contenido por tab */}
 			<View style={styles.contentContainer}>
