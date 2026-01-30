@@ -1,7 +1,9 @@
 import React from "react";
 import { Modal, Text, View } from "react-native";
 
-import { ButtomComponent, InputComponent } from "@/components";
+// ✅ IMPORTAR DIRECTAMENTE, NO DESDE components/index.ts
+import ButtomComponent from "./ButtomComponent";
+import InputComponent from "./InputComponent";
 import { InterfaceModalEdicionProps } from "@/interfaces";
 
 const ModalEdicionIngreso = ({

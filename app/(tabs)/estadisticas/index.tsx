@@ -1,23 +1,150 @@
 import { getProfilesServices } from "@/api/services";
 import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
-import { HeaderComponent } from "@/components";
+import {
+	GastosPorUsuario,
+	GastosXdia,
+	HeaderComponent,
+	LineChartComponent,
+} from "@/components";
 import { useAuthStore } from "@/store/useAuthStore";
 import { colors } from "@/styles/constants";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import { useState, useMemo } from "react";
 import {
 	ActivityIndicator,
 	RefreshControl,
 	ScrollView,
 	Text,
+	TouchableOpacity,
 	View,
+	StyleSheet,
 } from "react-native";
-import { LineChart } from "react-native-gifted-charts";
 
 dayjs.locale("es");
 
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		paddingHorizontal: 16,
+	},
+	scrollView: {
+		flex: 1,
+	},
+	loadingContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	totalCard: {
+		backgroundColor: "white",
+		borderRadius: 16,
+		padding: 16,
+		marginBottom: 16,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.05,
+		shadowRadius: 2,
+		elevation: 2,
+	},
+	totalLabel: {
+		fontSize: 16,
+		fontWeight: "600",
+		color: "#9ca3af",
+		marginBottom: 8,
+	},
+	totalAmount: {
+		fontSize: 32,
+		fontWeight: "bold",
+	},
+	chartCard: {
+		backgroundColor: "white",
+		borderRadius: 16,
+		padding: 16,
+		marginBottom: 16,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.05,
+		shadowRadius: 2,
+		elevation: 2,
+	},
+	chartLabel: {
+		fontSize: 16,
+		fontWeight: "600",
+		color: "#9ca3af",
+		marginBottom: 16,
+	},
+	legendContainer: {
+		flexDirection: "row",
+		flexWrap: "wrap",
+		marginBottom: 16,
+	},
+	legendItem: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginRight: 16,
+		marginBottom: 8,
+	},
+	legendDot: {
+		width: 12,
+		height: 12,
+		borderRadius: 6,
+		marginRight: 4,
+	},
+	legendText: {
+		fontSize: 12,
+		color: "#4b5563",
+	},
+	chartContainer: {
+		paddingBottom: 10,
+	},
+	monthLabel: {
+		marginTop: 16,
+		marginBottom: 8,
+		textAlign: "center",
+		fontSize: 11,
+		color: "#9ca3af",
+		fontWeight: "bold",
+		fontStyle: "italic",
+	},
+	tabsContainer: {
+		flexDirection: "row",
+		marginBottom: 16,
+		backgroundColor: "#f3f4f6",
+		padding: 4,
+		borderRadius: 12,
+	},
+	tabButton: {
+		flex: 1,
+		paddingVertical: 8,
+		borderRadius: 8,
+		alignItems: "center",
+	},
+	tabButtonActive: {
+		backgroundColor: "white",
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.05,
+		shadowRadius: 2,
+		elevation: 2,
+	},
+	tabText: {
+		fontSize: 16,
+		fontWeight: "600",
+		color: "#9ca3af",
+	},
+	contentContainer: {
+		marginBottom: 16,
+	},
+	horizontalScroll: {
+		paddingBottom: 10,
+	},
+});
+
 const EstadisticasScreen = () => {
+	const [activeTab, setActiveTab] = useState<"diario" | "usuario">("diario");
+
 	const {
 		data: gastosData,
 		isLoading,
@@ -35,316 +162,250 @@ const EstadisticasScreen = () => {
 	});
 
 	// Crear un mapa de ID -> Nombre para búsqueda rápida
-	const profileMap = (profiles || []).reduce(
-		(acc: Record<string, string>, p: any) => {
-			acc[p.id] = p.display_name;
-			return acc;
-		},
-		{}
+	const profileMap = useMemo(
+		() =>
+			(profiles || []).reduce((acc: Record<string, string>, p: any) => {
+				acc[p.id] = p.display_name;
+				return acc;
+			}, {}),
+		[profiles],
 	);
 
 	// Calcular total usando 'monto'
-	const total = gastosData?.reduce((acc, item) => acc + item.monto, 0) || 0;
-
-	// 1. Obtener todos los días del mes actual que tengan datos
-	// O mejor, obtener todos los días del mes hasta hoy para una gráfica continua
-	const daysInMonth = dayjs().date(); // Hasta el día de hoy
-	const monthLabels = Array.from({ length: daysInMonth }, (_, i) =>
-		dayjs()
-			.date(i + 1)
-			.format("DD/MM")
+	const total = useMemo(
+		() =>
+			gastosData?.reduce((acc: any, item: any) => acc + item.monto, 0) ||
+			0,
+		[gastosData],
 	);
 
-	// 2. Agrupar gastos por usuario y por día
-	const expensesByUser: Record<string, Record<string, number>> = {};
-	const userIds = new Set<string>();
-	const gastosPorDiaSummary: Record<string, number> = {};
+	// Obtener todos los días del mes actual
+	const daysInMonth = dayjs().date();
+	const monthLabels = useMemo(
+		() =>
+			Array.from({ length: daysInMonth }, (_, i) =>
+				dayjs()
+					.date(i + 1)
+					.format("DD/MM"),
+			),
+		[daysInMonth],
+	);
 
-	gastosData?.forEach((gasto) => {
-		const userId = gasto.user_id || "Usuario Desconocido";
-		userIds.add(userId);
-		const date = dayjs(gasto.fecha).format("DD/MM");
+	// Agrupar gastos por usuario y por día - memoizado
+	const { expensesByUser, userIds, gastosPorDiaSummary, chartColors } =
+		useMemo(() => {
+			const expensesByUser: Record<string, Record<string, number>> = {};
+			const userIds = new Set<string>();
+			const gastosPorDiaSummary: Record<string, number> = {};
+			const chartColors = [
+				colors.primary,
+				colors.alert,
+				"#FF9500",
+				"#FF2D55",
+				"#5856D6",
+				"#AF52DE",
+			];
 
-		// Para la gráfica por usuario
-		if (!expensesByUser[userId]) {
-			expensesByUser[userId] = {};
-		}
-		expensesByUser[userId][date] =
-			(expensesByUser[userId][date] || 0) + gasto.monto;
+			gastosData?.forEach((gasto: any) => {
+				const userId = gasto.user_id || "Usuario Desconocido";
+				userIds.add(userId);
+				const date = dayjs(gasto.fecha).format("DD/MM");
 
-		// Para el resumen diario general
-		gastosPorDiaSummary[date] =
-			(gastosPorDiaSummary[date] || 0) + gasto.monto;
-	});
+				if (!expensesByUser[userId]) {
+					expensesByUser[userId] = {};
+				}
+				expensesByUser[userId][date] =
+					(expensesByUser[userId][date] || 0) + gasto.monto;
 
-	// 3. Preparar dataSets para LineChart
-	const chartColors = [
-		colors.primary,
-		colors.alert,
-		"#FF9500",
-		"#FF2D55",
-		"#5856D6",
-		"#AF52DE",
-	];
+				gastosPorDiaSummary[date] =
+					(gastosPorDiaSummary[date] || 0) + gasto.monto;
+			});
 
-	const dataSets = Array.from(userIds).map((userId, index) => {
-		const userData = monthLabels.map((date, idx) => ({
-			value: expensesByUser[userId][date] || 0,
-			label: (idx + 1).toString(),
-		}));
+			return {
+				expensesByUser,
+				userIds,
+				gastosPorDiaSummary,
+				chartColors,
+			};
+		}, [gastosData]);
 
-		return {
-			data: userData,
-			color: chartColors[index % chartColors.length],
-			thickness: 3,
-			dataPointsColor: chartColors[index % chartColors.length],
-			textColor: "gray",
-		};
-	});
+	// Preparar dataSets para LineChart - memoizado
+	const dataSets = useMemo(() => {
+		return Array.from(userIds).map((userId, index) => {
+			const userData = monthLabels.map((date, idx) => ({
+				value: expensesByUser[userId][date] || 0,
+				label: (idx + 1).toString(),
+			}));
 
-	// Si no hay datos, mostramos un array vacío para evitar errores
+			return {
+				data: userData,
+				color: chartColors[index % chartColors.length],
+				thickness: 3,
+				dataPointsColor: chartColors[index % chartColors.length],
+				textColor: "gray",
+			};
+		});
+	}, [userIds, monthLabels, expensesByUser, chartColors]);
+
 	const mainData = dataSets.length > 0 ? dataSets[0].data : [];
-	const otherDataSets = dataSets.length > 1 ? dataSets.slice(1) : [];
+
+	// Preparar datos para el componente de gastos por usuario - memoizado
+	const gastosPorUsuarioData = useMemo(() => {
+		return Array.from(userIds).map((userId, index) => {
+			const monto = Object.values(expensesByUser[userId] || {}).reduce(
+				(a, b) => a + b,
+				0,
+			);
+			const displayName =
+				userId === user?.id
+					? user?.displayName || "Yo"
+					: profileMap[userId] || `User: ${userId.slice(0, 8)}...`;
+			const color = chartColors[index % chartColors.length];
+			return { userId, displayName, monto, color };
+		});
+	}, [
+		userIds,
+		expensesByUser,
+		profileMap,
+		user?.id,
+		user?.displayName,
+		chartColors,
+	]);
+
+	if (isLoading) {
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator
+					size='large'
+					color={colors.primary}
+				/>
+			</View>
+		);
+	}
+
 	return (
 		<ScrollView
-			className='flex-1 px-4'
+			style={styles.container}
 			refreshControl={
 				<RefreshControl
 					refreshing={isLoading}
-					onRefresh={() => {
-						refetch();
-					}}
+					onRefresh={refetch}
 				/>
-			}>
-			{/* <Text className='text-2xl font-bold mb-6 mt-4 text-text-black'>
-				Estadísticas de Gastos
-			</Text> */}
+			}
+			showsVerticalScrollIndicator={false}>
 			<HeaderComponent title='Estadísticas de Gastos' />
 
-			{isLoading ? (
-				<View className='flex-1 justify-center items-center h-64'>
-					<ActivityIndicator
-						size='large'
-						color={colors.primary}
-					/>
-				</View>
-			) : (
-				<ScrollView showsVerticalScrollIndicator={false}>
-					<View className='bg-white rounded-2xl p-4 shadow-sm mb-4'>
-						<Text className='text-base font-semibold text-gray-500 mb-2'>
-							Total del Mes
-						</Text>
-						<Text
-							className='text-3xl font-bold'
-							style={{ color: colors.primary }}>
-							${total.toLocaleString("es-AR")}
-						</Text>
-					</View>
+			{/* Total Card */}
+			<View style={styles.totalCard}>
+				<Text style={styles.totalLabel}>Total del Mes</Text>
+				<Text style={[styles.totalAmount, { color: colors.primary }]}>
+					${total.toLocaleString("es-AR")}
+				</Text>
+			</View>
 
-					{dataSets.length > 0 && (
-						<View className='bg-white rounded-2xl p-4 shadow-sm mb-4'>
-							<Text className='text-base font-semibold text-gray-500 mb-4'>
-								Tendencia de Gastos por Usuario
-							</Text>
+			{/* Chart Card */}
+			{gastosData && gastosData.length > 0 && (
+				<View style={styles.chartCard}>
+					<Text style={styles.chartLabel}>
+						Tendencia de Gastos por Usuario
+					</Text>
 
-							{/* Leyenda simple */}
-							<View className='flex-row flex-wrap mb-4'>
-								{Array.from(userIds).map((userId, index) => (
-									<View
-										key={userId}
-										className='flex-row items-center mr-4 mb-2'>
-										<View
-											className='w-3 h-3 rounded-full mr-1'
-											style={{
-												backgroundColor:
-													chartColors[
-														index %
-															chartColors.length
-													],
-											}}
-										/>
-										<Text className='text-xs text-gray-600'>
-											{userId === user?.id
-												? user.displayName || "Yo"
-												: profileMap[userId] ||
-													`User: ${userId.slice(0, 8)}...`}
-										</Text>
-									</View>
-								))}
-							</View>
-
-							<ScrollView
-								horizontal
-								showsHorizontalScrollIndicator={false}>
-								<View style={{ paddingBottom: 10 }}>
-									<LineChart
-										data={mainData}
-										dataSet={dataSets}
-										areaChart
-										curved
-										height={220}
-										width={monthLabels.length * 40 + 60} // Ancho dinámico basado en días
-										spacing={40}
-										initialSpacing={20}
-										endSpacing={40}
-										yAxisLabelWidth={55}
-										startFillColor={colors.primary}
-										endFillColor='rgba(9, 255, 91, 0.1)'
-										startOpacity={0.4}
-										endOpacity={0.1}
-										thickness={3}
-										hideDataPoints={false}
-										dataPointsRadius={4}
-										textColor1='gray'
-										textFontSize={10}
-										hideRules
-										xAxisColor='lightgray'
-										yAxisColor='lightgray'
-										noOfSections={4}
-										isAnimated
-										formatYLabel={(value) => {
-											if (Number(value) >= 1000000)
-												return `${(
-													Number(value) / 1000000
-												).toFixed(1)}M`;
-											if (Number(value) >= 1000)
-												return `${(
-													Number(value) / 1000
-												).toFixed(0)}k`;
-											return value;
-										}}
-										xAxisLabelsVerticalShift={10}
-										xAxisLabelsHeight={30}
-										xAxisLabelTextStyle={{
-											color: "gray",
-											fontSize: 12,
-										}}
-										pointerConfig={{
-											pointerStripColor: "lightgray",
-											pointerStripWidth: 2,
-											pointerColor: colors.primary,
-											radius: 6,
-											pointerLabelComponent: (
-												items: any
-											) => {
-												return (
-													<View
-														style={{
-															backgroundColor:
-																"white",
-															padding: 8,
-															borderRadius: 8,
-															minWidth: 120,
-															shadowColor: "#000",
-															shadowOffset: {
-																width: 0,
-																height: 2,
-															},
-															shadowOpacity: 0.25,
-															shadowRadius: 3.84,
-															elevation: 5,
-															borderWidth: 1,
-															borderColor:
-																"#f0f0f0",
-														}}>
-														<Text
-															style={{
-																fontWeight:
-																	"bold",
-																fontSize: 12,
-																marginBottom: 4,
-																textAlign:
-																	"center",
-															}}>
-															Día {items[0].label}
-														</Text>
-														{items.map(
-															(
-																item: any,
-																index: number
-															) => (
-																<View
-																	key={index}
-																	style={{
-																		flexDirection:
-																			"row",
-																		alignItems:
-																			"center",
-																		justifyContent:
-																			"center",
-																		marginTop: 2,
-																	}}>
-																	<Text
-																		style={{
-																			fontSize: 16,
-																			color: chartColors[
-																				index %
-																					chartColors.length
-																			],
-																			marginRight: 6,
-																			lineHeight: 16,
-																		}}>
-																		●
-																	</Text>
-																	<Text
-																		style={{
-																			fontSize: 11,
-																			color: "#333",
-																			fontWeight:
-																				"500",
-																		}}>
-																		$
-																		{item.value.toLocaleString(
-																			"es-AR"
-																		)}
-																	</Text>
-																</View>
-															)
-														)}
-													</View>
-												);
-											},
-										}}
-									/>
-								</View>
-							</ScrollView>
-							<View className='mt-4 mb-2'>
-								<Text className='text-center text-[11px] text-gray-500 font-bold capitalize italic'>
-									Días del mes de {dayjs().format("MMMM")}
+					{/* Leyenda */}
+					<View style={styles.legendContainer}>
+						{Array.from(userIds).map((userId, index) => (
+							<View
+								key={userId}
+								style={styles.legendItem}>
+								<View
+									style={[
+										styles.legendDot,
+										{
+											backgroundColor:
+												chartColors[
+													index % chartColors.length
+												],
+										},
+									]}
+								/>
+								<Text style={styles.legendText}>
+									{userId === user?.id
+										? user?.displayName || "Yo"
+										: profileMap[userId] ||
+											`User: ${userId.slice(0, 8)}...`}
 								</Text>
 							</View>
-						</View>
-					)}
-
-					<View className='bg-white rounded-2xl p-4 shadow-sm'>
-						<Text className='text-base font-semibold text-gray-500 mb-4'>
-							Gastos por Día (Mes Actual)
-						</Text>
-						{Object.keys(gastosPorDiaSummary).length > 0 ? (
-							Object.entries(gastosPorDiaSummary)
-								.sort((a, b) => b[0].localeCompare(a[0])) // Ordenar por fecha descendente
-								.map(([date, monto], index) => (
-									<View
-										key={index}
-										className='flex-row justify-between items-center py-3 border-b border-gray-100'>
-										<Text className='text-base font-medium text-gray-700'>
-											{date}
-										</Text>
-										<Text
-											className='text-lg font-bold'
-											style={{ color: colors.primary }}>
-											${monto.toLocaleString("es-AR")}
-										</Text>
-									</View>
-								))
-						) : (
-							<Text className='text-center text-gray-500 py-10'>
-								No hay datos de gastos para este mes.
-							</Text>
-						)}
+						))}
 					</View>
-				</ScrollView>
+
+					{/* Gráfico */}
+					<ScrollView
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						scrollEnabled={dataSets.length > 0}>
+						<View style={styles.chartContainer}>
+							{dataSets.length > 0 && (
+								<LineChartComponent
+									mainData={mainData}
+									dataSets={dataSets}
+									monthLabels={monthLabels}
+									chartColors={chartColors}
+								/>
+							)}
+						</View>
+					</ScrollView>
+
+					<Text style={styles.monthLabel}>
+						Días del mes de {dayjs().format("MMMM")}
+					</Text>
+				</View>
 			)}
+
+			{/* Tabs */}
+			<View style={styles.tabsContainer}>
+				<TouchableOpacity
+					onPress={() => setActiveTab("diario")}
+					style={[
+						styles.tabButton,
+						activeTab === "diario" && styles.tabButtonActive,
+					]}
+					activeOpacity={0.7}>
+					<Text
+						style={[
+							styles.tabText,
+							activeTab === "diario" && {
+								color: colors.primary,
+							},
+						]}>
+						Diario
+					</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => setActiveTab("usuario")}
+					style={[
+						styles.tabButton,
+						activeTab === "usuario" && styles.tabButtonActive,
+					]}
+					activeOpacity={0.7}>
+					<Text
+						style={[
+							styles.tabText,
+							activeTab === "usuario" && {
+								color: colors.primary,
+							},
+						]}>
+						Usuario
+					</Text>
+				</TouchableOpacity>
+			</View>
+
+			{/* Contenido por tab */}
+			<View style={styles.contentContainer}>
+				{activeTab === "diario" ? (
+					<GastosXdia gastosPorDiaSummary={gastosPorDiaSummary} />
+				) : (
+					<GastosPorUsuario data={gastosPorUsuarioData} />
+				)}
+			</View>
 		</ScrollView>
 	);
 };

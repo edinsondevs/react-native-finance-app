@@ -1,17 +1,20 @@
-import dayjs from 'dayjs'
-import { useState } from 'react'
-import { View, Text, Pressable } from "react-native";
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome } from "@expo/vector-icons";
+import dayjs from "dayjs";
+import { useState } from "react";
+import { Pressable, Text, View } from "react-native";
 
-import { useAuthStore } from '@/store/useAuthStore'
-import { IngresoInterfaces } from '@/api/services/interfaces'
+import { IngresoInterfaces } from "@/api/services/interfaces";
+import { useAuthStore } from "@/store/useAuthStore";
 
-import { useFormatoMoneda, useIngresosMutations } from '@/hooks'
-import { FnIngresos } from '@/helpers/functions/ingresos'
+import { FnIngresos } from "@/helpers/functions/ingresos";
+import { useFormatoMoneda, useIngresosMutations } from "@/hooks";
 
-import ModalEdicionIngreso from './ModalEdicionIngreso'
+// ✅ IMPORTAR DIRECTAMENTE, NO DESDE components/index.ts
+import ModalEdicionIngreso from "./ModalEdicionIngreso";
+import ButtomComponent from "./ButtomComponent";
+import InputComponent from "./InputComponent";
 
-export const ItemIngreso = ({
+const ItemIngreso = ({
 	id,
 	monto = 0,
 	fecha,
@@ -25,10 +28,14 @@ export const ItemIngreso = ({
 	const { user } = useAuthStore();
 
 	// Usar el custom hook para las mutaciones
-	const { updateMutation, deleteMutation } = useIngresosMutations({ id, onSuccessCallback: () => setModalVisible(false), });
+	const { updateMutation, deleteMutation } = useIngresosMutations({
+		id,
+		onSuccessCallback: () => setModalVisible(false),
+	});
 
 	// Validar si el movimiento es del usuario actual
-	const bgColorAvailable = user_id === user?.id ? "bg-white" : "bg-button-disabled";
+	const bgColorAvailable =
+		user_id === user?.id ? "bg-white" : "bg-button-disabled";
 
 	return (
 		<>
@@ -106,3 +113,4 @@ export const ItemIngreso = ({
 	);
 };
 
+export default ItemIngreso;

@@ -1,11 +1,14 @@
-import { Stack } from 'expo-router'
+import { Stack } from "expo-router";
 
 const EstadisticasLayout = () => {
-  return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-    </Stack>
-  )
-}
+	return (
+		<Stack>
+			<Stack.Screen
+				name='index'
+				options={{ headerShown: false }}
+			/>
+		</Stack>
+	);
+};
 
-export default EstadisticasLayout
+export default EstadisticasLayout;

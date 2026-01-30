@@ -1,16 +1,20 @@
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { router } from "expo-router";
-import { useQuery,  } from "@tanstack/react-query";
-import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
+import {
+	ActivityIndicator,
+	FlatList,
+	RefreshControl,
+	Text,
+	View,
+} from "react-native";
 
 import { getIngresosServices } from "@/api/services/ingreso/get.ingresos.services";
-import { CircleButton, HeaderComponent } from "@/components";
-import { IngresoInterfaces } from "@/api/services/interfaces"
-import { ItemIngreso } from "./ItemIngreso";
+import { IngresoInterfaces } from "@/api/services/interfaces";
+import { CircleButton, HeaderComponent, ItemIngreso } from "@/components";
 
 dayjs.locale("es");
-
 
 // Eliminamos HeaderList ya que no es necesario en el nuevo diseño de tarjetas.
 
