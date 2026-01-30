@@ -10,10 +10,12 @@ import { DescripcionField, FechaField, MontoField } from "@/components/form-fiel
 
 import { IngresoForm } from "@/interfaces";
 import { Colors } from "@/styles/constants";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const AgregarIngresos = () => {
 
 	const { control, handleSubmit, reset, watch, setValue } = useForm<IngresoForm>({ defaultValues: { fecha: new Date() } });
+	const { user } = useAuthStore();
 
 	// Usar el custom hook para la mutación
 	const { mutate: crearIngreso, isPending } = useFormMutation<IngresoForm>({
@@ -22,7 +24,8 @@ const AgregarIngresos = () => {
 				origen: data.origen,
 				monto: Number(data.monto),
 				fecha: dayjs(data.fecha).format("YYYY-MM-DD"),
-				descripcion: data.descripcion
+				descripcion: data.descripcion,
+				user_id: user?.id,
 			});
 		},
 		queryKeys: [["ingresos"], ["resumeIngresos"]],
