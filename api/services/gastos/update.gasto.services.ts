@@ -6,7 +6,6 @@ export const updateGastoServices = async (
 	id: number,
 	data: Partial<GastoData>,
 ) => {
-	console.log("updateGastoServices", id, data);
 	try {
 		// Remove id from data if present to avoid updating it or causing errors if it's not allowed in body
 		const { id: _, ...updateData } = data;

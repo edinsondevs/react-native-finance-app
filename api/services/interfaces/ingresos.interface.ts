@@ -5,10 +5,10 @@
  */
 export interface IngresoInterfaces {
     id: number;
-    createdAt: Date;
+    createdAt?: Date;
     origen: string;
     monto: number;
     fecha: Date | string;
     descripcion: string;
-    user_id: string;
+    user_id?: string;
 }

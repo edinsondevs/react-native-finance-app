@@ -1,149 +1,23 @@
-import { getProfilesServices } from "@/api/services";
-import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
-import {
-	GastosPorUsuario,
-	GastosXdia,
-	HeaderComponent,
-	LineChartComponent,
-} from "@/components";
-import { useAuthStore } from "@/store/useAuthStore";
-import { colors } from "@/styles/constants";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
-import { useState, useMemo } from "react";
-import {
-	ActivityIndicator,
-	RefreshControl,
-	ScrollView,
-	Text,
-	TouchableOpacity,
-	View,
-	StyleSheet,
-} from "react-native";
-
+import { useMemo, useState } from "react";
 dayjs.locale("es");
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingHorizontal: 16,
-	},
-	scrollView: {
-		flex: 1,
-	},
-	loadingContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	totalCard: {
-		backgroundColor: "white",
-		borderRadius: 16,
-		padding: 16,
-		marginBottom: 16,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.05,
-		shadowRadius: 2,
-		elevation: 2,
-	},
-	totalLabel: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: "#9ca3af",
-		marginBottom: 8,
-	},
-	totalAmount: {
-		fontSize: 32,
-		fontWeight: "bold",
-	},
-	chartCard: {
-		backgroundColor: "white",
-		borderRadius: 16,
-		padding: 16,
-		marginBottom: 16,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.05,
-		shadowRadius: 2,
-		elevation: 2,
-	},
-	chartLabel: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: "#9ca3af",
-		marginBottom: 16,
-	},
-	legendContainer: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		marginBottom: 16,
-	},
-	legendItem: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginRight: 16,
-		marginBottom: 8,
-	},
-	legendDot: {
-		width: 12,
-		height: 12,
-		borderRadius: 6,
-		marginRight: 4,
-	},
-	legendText: {
-		fontSize: 12,
-		color: "#4b5563",
-	},
-	chartContainer: {
-		paddingBottom: 10,
-	},
-	monthLabel: {
-		marginTop: 16,
-		marginBottom: 8,
-		textAlign: "center",
-		fontSize: 11,
-		color: "#9ca3af",
-		fontWeight: "bold",
-		fontStyle: "italic",
-	},
-	tabsContainer: {
-		flexDirection: "row",
-		marginBottom: 16,
-		backgroundColor: "#f3f4f6",
-		padding: 4,
-		borderRadius: 12,
-	},
-	tabButton: {
-		flex: 1,
-		paddingVertical: 8,
-		borderRadius: 8,
-		alignItems: "center",
-	},
-	tabButtonActive: {
-		backgroundColor: "white",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.05,
-		shadowRadius: 2,
-		elevation: 2,
-	},
-	tabText: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: "#9ca3af",
-	},
-	contentContainer: {
-		marginBottom: 16,
-	},
-	horizontalScroll: {
-		paddingBottom: 10,
-	},
-});
+import { ActivityIndicator, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { getCategoriasServices, getMetodosPagoServices, getProfilesServices } from "@/api/services";
+import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
+import { GastosPorCategoria, GastosPorTipoPago, GastosPorUsuario, GastosXdia, HeaderComponent, LineChartComponent, PieChartComponent, TabSelectorEstadisticas } from "@/components";
+import { useAuthStore } from "@/store/useAuthStore";
+import { colors } from "@/styles/constants";
+import { styles } from "@/styles/estadisticas.styles";
+
 
 const EstadisticasScreen = () => {
-	const [activeTab, setActiveTab] = useState<"diario" | "usuario">("diario");
+	const [activeTab, setActiveTab] = useState<
+		"diario" | "usuario" | "tipo_pago" | "categoria"
+	>("diario");
+	const [activeChart, setActiveChart] = useState<"line" | "pie">("line");
 
 	const {
 		data: gastosData,
@@ -161,6 +35,16 @@ const EstadisticasScreen = () => {
 		queryFn: getProfilesServices,
 	});
 
+	const { data: metodosPago } = useQuery({
+		queryKey: ["metodosPago"],
+		queryFn: getMetodosPagoServices,
+	});
+
+	const { data: categorias } = useQuery({
+		queryKey: ["categorias"],
+		queryFn: getCategoriasServices,
+	});
+
 	// Crear un mapa de ID -> Nombre para búsqueda rápida
 	const profileMap = useMemo(
 		() =>
@@ -169,6 +53,27 @@ const EstadisticasScreen = () => {
 				return acc;
 			}, {}),
 		[profiles],
+	);
+
+	const metodosPagoMap = useMemo(
+		() =>
+			(metodosPago || []).reduce(
+				(acc: Record<string, string>, m: any) => {
+					acc[m.id] = m.name;
+					return acc;
+				},
+				{},
+			),
+		[metodosPago],
+	);
+
+	const categoriasMap = useMemo(
+		() =>
+			(categorias || []).reduce((acc: Record<string, string>, c: any) => {
+				acc[c.id] = c.name;
+				return acc;
+			}, {}),
+		[categorias],
 	);
 
 	// Calcular total usando 'monto'
@@ -272,6 +177,45 @@ const EstadisticasScreen = () => {
 		chartColors,
 	]);
 
+	// Preparar datos para el componente de gastos por método de pago (luego llamado Tipo de Pago)
+	const gastosPorMetodoPagoData = useMemo(() => {
+		const totalsByMetodo: Record<string, number> = {};
+
+		gastosData?.forEach((gasto: any) => {
+			const metodoId = gasto.metodo_pago_id || "unknown";
+			totalsByMetodo[metodoId] =
+				(totalsByMetodo[metodoId] || 0) + gasto.monto;
+		});
+
+		return Object.entries(totalsByMetodo).map(
+			([metodoId, monto], index) => {
+				const name = metodosPagoMap[metodoId] || `Método ${metodoId}`;
+				const color = chartColors[index % chartColors.length];
+				return { name, monto, color };
+			},
+		);
+	}, [gastosData, metodosPagoMap, chartColors]);
+
+	// Preparar datos para el componente de gastos por categoría
+	const gastosPorCategoriaData = useMemo(() => {
+		const totalsByCategoria: Record<string, number> = {};
+
+		gastosData?.forEach((gasto: any) => {
+			const categoriaId = gasto.categoria_id || "unknown";
+			totalsByCategoria[categoriaId] =
+				(totalsByCategoria[categoriaId] || 0) + gasto.monto;
+		});
+
+		return Object.entries(totalsByCategoria).map(
+			([categoriaId, monto], index) => {
+				const name =
+					categoriasMap[categoriaId] || `Categoría ${categoriaId}`;
+				const color = chartColors[index % chartColors.length];
+				return { name, monto, color };
+			},
+		);
+	}, [gastosData, categoriasMap, chartColors]);
+
 	if (isLoading) {
 		return (
 			<View style={styles.loadingContainer}>
@@ -303,107 +247,166 @@ const EstadisticasScreen = () => {
 				</Text>
 			</View>
 
+			{/* Chart Selector (Fuera de la card) */}
+			{gastosData && gastosData.length > 0 && (
+				<View
+					style={{
+						flexDirection: "row",
+						backgroundColor: "#f3f4f6",
+						padding: 4,
+						borderRadius: 12,
+						marginBottom: 12,
+					}}>
+					<TouchableOpacity
+						onPress={() => setActiveChart("line")}
+						style={{
+							flex: 1,
+							paddingVertical: 8,
+							borderRadius: 8,
+							alignItems: "center",
+							backgroundColor:
+								activeChart === "line"
+									? "white"
+									: "transparent",
+							shadowColor:
+								activeChart === "line" ? "#000" : "transparent",
+							shadowOffset: { width: 0, height: 1 },
+							shadowOpacity: 0.1,
+							shadowRadius: 2,
+							elevation: activeChart === "line" ? 2 : 0,
+						}}>
+						<Text
+							style={{
+								fontSize: 14,
+								fontWeight: "600",
+								color:
+									activeChart === "line"
+										? colors.primary
+										: "#9ca3af",
+							}}>
+							Gráfico de Líneas
+						</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => setActiveChart("pie")}
+						style={{
+							flex: 1,
+							paddingVertical: 8,
+							borderRadius: 8,
+							alignItems: "center",
+							backgroundColor:
+								activeChart === "pie" ? "white" : "transparent",
+							shadowColor:
+								activeChart === "pie" ? "#000" : "transparent",
+							shadowOffset: { width: 0, height: 1 },
+							shadowOpacity: 0.1,
+							shadowRadius: 2,
+							elevation: activeChart === "pie" ? 2 : 0,
+						}}>
+						<Text
+							style={{
+								fontSize: 14,
+								fontWeight: "600",
+								color:
+									activeChart === "pie"
+										? colors.primary
+										: "#9ca3af",
+							}}>
+							Gráfico de Torta
+						</Text>
+					</TouchableOpacity>
+				</View>
+			)}
+
 			{/* Chart Card */}
 			{gastosData && gastosData.length > 0 && (
 				<View style={styles.chartCard}>
 					<Text style={styles.chartLabel}>
-						Tendencia de Gastos por Usuario
+						{activeChart === "line"
+							? "Tendencia de Gastos por Usuario"
+							: "Distribución por Categoría"}
 					</Text>
 
-					{/* Leyenda */}
-					<View style={styles.legendContainer}>
-						{Array.from(userIds).map((userId, index) => (
-							<View
-								key={userId}
-								style={styles.legendItem}>
-								<View
-									style={[
-										styles.legendDot,
-										{
-											backgroundColor:
-												chartColors[
-													index % chartColors.length
-												],
-										},
-									]}
-								/>
-								<Text style={styles.legendText}>
-									{userId === user?.id
-										? user?.displayName || "Yo"
-										: profileMap[userId] ||
-											`User: ${userId.slice(0, 8)}...`}
-								</Text>
+					{activeChart === "line" ? (
+						<>
+							{/* Leyenda solo para LineChart */}
+							<View style={styles.legendContainer}>
+								{Array.from(userIds).map((userId, index) => (
+									<View
+										key={userId}
+										style={styles.legendItem}>
+										<View
+											style={[
+												styles.legendDot,
+												{
+													backgroundColor:
+														chartColors[
+															index %
+																chartColors.length
+														],
+												},
+											]}
+										/>
+										<Text style={styles.legendText}>
+											{userId === user?.id
+												? user?.displayName || "Yo"
+												: profileMap[userId] ||
+													`User: ${userId.slice(
+														0,
+														8,
+													)}...`}
+										</Text>
+									</View>
+								))}
 							</View>
-						))}
-					</View>
 
-					{/* Gráfico */}
-					<ScrollView
-						horizontal
-						showsHorizontalScrollIndicator={false}
-						scrollEnabled={dataSets.length > 0}>
-						<View style={styles.chartContainer}>
-							{dataSets.length > 0 && (
-								<LineChartComponent
-									mainData={mainData}
-									dataSets={dataSets}
-									monthLabels={monthLabels}
-									chartColors={chartColors}
-								/>
-							)}
+							<ScrollView
+								horizontal
+								showsHorizontalScrollIndicator={false}
+								scrollEnabled={dataSets.length > 0}>
+								<View style={styles.chartContainer}>
+									{dataSets.length > 0 && (
+										<LineChartComponent
+											mainData={mainData}
+											dataSets={dataSets}
+											monthLabels={monthLabels}
+											chartColors={chartColors}
+										/>
+									)}
+								</View>
+							</ScrollView>
+
+							<Text style={styles.monthLabel}>
+								Días del mes de {dayjs().format("MMMM")}
+							</Text>
+						</>
+					) : (
+						<View style={{ alignItems: "center" }}>
+							<PieChartComponent data={gastosPorCategoriaData} />
 						</View>
-					</ScrollView>
-
-					<Text style={styles.monthLabel}>
-						Días del mes de {dayjs().format("MMMM")}
-					</Text>
+					)}
 				</View>
 			)}
 
 			{/* Tabs */}
-			<View style={styles.tabsContainer}>
-				<TouchableOpacity
-					onPress={() => setActiveTab("diario")}
-					style={[
-						styles.tabButton,
-						activeTab === "diario" && styles.tabButtonActive,
-					]}
-					activeOpacity={0.7}>
-					<Text
-						style={[
-							styles.tabText,
-							activeTab === "diario" && {
-								color: colors.primary,
-							},
-						]}>
-						Diario
-					</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => setActiveTab("usuario")}
-					style={[
-						styles.tabButton,
-						activeTab === "usuario" && styles.tabButtonActive,
-					]}
-					activeOpacity={0.7}>
-					<Text
-						style={[
-							styles.tabText,
-							activeTab === "usuario" && {
-								color: colors.primary,
-							},
-						]}>
-						Usuario
-					</Text>
-				</TouchableOpacity>
-			</View>
+			<TabSelectorEstadisticas
+				activeTab={activeTab}
+				setActiveTab={setActiveTab}
+			/>
 
 			{/* Contenido por tab */}
 			<View style={styles.contentContainer}>
-				{activeTab === "diario" ? (
+				{activeTab === "diario" && (
 					<GastosXdia gastosPorDiaSummary={gastosPorDiaSummary} />
-				) : (
+				)}
+				{activeTab === "usuario" && (
 					<GastosPorUsuario data={gastosPorUsuarioData} />
+				)}
+				{activeTab === "tipo_pago" && (
+					<GastosPorTipoPago data={gastosPorMetodoPagoData} />
+				)}
+				{activeTab === "categoria" && (
+					<GastosPorCategoria data={gastosPorCategoriaData} />
 				)}
 			</View>
 		</ScrollView>
