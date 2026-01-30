@@ -1,6 +1,12 @@
-import { getProfilesServices } from "@/api/services";
+import {
+	getCategoriasServices,
+	getMetodosPagoServices,
+	getProfilesServices,
+} from "@/api/services";
 import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
 import {
+	GastosPorCategoria,
+	GastosPorTipoPago,
 	GastosPorUsuario,
 	GastosXdia,
 	HeaderComponent,
@@ -8,10 +14,11 @@ import {
 } from "@/components";
 import { useAuthStore } from "@/store/useAuthStore";
 import { colors } from "@/styles/constants";
+import { styles } from "@/styles/estadisticas.styles";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
 	ActivityIndicator,
 	RefreshControl,
@@ -19,131 +26,14 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-	StyleSheet,
 } from "react-native";
 
 dayjs.locale("es");
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingHorizontal: 16,
-	},
-	scrollView: {
-		flex: 1,
-	},
-	loadingContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	totalCard: {
-		backgroundColor: "white",
-		borderRadius: 16,
-		padding: 16,
-		marginBottom: 16,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.05,
-		shadowRadius: 2,
-		elevation: 2,
-	},
-	totalLabel: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: "#9ca3af",
-		marginBottom: 8,
-	},
-	totalAmount: {
-		fontSize: 32,
-		fontWeight: "bold",
-	},
-	chartCard: {
-		backgroundColor: "white",
-		borderRadius: 16,
-		padding: 16,
-		marginBottom: 16,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.05,
-		shadowRadius: 2,
-		elevation: 2,
-	},
-	chartLabel: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: "#9ca3af",
-		marginBottom: 16,
-	},
-	legendContainer: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		marginBottom: 16,
-	},
-	legendItem: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginRight: 16,
-		marginBottom: 8,
-	},
-	legendDot: {
-		width: 12,
-		height: 12,
-		borderRadius: 6,
-		marginRight: 4,
-	},
-	legendText: {
-		fontSize: 12,
-		color: "#4b5563",
-	},
-	chartContainer: {
-		paddingBottom: 10,
-	},
-	monthLabel: {
-		marginTop: 16,
-		marginBottom: 8,
-		textAlign: "center",
-		fontSize: 11,
-		color: "#9ca3af",
-		fontWeight: "bold",
-		fontStyle: "italic",
-	},
-	tabsContainer: {
-		flexDirection: "row",
-		marginBottom: 16,
-		backgroundColor: "#f3f4f6",
-		padding: 4,
-		borderRadius: 12,
-	},
-	tabButton: {
-		flex: 1,
-		paddingVertical: 8,
-		borderRadius: 8,
-		alignItems: "center",
-	},
-	tabButtonActive: {
-		backgroundColor: "white",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.05,
-		shadowRadius: 2,
-		elevation: 2,
-	},
-	tabText: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: "#9ca3af",
-	},
-	contentContainer: {
-		marginBottom: 16,
-	},
-	horizontalScroll: {
-		paddingBottom: 10,
-	},
-});
-
 const EstadisticasScreen = () => {
-	const [activeTab, setActiveTab] = useState<"diario" | "usuario">("diario");
+	const [activeTab, setActiveTab] = useState<
+		"diario" | "usuario" | "tipo_pago" | "categoria"
+	>("diario");
 
 	const {
 		data: gastosData,
@@ -161,6 +51,16 @@ const EstadisticasScreen = () => {
 		queryFn: getProfilesServices,
 	});
 
+	const { data: metodosPago } = useQuery({
+		queryKey: ["metodosPago"],
+		queryFn: getMetodosPagoServices,
+	});
+
+	const { data: categorias } = useQuery({
+		queryKey: ["categorias"],
+		queryFn: getCategoriasServices,
+	});
+
 	// Crear un mapa de ID -> Nombre para búsqueda rápida
 	const profileMap = useMemo(
 		() =>
@@ -169,6 +69,27 @@ const EstadisticasScreen = () => {
 				return acc;
 			}, {}),
 		[profiles],
+	);
+
+	const metodosPagoMap = useMemo(
+		() =>
+			(metodosPago || []).reduce(
+				(acc: Record<string, string>, m: any) => {
+					acc[m.id] = m.name;
+					return acc;
+				},
+				{},
+			),
+		[metodosPago],
+	);
+
+	const categoriasMap = useMemo(
+		() =>
+			(categorias || []).reduce((acc: Record<string, string>, c: any) => {
+				acc[c.id] = c.name;
+				return acc;
+			}, {}),
+		[categorias],
 	);
 
 	// Calcular total usando 'monto'
@@ -271,6 +192,45 @@ const EstadisticasScreen = () => {
 		user?.displayName,
 		chartColors,
 	]);
+
+	// Preparar datos para el componente de gastos por método de pago (luego llamado Tipo de Pago)
+	const gastosPorMetodoPagoData = useMemo(() => {
+		const totalsByMetodo: Record<string, number> = {};
+
+		gastosData?.forEach((gasto: any) => {
+			const metodoId = gasto.metodo_pago_id || "unknown";
+			totalsByMetodo[metodoId] =
+				(totalsByMetodo[metodoId] || 0) + gasto.monto;
+		});
+
+		return Object.entries(totalsByMetodo).map(
+			([metodoId, monto], index) => {
+				const name = metodosPagoMap[metodoId] || `Método ${metodoId}`;
+				const color = chartColors[index % chartColors.length];
+				return { name, monto, color };
+			},
+		);
+	}, [gastosData, metodosPagoMap, chartColors]);
+
+	// Preparar datos para el componente de gastos por categoría
+	const gastosPorCategoriaData = useMemo(() => {
+		const totalsByCategoria: Record<string, number> = {};
+
+		gastosData?.forEach((gasto: any) => {
+			const categoriaId = gasto.categoria_id || "unknown";
+			totalsByCategoria[categoriaId] =
+				(totalsByCategoria[categoriaId] || 0) + gasto.monto;
+		});
+
+		return Object.entries(totalsByCategoria).map(
+			([categoriaId, monto], index) => {
+				const name =
+					categoriasMap[categoriaId] || `Categoría ${categoriaId}`;
+				const color = chartColors[index % chartColors.length];
+				return { name, monto, color };
+			},
+		);
+	}, [gastosData, categoriasMap, chartColors]);
 
 	if (isLoading) {
 		return (
@@ -396,14 +356,55 @@ const EstadisticasScreen = () => {
 						Usuario
 					</Text>
 				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => setActiveTab("tipo_pago")}
+					style={[
+						styles.tabButton,
+						activeTab === "tipo_pago" && styles.tabButtonActive,
+					]}
+					activeOpacity={0.7}>
+					<Text
+						style={[
+							styles.tabText,
+							activeTab === "tipo_pago" && {
+								color: colors.primary,
+							},
+						]}>
+						Pago
+					</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					onPress={() => setActiveTab("categoria")}
+					style={[
+						styles.tabButton,
+						activeTab === "categoria" && styles.tabButtonActive,
+					]}
+					activeOpacity={0.7}>
+					<Text
+						style={[
+							styles.tabText,
+							activeTab === "categoria" && {
+								color: colors.primary,
+							},
+						]}>
+						Categoría
+					</Text>
+				</TouchableOpacity>
 			</View>
 
 			{/* Contenido por tab */}
 			<View style={styles.contentContainer}>
-				{activeTab === "diario" ? (
+				{activeTab === "diario" && (
 					<GastosXdia gastosPorDiaSummary={gastosPorDiaSummary} />
-				) : (
+				)}
+				{activeTab === "usuario" && (
 					<GastosPorUsuario data={gastosPorUsuarioData} />
+				)}
+				{activeTab === "tipo_pago" && (
+					<GastosPorTipoPago data={gastosPorMetodoPagoData} />
+				)}
+				{activeTab === "categoria" && (
+					<GastosPorCategoria data={gastosPorCategoriaData} />
 				)}
 			</View>
 		</ScrollView>

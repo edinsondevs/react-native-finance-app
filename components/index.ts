@@ -7,6 +7,8 @@ export { default as CustomSelector } from "./CustomSelector";
 export { default as DateTimePickerComponent } from "./DateTimePickerComponent";
 export { default as DividerComponent } from "./DividerComponent";
 export { default as FiltersButtons } from "./FiltersButtons";
+export { default as GastosPorCategoria } from "./GastosPorCategoria";
+export { default as GastosPorTipoPago } from "./GastosPorTipoPago";
 export { default as GastosPorUsuario } from "./GastosPorUsuario";
 export { default as GastosXdia } from "./GastosXdia";
 export { default as HeaderComponent } from "./HeaderComponent";
