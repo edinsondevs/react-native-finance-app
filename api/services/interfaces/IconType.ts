@@ -5,7 +5,7 @@
 export interface Category {
 	id: number;
 	name: string;
-	description: string;
+	description?: string;
 	/** Nombre del icono de MaterialIcons opcional para mostrar en la lista */
 	icon?: IconName;
 }

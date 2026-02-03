@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "../api/lib/supabase";
 
-type User = {
+export type User = {
 	id: string;
 	email: string;
 	displayName?: string;

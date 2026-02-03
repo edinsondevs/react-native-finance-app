@@ -63,8 +63,8 @@ export const getResumeGastosServices = async (): Promise<number> => {
 export const getAllGastosServices = async (): Promise<GastoData[]> => {
 	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
 	const fechaAnterior = dayjs()
-		.endOf("month")
 		.subtract(1, "month")
+		.endOf("month")
 		.format("YYYY-MM-DD");
 
 	try {
