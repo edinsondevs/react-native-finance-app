@@ -80,7 +80,10 @@ const PieChartComponent = ({ data }: PieChartComponentProps) => {
 						/>
 						<Text
 							style={{ flex: 1, fontSize: 14, color: "#4b5563" }}>
-							{item.name}
+							{item.name}{" "}
+							<Text style={{ fontSize: 12, color: "#9ca3af" }}>
+								({((item.monto / total) * 100).toFixed(1)}%)
+							</Text>
 						</Text>
 						<Text
 							style={{
