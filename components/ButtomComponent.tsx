@@ -23,9 +23,12 @@ const ButtomComponent = ({
 			? "border border-border-light"
 			: "border-transparent";
 
+	// Cambiar color a gris cuando está deshabilitado
+	const buttonColor = disabled ? "bg-gray-400" : color;
+
 	return (
 		<Pressable
-			className={`${color} p-3
+			className={`${buttonColor} p-3
 			${width} 
 			rounded-${"lg"} 
 			justify-center items-center ${border} ${className} `}

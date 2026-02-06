@@ -111,7 +111,7 @@ const AjustesScreen = () => {
 							isPending ? "Creando..." : "Crear Nueva Categoría"
 						}
 						color='bg-primary'
-						disabled={isPending}
+						disabled={isPending || !form.categoria.trim() || !form.categoriaIcon}
 					/>
 				</View>
 
@@ -139,7 +139,7 @@ const AjustesScreen = () => {
 						}
 						text={isPending ? "Creando..." : "Crear Metodo de Pago"}
 						color='bg-primary'
-						disabled={isPending}
+						disabled={isPending || !form.metodoPago.trim() || !form.metodoPagoIcon}
 					/>
 				</View>
 
