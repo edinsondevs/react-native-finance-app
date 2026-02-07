@@ -227,31 +227,45 @@ const Settings = () => {
 							/>
 						</View>
 
-						<View className='gap-3'>
+						{/* Botones reorganizados */}
+						<View className='gap-3 mt-4'>
+							{/* Fila 1: Botón Guardar */}
 							<ButtomComponent
 								onPressFunction={handleSave}
 								text={isPending ? 'Guardando...' : 'Guardar'}
 								color='bg-primary'
 								disabled={isPending || isDeletePending}
 							/>
-							<ButtomComponent
-								onPressFunction={() =>
-									handleDelete(selectedItem)
-								}
-								text={isDeleting ? 'Eliminando...' : 'Eliminar'}
-								color='bg-red-500'
-								disabled={isPending || isDeleting}
-							/>
-							<ButtomComponent
-								onPressFunction={() => {
-									setEditModalVisible(false);
-									setIsDeleting(false);
-								}}
-								text='Cancelar'
-								color='transparent'
-								textColor='text-text-black'
-								disabled={isPending || isDeleting}
-							/>
+
+							{/* Fila 2: Botones Eliminar y Cancelar */}
+							<View className='flex-row gap-3'>
+								<View className='flex-1'>
+									<ButtomComponent
+										onPressFunction={() =>
+											handleDelete(selectedItem)
+										}
+										text={
+											isDeleting
+												? 'Eliminando...'
+												: 'Eliminar'
+										}
+										color='bg-red-500'
+										disabled={isPending || isDeleting}
+									/>
+								</View>
+								<View className='flex-1'>
+									<ButtomComponent
+										onPressFunction={() => {
+											setEditModalVisible(false);
+											setIsDeleting(false);
+										}}
+										text='Cancelar'
+										color='transparent'
+										textColor='text-text-black'
+										disabled={isPending || isDeleting}
+									/>
+								</View>
+							</View>
 						</View>
 					</View>
 				</View>
