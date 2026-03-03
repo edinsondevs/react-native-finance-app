@@ -3,7 +3,14 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { IngresoInterfaces } from "../interfaces";
 
-//* Consulta de Ingresos
+/**
+ * Obtiene la lista de ingresos filtrada por el mes seleccionado.
+ * Consulta la API para obtener todos los ingresos cuyo campo fecha esté en el rango del mes.
+ * Los resultados se devuelven ordenados por fecha de forma descendente.
+ *
+ * @param month - Objeto dayjs que representa el mes para filtrar la búsqueda.
+ * @returns Promesa con un array de objetos que implementan IngresoInterfaces.
+ */
 export const getIngresosServices = async (
 	month: dayjs.Dayjs,
 ): Promise<IngresoInterfaces[]> => {

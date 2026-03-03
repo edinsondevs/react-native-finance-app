@@ -11,8 +11,19 @@ import { useFormatoMoneda, useIngresosMutations } from "@/hooks";
 
 // ✅ IMPORTAR DIRECTAMENTE, NO DESDE components/index.ts
 import ModalEdicionIngreso from "./ModalEdicionIngreso";
-import ButtomComponent from "./ButtomComponent";
-import InputComponent from "./InputComponent";
+
+/**
+ * @component ItemIngreso
+ * Representa una tarjeta individual para un registro de ingreso de dinero.
+ *
+ * Funcionalidad:
+ * - Muestra detalles del ingreso: monto, origen, fecha y descripción.
+ * - Formatea el monto a moneda local.
+ * - Permite abrir un modal de edición/eliminación si el usuario es el propietario.
+ * - Deshabilita la interacción si el registro no pertenece al usuario actual (SOLID: seguridad en UI).
+ *
+ * @param props - Datos parciales del ingreso según IngresoInterfaces.
+ */
 
 const ItemIngreso = ({
 	id,

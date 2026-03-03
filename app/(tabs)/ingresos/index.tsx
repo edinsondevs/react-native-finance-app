@@ -1,8 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
 import { router } from "expo-router";
-import { useMemo } from "react";
 import {
 	ActivityIndicator,
 	FlatList,
@@ -11,63 +7,26 @@ import {
 	View,
 } from "react-native";
 
-import { getIngresosServices } from "@/api/services/ingreso/get.ingresos.services";
 import {
 	CircleButton,
 	HeaderComponent,
 	ItemIngreso,
 	MonthSelector,
 } from "@/components";
-import { useFinanceStore } from "@/store/useFinanceStore";
-
-dayjs.locale("es");
+import { useIngresosScreenLogic } from "@/hooks/useIngresosScreenLogic";
 
 // Eliminamos HeaderList ya que no es necesario en el nuevo diseño de tarjetas.
 
+/**
+ * Pantalla de registro de ingresos mensuales.
+ * Muestra el historial de entradas de dinero para el periodo seleccionado.
+ */
 const IngresosScreen = () => {
-	const selectedMonth = useFinanceStore((state) => state.selectedMonth);
+	// 🏗️ Lógica externa desacoplada (SOLID)
+	const { isLoading, error, refetch, ingresosConSeparadores } =
+		useIngresosScreenLogic();
 
-	const { data, isLoading, error, refetch } = useQuery({
-		queryKey: ["ingresos", selectedMonth.format("YYYY-MM")],
-		queryFn: () => getIngresosServices(selectedMonth),
-	});
-
-	// Procesar datos para agregar separadores de mes
-	const ingresosConSeparadores = useMemo(() => {
-		if (!data || data.length === 0) return [];
-
-		// Agrupar por mes
-		const sorted = [...data].sort((a, b) => {
-			return dayjs(b.fecha).unix() - dayjs(a.fecha).unix();
-		});
-
-		const resultado: any[] = [];
-		let mesAnterior: string | null = null;
-
-		sorted.forEach((ingreso) => {
-			const mesActual = dayjs(ingreso.fecha).format("MMMM YYYY");
-
-			// Agregar separador si cambió el mes
-			if (mesAnterior !== mesActual && mesAnterior !== null) {
-				resultado.push({
-					type: "separator",
-					mes: mesActual,
-					id: `separator-${mesActual}`,
-				});
-			}
-
-			// Agregar el ingreso
-			resultado.push({
-				type: "ingreso",
-				...ingreso,
-			});
-
-			mesAnterior = mesActual;
-		});
-
-		return resultado;
-	}, [data]);
-
+	// Estado de carga inicial
 	if (isLoading) {
 		return (
 			<View className='flex-1 justify-center items-center'>
@@ -79,6 +38,7 @@ const IngresosScreen = () => {
 		);
 	}
 
+	// Estado de error en la petición
 	if (error) {
 		return (
 			<View className='flex-1 justify-center items-center'>
@@ -89,8 +49,13 @@ const IngresosScreen = () => {
 
 	return (
 		<View className='flex-1 bg-gray-50'>
+			{/* Encabezado Principal */}
 			<HeaderComponent title='Ingresos' />
+
+			{/* Selector de Mes (Sincronizado globalmente) */}
 			<MonthSelector />
+
+			{/* Lista de Ingresos */}
 			<FlatList
 				data={ingresosConSeparadores}
 				contentContainerStyle={{ paddingVertical: 8 }}
@@ -101,6 +66,7 @@ const IngresosScreen = () => {
 					/>
 				}
 				renderItem={({ item }: { item: any }) => {
+					// Renderizado condicional de separador vs item de ingreso
 					if (item.type === "separator") {
 						return <View className='bg-blue-500 h-1 my-3 mx-4' />;
 					}
@@ -123,6 +89,8 @@ const IngresosScreen = () => {
 					</Text>
 				}
 			/>
+
+			{/* Acción Flotante: Agregar Ingreso */}
 			<View className='bottom-0 right-0 m-6 absolute'>
 				<CircleButton
 					text='+'

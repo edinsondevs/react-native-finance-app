@@ -1,9 +1,3 @@
-import { useEstadisticasLogic } from "@/hooks/useEstadisticasLogic";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
-import { useState } from "react";
 import {
 	ActivityIndicator,
 	RefreshControl,
@@ -12,14 +6,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-dayjs.locale("es");
 
-import {
-	getCategoriasServices,
-	getMetodosPagoServices,
-	getProfilesServices,
-} from "@/api/services";
-import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
 import {
 	GastosPorCategoria,
 	GastosPorTipoPago,
@@ -32,47 +19,25 @@ import {
 	TabSelectorEstadisticas,
 } from "@/components";
 import useCapitalize from "@/hooks/useCapitalize";
-import { useFinanceStore } from "@/store/useFinanceStore";
+import { useEstadisticasScreenLogic } from "@/hooks/useEstadisticasScreenLogic";
 import { colors } from "@/styles/constants";
 import { styles } from "@/styles/estadisticas.styles";
 
+/**
+ * Pantalla de Análisis Estadístico de Gastos.
+ * Despliega gráficos interactivos, tendencias y distribuciones por diversos criterios.
+ */
 const EstadisticasScreen = () => {
-	const selectedMonth = useFinanceStore((state) => state.selectedMonth);
-	const { capitalize } = useCapitalize();
-
-	const [activeTab, setActiveTab] = useState<
-		"diario" | "usuario" | "tipo_pago" | "categoria"
-	>("diario");
-	const [activeChart, setActiveChart] = useState<"line" | "pie">("line");
-
+	// 🔌 Desacoplamiento de lógica (SOLID)
 	const {
-		data: gastosData,
+		activeTab,
+		setActiveTab,
+		activeChart,
+		setActiveChart,
 		isLoading,
 		refetch,
-	} = useQuery({
-		queryKey: ["estadisticasGastos", selectedMonth.format("YYYY-MM")],
-		queryFn: () => getGastosPorDiaServices(selectedMonth),
-	});
-
-	const { user } = useAuthStore();
-
-	const { data: profiles } = useQuery({
-		queryKey: ["profiles"],
-		queryFn: getProfilesServices,
-	});
-
-	const { data: metodosPago } = useQuery({
-		queryKey: ["metodosPago"],
-		queryFn: getMetodosPagoServices,
-	});
-
-	const { data: categorias } = useQuery({
-		queryKey: ["categorias"],
-		queryFn: getCategoriasServices,
-	});
-
-	// Lógica extraída al hook useEstadisticasLogic
-	const {
+		gastosData,
+		selectedMonth,
 		total,
 		monthLabels,
 		userIds,
@@ -84,15 +49,12 @@ const EstadisticasScreen = () => {
 		gastosPorDiaSummary,
 		chartColors,
 		profileMap,
-	} = useEstadisticasLogic({
-		gastosData,
 		user,
-		profiles,
-		metodosPago,
-		categorias,
-		selectedMonth,
-	});
+	} = useEstadisticasScreenLogic();
 
+	const { capitalize } = useCapitalize();
+
+	// Pantalla de carga centralizada
 	if (isLoading) {
 		return (
 			<View style={styles.loadingContainer}>
@@ -114,10 +76,13 @@ const EstadisticasScreen = () => {
 				/>
 			}
 			showsVerticalScrollIndicator={false}>
+			{/* Encabezado Principal */}
 			<HeaderComponent title='Estadísticas de Gastos' />
+
+			{/* Filtro de Periodo Global */}
 			<MonthSelector />
 
-			{/* Total Card */}
+			{/* Resumen Total: Card Destacada */}
 			<View style={styles.totalCard}>
 				<Text style={styles.totalLabel}>Total del Mes</Text>
 				<Text style={[styles.totalAmount, { color: colors.primary }]}>
@@ -125,7 +90,7 @@ const EstadisticasScreen = () => {
 				</Text>
 			</View>
 
-			{/* Chart Selector (Fuera de la card) */}
+			{/* Controles de Visualización: Switch Gráfico de Líneas vs Torta */}
 			{gastosData && gastosData.length > 0 && (
 				<View
 					style={{
@@ -196,8 +161,8 @@ const EstadisticasScreen = () => {
 				</View>
 			)}
 
-			{/* Chart Card */}
-			{gastosData && gastosData.length > 0 && (
+			{/* Sección de Gráfico Principal */}
+			{gastosData && gastosData.length > 0 ? (
 				<View style={styles.chartCard}>
 					<Text style={styles.chartLabel}>
 						{activeChart === "line"
@@ -207,7 +172,7 @@ const EstadisticasScreen = () => {
 
 					{activeChart === "line" ? (
 						<>
-							{/* Leyenda solo para LineChart */}
+							{/* Leyenda Dinámica para el Gráfico de Líneas */}
 							<View style={styles.legendContainer}>
 								{Array.from(userIds as Set<string>).map(
 									(userId, index) => (
@@ -230,16 +195,14 @@ const EstadisticasScreen = () => {
 												{userId === user?.id
 													? user?.displayName || "Yo"
 													: profileMap[userId] ||
-														`User: ${userId.slice(
-															0,
-															8,
-														)}...`}
+														`User: ${userId.slice(0, 8)}...`}
 											</Text>
 										</View>
 									),
 								)}
 							</View>
 
+							{/* Gráfico de Líneas con Scroll Horizontal */}
 							<ScrollView
 								horizontal
 								showsHorizontalScrollIndicator={false}
@@ -256,6 +219,7 @@ const EstadisticasScreen = () => {
 								</View>
 							</ScrollView>
 
+							{/* Pie de Gráfico: Referencia Temporal */}
 							<Text style={styles.monthLabel}>
 								Días del mes de{" "}
 								{capitalize(
@@ -264,20 +228,28 @@ const EstadisticasScreen = () => {
 							</Text>
 						</>
 					) : (
+						/* Gráfico de Torta Centrado */
 						<View style={{ alignItems: "center" }}>
 							<PieChartComponent data={gastosPorCategoriaData} />
 						</View>
 					)}
 				</View>
+			) : (
+				/* Estado Vacío cuando no hay datos en el periodo */
+				<View style={styles.chartCard}>
+					<Text className='text-center text-gray-500'>
+						No hay datos suficientes para graficar
+					</Text>
+				</View>
 			)}
 
-			{/* Tabs */}
+			{/* Selector de Pestañas de Detalle (Tabs) */}
 			<TabSelectorEstadisticas
 				activeTab={activeTab}
 				setActiveTab={setActiveTab}
 			/>
 
-			{/* Contenido por tab */}
+			{/* Panel de Contenido Detallado según Tab Seleccionado */}
 			<View style={styles.contentContainer}>
 				{activeTab === "diario" && (
 					<GastosXdia gastosPorDiaSummary={gastosPorDiaSummary} />

@@ -1,24 +1,28 @@
+import { FontAwesome } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 
-import { useAuthStore } from "@/store/useAuthStore";
 import { FnGastos } from "@/helpers/functions/gastos";
 import { useFormatoMoneda, useGastosMutations } from "@/hooks";
-import ModalEdicionMovimiento from "./ModalEdicionMovimiento";
 import { InterfaceMovimientosRecientesProps } from "@/interfaces";
+import { useAuthStore } from "@/store/useAuthStore";
+import ModalEdicionMovimiento from "./ModalEdicionMovimiento";
 
 dayjs.locale("es");
 
 /**
- * Componente que muestra una lista de movimientos recientes.
- * Actúa como un contenedor temático para el componente ItemMovimientosCards,
- * asegurando que la presentación se adhiera al tema de la aplicación.
+ * @component MovimientosRecientes
+ * Representa una tarjeta de gasto individual en la lista de movimientos.
  *
- * @param {InterfaceMovimientosRecientesProps} props - Propiedades que incluyen los datos del movimiento
- * @returns {JSX.Element} Vista del movimiento reciente envolviendo la tarjeta de detalles
+ * Funcionalidad:
+ * - Muestra el icono de la categoría, descripción, fecha formateada y monto negativo.
+ * - Detecta si el gasto pertenece al usuario actual para permitir la edición.
+ * - Abre el modal 'ModalEdicionMovimiento' para actualizar o borrar el registro.
+ * - Sincroniza estados locales con props mediante useEffect para reflejar cambios tras mutaciones.
+ *
+ * @param item - Objeto con los datos del gasto (InterfaceMovimientosRecientesProps).
  */
 const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 	const { id, monto, descripcion, icon, user_id } = item;
@@ -34,7 +38,8 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 	});
 
 	// Validar si el movimiento es del usuario actual
-	const bgColorAvailable = user_id === user?.id ? "bg-white" : "bg-button-disabled";
+	const bgColorAvailable =
+		user_id === user?.id ? "bg-white" : "bg-button-disabled";
 
 	// Actualizar el estado local cuando cambian los props (tras el refetch de React Query)
 	useEffect(() => {
@@ -44,8 +49,11 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 
 	return (
 		<View>
-			<Pressable onPress={() => setModalVisible(true)} disabled={user_id !== user?.id}>
-				<View className={`flex mx-4 my-2 p-4 border border-border-light rounded-2xl ${bgColorAvailable} shadow-sm`}>
+			<Pressable
+				onPress={() => setModalVisible(true)}
+				disabled={user_id !== user?.id}>
+				<View
+					className={`flex mx-4 my-2 p-4 border border-border-light rounded-2xl ${bgColorAvailable} shadow-sm`}>
 					<View className='flex flex-row items-center gap-4'>
 						{/* Icono de Gasto */}
 						<View className='size-12 rounded-full bg-red-100 items-center justify-center'>
@@ -64,7 +72,7 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 							<Text className='font-Inter-Regular text-xs text-text-muted'>
 								{item.fecha
 									? dayjs(item.fecha).format(
-											"DD [de] MMMM, YYYY"
+											"DD [de] MMMM, YYYY",
 										)
 									: "Hoy"}
 							</Text>
@@ -98,7 +106,7 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 					FnGastos.handleUpdate(
 						{ id, updateMutation, user_id: user?.id },
 						newMonto,
-						newDescripcion
+						newDescripcion,
 					)
 				}
 				handleDelete={() =>

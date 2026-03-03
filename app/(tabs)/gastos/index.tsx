@@ -1,7 +1,5 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useState } from "react";
 import {
 	ActivityIndicator,
 	FlatList,
@@ -10,7 +8,6 @@ import {
 	View,
 } from "react-native";
 
-import { getCategoriasServices, getMetodosPagoServices } from "@/api/services";
 import { Category } from "@/api/services/interfaces";
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
 import {
@@ -21,83 +18,36 @@ import {
 	MonthSelector,
 	TitleOpcionInput,
 } from "@/components";
-import { useDashboardData, useFormatoMoneda } from "@/hooks";
-import { useGetHoursCurrent } from "@/hooks/useGetHoursCurrent";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useFormatoMoneda } from "@/hooks";
+import { useGastosScreenLogic } from "@/hooks/useGastosScreenLogic";
 import { colors } from "@/styles/constants";
 
+/**
+ * Pantalla principal de Gestión de Gastos.
+ * Lista los movimientos filtrados por mes, categoría y método de pago.
+ */
 const GastosScreen = () => {
-	const { saludo } = useGetHoursCurrent();
-
+	// ⚡️ Desacoplamiento de lógica (SOLID - Single Responsibility)
 	const {
+		saludo,
+		displayName,
 		resumeIngresos,
 		isLoadingResumeIngresos,
-		resumeGastos,
-		isLoadingResumeGastos,
-		allGastos,
+		gastosFiltrados,
 		isLoadingAllGastos,
 		refreshAll,
-	} = useDashboardData();
-
-	const { user } = useAuthStore();
-	const displayName = user?.displayName || "Usuario";
-
-	// Estado para filtros
-	const [selectedCategoria, setSelectedCategoria] = useState<Category | null>(
-		null,
-	);
-	const [selectedMetodoPago, setSelectedMetodoPago] = useState<any>(null);
-
-	// Obtener categorías
-	const { data: categorias = [] } = useQuery({
-		queryKey: ["categorias"],
-		queryFn: getCategoriasServices,
-	});
-
-	// Obtener métodos de pago
-	const { data: metodosPago = [] } = useQuery({
-		queryKey: ["metodos-pago"],
-		queryFn: getMetodosPagoServices,
-	});
-
-	// Manejar cambio de categoría con toggle
-	const handleCategoriaChange = (categoria: Category) => {
-		if (selectedCategoria?.id === categoria.id) {
-			setSelectedCategoria(null);
-		} else {
-			setSelectedCategoria(categoria);
-		}
-	};
-
-	// Manejar cambio de método de pago con toggle
-	const handleMetodoPagoChange = (metodo: any) => {
-		if (selectedMetodoPago?.id === metodo.id) {
-			setSelectedMetodoPago(null);
-		} else {
-			setSelectedMetodoPago(metodo);
-		}
-	};
-
-	// Filtrar gastos según los filtros seleccionados
-	const gastosFiltrados =
-		allGastos?.filter((gasto) => {
-			const porCategoria =
-				!selectedCategoria ||
-				gasto.categoria_id === selectedCategoria.id;
-			const porMetodoPago =
-				!selectedMetodoPago ||
-				gasto.metodo_pago_id === selectedMetodoPago.id;
-			return porCategoria && porMetodoPago;
-		}) || [];
-
-	// Calcular el total de gastos filtrados
-	const gastosFiltradosTotal = gastosFiltrados.reduce(
-		(sum, gasto) => sum + (gasto.monto || 0),
-		0,
-	);
+		categorias,
+		metodosPago,
+		selectedCategoria,
+		selectedMetodoPago,
+		handleCategoriaChange,
+		handleMetodoPagoChange,
+		gastosFiltradosTotal,
+	} = useGastosScreenLogic();
 
 	return (
 		<View className='flex-1'>
+			{/* Lista Principal de Movimientos */}
 			<FlatList
 				data={gastosFiltrados}
 				refreshControl={
@@ -125,15 +75,18 @@ const GastosScreen = () => {
 				showsVerticalScrollIndicator={false}
 				ListHeaderComponent={
 					<>
+						{/* Saludo dinámico */}
 						<HeaderComponent
 							title={`${saludo} ${displayName.split(" ")[0]}`}
 							icon
 						/>
 
+						{/* Filtro de mes global */}
 						<MonthSelector />
 
-						{/* Ingresos / Gastos */}
+						{/* Tarjetas resumen: Ingresos y Gastos filtrados */}
 						<View className='flex flex-row justify-around '>
+							{/* Card de Ingresos */}
 							<View className='w-6/12'>
 								<CardsComponent className='gap-1 items-center'>
 									<View className='flex flex-row items-center'>
@@ -156,6 +109,7 @@ const GastosScreen = () => {
 								</CardsComponent>
 							</View>
 
+							{/* Card de Gastos */}
 							<View className='w-6/12'>
 								<CardsComponent className='gap-1 items-center'>
 									<View className='flex flex-row items-center'>
@@ -173,12 +127,14 @@ const GastosScreen = () => {
 								</CardsComponent>
 							</View>
 						</View>
-						{/* Filtros de categoría y método de pago */}
+
+						{/* Seccion de Micro-Filtros Rápidos */}
 						<View className='mx-4 my-3'>
 							<Text className='text-base font-Inter-Bold text-text-dark mb-2'>
 								Filtros
 							</Text>
 							<View className='flex-row gap-2'>
+								{/* Selector de Categoria */}
 								<View className='flex-1'>
 									<CustomSelector<Category>
 										data={categorias}
@@ -190,6 +146,7 @@ const GastosScreen = () => {
 										onSelect={handleCategoriaChange}
 									/>
 								</View>
+								{/* Selector de Metodo de Pago */}
 								<View className='flex-1'>
 									<CustomSelector
 										data={metodosPago}
@@ -203,7 +160,8 @@ const GastosScreen = () => {
 								</View>
 							</View>
 						</View>
-						{/* Título antes de los movimientos */}
+
+						{/* Subtítulo de encabezado */}
 						<View className='mx-8 mb-2'>
 							<TitleOpcionInput title='Movimientos Recientes' />
 						</View>
@@ -212,7 +170,7 @@ const GastosScreen = () => {
 				contentContainerStyle={{ paddingBottom: 100 }}
 			/>
 
-			{/* Botón flotante */}
+			{/* Acción flotante: Ir a crear nuevo gasto */}
 			<View className='bottom-0 right-0 m-3 absolute'>
 				<CircleButton
 					text='+'

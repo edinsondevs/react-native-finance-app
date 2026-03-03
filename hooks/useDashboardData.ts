@@ -6,6 +6,16 @@ import {
 import { useFinanceStore } from "@/store/useFinanceStore";
 import { useQuery } from "@tanstack/react-query";
 
+/**
+ * Hook personalizado para centralizar la obtención de datos del Dashboard.
+ *
+ * Responsabilidades:
+ * - Observa el 'selectedMonth' del store global de finanzas.
+ * - Orquestra las consultas de React Query para ingresos, gastos y lista completa.
+ * - Proporciona un método 'refreshAll' para invalidar y re-ejecutar todas las consultas.
+ *
+ * @returns Un objeto con los datos, estados de carga y función de refresco.
+ */
 export const useDashboardData = () => {
 	const selectedMonth = useFinanceStore((state) => state.selectedMonth);
 

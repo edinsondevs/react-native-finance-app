@@ -14,19 +14,25 @@ type AuthStore = {
 	signUp: (
 		email: string,
 		password: string,
-		displayName: string
+		displayName: string,
 	) => Promise<void>;
 	signIn: (email: string, password: string) => Promise<void>;
 	signOut: () => Promise<void>;
 	fetchSession: () => Promise<void>;
 };
 
+/**
+ * Store de Zustand para manejar la autenticación con Supabase.
+ * Proporciona métodos para inicio de sesión, registro y gestión de sesión persistente.
+ */
 export const useAuthStore = create<AuthStore>((set) => ({
 	user: null,
 	loading: false,
 	error: null,
 
-	// 🔐 Registrar usuario
+	/**
+	 * Registra un nuevo usuario en Supabase con correo, contraseña y nombre visible.
+	 */
 	signUp: async (email, password, displayName) => {
 		set({ loading: true, error: null });
 		const { data, error } = await supabase.auth.signUp({
@@ -52,7 +58,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
 		set({ loading: false });
 	},
 
-	// 🔓 Iniciar sesión
+	/**
+	 * Inicia sesión de un usuario existente.
+	 */
 	signIn: async (email, password) => {
 		set({ loading: true, error: null });
 
@@ -75,13 +83,17 @@ export const useAuthStore = create<AuthStore>((set) => ({
 		set({ loading: false });
 	},
 
-	// 🚪 Cerrar sesión
+	/**
+	 * Cierra la sesión del usuario actual y limpia el estado.
+	 */
 	signOut: async () => {
 		await supabase.auth.signOut();
 		set({ user: null });
 	},
 
-	// 🔄 Verificar si hay sesión activa al iniciar la app
+	/**
+	 * Recupera la sesión actual de Supabase si existe (por ejemplo, al recargar la app).
+	 */
 	fetchSession: async () => {
 		const { data } = await supabase.auth.getSession();
 		if (data.session) {

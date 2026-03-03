@@ -10,6 +10,23 @@ interface LineChartComponentProps {
 	chartColors: string[];
 }
 
+/**
+ * @component LineChartComponent
+ * Visualización de gráfica de líneas para tendencias de gastos diarios.
+ *
+ * Funcionalidad:
+ * - Renderiza múltiples datasets (uno por usuario) en la misma gráfica.
+ * - Soporta scroll horizontal automático basado en la cantidad de días del mes.
+ * - Implementa un 'pointerConfig' personalizado para mostrar tooltips detallados
+ *   al interactuar con los puntos de la gráfica ($ total por día y usuario).
+ * - Formatea automáticamente las etiquetas del eje Y (k para miles, M para millones).
+ *
+ * @param mainData - Dataset principal (proporcina la estructura base).
+ * @param dataSets - Array de datasets configurados por usuario.
+ * @param monthLabels - Etiquetas para el eje X (días del mes).
+ * @param chartColors - Paleta de colores para los datasets.
+ */
+
 const LineChartComponent = ({
 	mainData,
 	dataSets,

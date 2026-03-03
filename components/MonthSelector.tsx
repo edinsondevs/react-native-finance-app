@@ -6,6 +6,16 @@ import "dayjs/locale/es";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 
+/**
+ * @component MonthSelector
+ * Componente de navegación temporal global.
+ *
+ * Funcionalidad:
+ * - Permite al usuario cambiar el mes activo de la aplicación mediante flechas laterales.
+ * - Consume y actualiza el estado 'selectedMonth' en useFinanceStore.
+ * - Muestra el nombre del mes en español y con formato capitalizado.
+ */
+
 const MonthSelector = () => {
 	const { selectedMonth, nextMonth, previousMonth } = useFinanceStore();
 	const { capitalize } = useCapitalize();

@@ -2,7 +2,13 @@ import { instance } from "@/api/apiService";
 import dayjs from "dayjs";
 import { GastoData } from "../interfaces";
 
-//* Consulta de Gastos por Dia
+/**
+ * Obtiene el listado de gastos diarios para el mes seleccionado.
+ * Útil para alimentar gráficas de tendencia y resúmenes diarios.
+ *
+ * @param month - Objeto dayjs que representa el mes para filtrar el rango.
+ * @returns Promesa con el array de GastoData del mes.
+ */
 export const getGastosPorDiaServices = async (
 	month: dayjs.Dayjs,
 ): Promise<GastoData[]> => {
