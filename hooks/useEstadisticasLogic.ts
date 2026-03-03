@@ -9,14 +9,30 @@ interface UseEstadisticasLogicProps {
 	profiles: Profile[] | undefined;
 	metodosPago: string[] | undefined;
 	categorias: Category[] | undefined;
+	selectedMonth: dayjs.Dayjs;
 }
 
+/**
+ * Componente funcional que encapsula toda la lógica de agregación y formateo
+ * estadístico para los gráficos de la aplicación.
+ *
+ * Funcionalidad:
+ * - Genera etiquetas de días (DD/MM) dinámicamente según el mes seleccionado.
+ * - Agrupa gastos por usuario y día para la gráfica de líneas.
+ * - Agrupa gastos por categoría y método de pago para gráficas de torta.
+ * - Mapea IDs de perfiles y categorías a nombres legibles.
+ * - Calcula totales generales y por usuario.
+ *
+ * @param props - Datos crudos de gastos, usuarios, perfiles, categorías y el mes actual.
+ * @returns Objeto con datasets formateados para GiftedCharts y mapas de referencia.
+ */
 export const useEstadisticasLogic = ({
 	gastosData,
 	user,
 	profiles,
 	metodosPago,
 	categorias,
+	selectedMonth,
 }: UseEstadisticasLogicProps) => {
 	const chartColors = useMemo(
 		() => [
@@ -79,16 +95,14 @@ export const useEstadisticasLogic = ({
 		[gastosData],
 	);
 
-	// Obtener todos los días del mes actual
-	const daysInMonth = dayjs().date();
+	// Obtener todos los días del mes seleccionado
+	const daysInMonth = selectedMonth.daysInMonth();
 	const monthLabels = useMemo(
 		() =>
 			Array.from({ length: daysInMonth }, (_, i) =>
-				dayjs()
-					.date(i + 1)
-					.format("DD/MM"),
+				selectedMonth.date(i + 1).format("DD/MM"),
 			),
-		[daysInMonth],
+		[daysInMonth, selectedMonth],
 	);
 
 	// Agrupar gastos por usuario y por día - memoizado

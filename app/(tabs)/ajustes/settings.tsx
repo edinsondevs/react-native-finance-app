@@ -1,11 +1,28 @@
-import { useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { ActivityIndicator, FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from '@expo/vector-icons';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
+import {
+	ActivityIndicator,
+	Alert,
+	FlatList,
+	Modal,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 
-import { ButtomComponent, IconPickerModal, IconTrigger, InputComponent } from "@/components";
-import { getSettingsServices, updateSettingsServices } from "@/api/services";
+import {
+	deleteSettingsServices,
+	getSettingsServices,
+	updateSettingsServices,
+} from '@/api/services';
+import {
+	ButtomComponent,
+	IconPickerModal,
+	IconTrigger,
+	InputComponent,
+} from '@/components';
 
 const Settings = () => {
 	const { origen } = useLocalSearchParams();
@@ -13,24 +30,46 @@ const Settings = () => {
 	const [selectedItem, setSelectedItem] = useState<any>(null);
 	const [editModalVisible, setEditModalVisible] = useState(false);
 	const [iconPickerVisible, setIconPickerVisible] = useState(false);
-	const [formData, setFormData] = useState({ name: "", icon: "" });
+	const [formData, setFormData] = useState({ name: '', icon: '' });
+	const [isDeleting, setIsDeleting] = useState(false);
 
-	const { data, isLoading, error } = useQuery({
-		queryKey: ["settings", origen],
+	const { data, isLoading, error, refetch } = useQuery({
+		queryKey: ['settings', origen],
 		queryFn: () =>
 			getSettingsServices({
-				origen: origen as "categorias" | "metodos_pago",
+				origen: origen as 'categorias' | 'metodos_pago',
 			}),
 	});
 
 	const { mutate, isPending } = useMutation({
 		mutationFn: updateSettingsServices,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["settings", origen] });
+			queryClient.invalidateQueries({ queryKey: ['settings', origen] });
+			refetch();
 			setEditModalVisible(false);
 		},
 		onError: (error) => {
-			console.error("Error updating settings:", error);
+			console.error('Error updating settings:', error);
+			Alert.alert('Error', 'No se pudo actualizar el elemento');
+		},
+	});
+
+	const { mutate: deleteMutate, isPending: isDeletePending } = useMutation({
+		mutationFn: deleteSettingsServices,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['settings', origen] });
+			refetch();
+			setEditModalVisible(false);
+			setIsDeleting(false);
+			Alert.alert('Éxito', 'Elemento eliminado correctamente');
+		},
+		onError: (error) => {
+			console.error('Error deleting settings:', error);
+			setIsDeleting(false);
+			Alert.alert(
+				'Error',
+				'No se pudo eliminar el elemento. Asegúrate de que no esté siendo usado.',
+			);
 		},
 	});
 
@@ -41,14 +80,43 @@ const Settings = () => {
 	};
 
 	const handleSave = () => {
+		if (!formData.name.trim()) {
+			Alert.alert('Error', 'El nombre no puede estar vacío');
+			return;
+		}
 		if (selectedItem) {
 			mutate({
-				origen: origen as "categorias" | "metodos_pago",
+				origen: origen as 'categorias' | 'metodos_pago',
 				id: selectedItem.id,
 				name: formData.name,
 				icon: formData.icon,
 			});
 		}
+	};
+
+	const handleDelete = (item: any) => {
+		Alert.alert(
+			'Confirmar eliminación',
+			`¿Estás seguro de que deseas eliminar "${item.name}"?`,
+			[
+				{
+					text: 'Cancelar',
+					onPress: () => {},
+					style: 'cancel',
+				},
+				{
+					text: 'Eliminar',
+					onPress: () => {
+						setIsDeleting(true);
+						deleteMutate({
+							origen: origen as 'categorias' | 'metodos_pago',
+							id: item.id,
+						});
+					},
+					style: 'destructive',
+				},
+			],
+		);
 	};
 
 	if (isLoading) {
@@ -72,7 +140,6 @@ const Settings = () => {
 
 	return (
 		<View className='flex-1 bg-white px-4 pt-4'>
-
 			<FlatList
 				data={data}
 				keyExtractor={(item) => item.id.toString()}
@@ -90,11 +157,35 @@ const Settings = () => {
 						<Text className='text-lg font-Inter-Medium text-text-dark flex-1'>
 							{item.name}
 						</Text>
-						<FontAwesome
-							name='pencil'
-							size={18}
-							color='#999'
-						/>
+						<TouchableOpacity
+							className='ml-3'
+							onPress={(e) => {
+								e.stopPropagation();
+								setSelectedItem(item);
+								setFormData({
+									name: item.name,
+									icon: item.icon,
+								});
+								setEditModalVisible(true);
+							}}>
+							<FontAwesome
+								name='pencil'
+								size={18}
+								color='#999'
+							/>
+						</TouchableOpacity>
+						<TouchableOpacity
+							className='ml-3'
+							onPress={(e) => {
+								e.stopPropagation();
+								handleDelete(item);
+							}}>
+							<FontAwesome
+								name='trash'
+								size={18}
+								color='#e74c3c'
+							/>
+						</TouchableOpacity>
 					</TouchableOpacity>
 				)}
 			/>
@@ -108,10 +199,10 @@ const Settings = () => {
 				<View className='flex-1 justify-center items-center bg-black/50 px-4'>
 					<View className='bg-white w-full rounded-2xl p-6 gap-6'>
 						<Text className='text-xl font-Nunito-Bold text-center'>
-							Editar{" "}
-							{origen === "categorias"
-								? "Categoría"
-								: "Método de Pago"}
+							Editar{' '}
+							{origen === 'categorias'
+								? 'Categoría'
+								: 'Método de Pago'}
 						</Text>
 
 						<View className='gap-2'>
@@ -136,21 +227,45 @@ const Settings = () => {
 							/>
 						</View>
 
-						<View className='gap-3'>
+						{/* Botones reorganizados */}
+						<View className='gap-3 mt-4'>
+							{/* Fila 1: Botón Guardar */}
 							<ButtomComponent
 								onPressFunction={handleSave}
-								text={isPending ? "Guardando..." : "Guardar"}
+								text={isPending ? 'Guardando...' : 'Guardar'}
 								color='bg-primary'
-								disabled={isPending}
+								disabled={isPending || isDeletePending}
 							/>
-							<ButtomComponent
-								onPressFunction={() =>
-									setEditModalVisible(false)
-								}
-								text='Cancelar'
-								color='transparent'
-								textColor='text-text-black'
-							/>
+
+							{/* Fila 2: Botones Eliminar y Cancelar */}
+							<View className='flex-row gap-3'>
+								<View className='flex-1'>
+									<ButtomComponent
+										onPressFunction={() =>
+											handleDelete(selectedItem)
+										}
+										text={
+											isDeleting
+												? 'Eliminando...'
+												: 'Eliminar'
+										}
+										color='bg-red-500'
+										disabled={isPending || isDeleting}
+									/>
+								</View>
+								<View className='flex-1'>
+									<ButtomComponent
+										onPressFunction={() => {
+											setEditModalVisible(false);
+											setIsDeleting(false);
+										}}
+										text='Cancelar'
+										color='transparent'
+										textColor='text-text-black'
+										disabled={isPending || isDeleting}
+									/>
+								</View>
+							</View>
 						</View>
 					</View>
 				</View>

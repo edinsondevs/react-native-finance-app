@@ -14,16 +14,24 @@ if (!supabaseUrl || !supabaseAnonKey) {
 	console.log("✅ Supabase credentials loaded successfully");
 }
 
-// Crear instancia de axios
+/**
+ * Instancia base de Axios configurada para interactuar con la API REST de Supabase.
+ *
+ * Características:
+ * - Utiliza credenciales (URL y Anon Key) obtenidas de la configuración de Expo.
+ * - Configura cabeceras requeridas por PostgREST: apikey, Prefer y Content-Type.
+ * - Incluye un interceptor de peticiones para inyectar automáticamente el JWT del usuario logueado.
+ * - Incluye interceptores de respuesta para logging centralizado de errores.
+ */
 export const instance = axios.create({
-	baseURL: `${supabaseUrl}/rest/v1`, // ⚠️ IMPORTANTE: Agregar /rest/v1
+	baseURL: `${supabaseUrl}/rest/v1`, // Punto de entrada para PostgREST
 	headers: {
 		apikey: supabaseAnonKey || "",
 		Authorization: `Bearer ${supabaseAnonKey || ""}`,
-		Prefer: "return=representation",
+		Prefer: "return=representation", // Asegura que las escrituras devuelvan el objeto creado/editado
 		"Content-Type": "application/json",
 	},
-	timeout: 10000, // Timeout de 10 segundos (opcional pero recomendado)
+	timeout: 10000,
 });
 
 // Interceptor para logging de errores (opcional pero útil para debugging)
@@ -40,34 +48,34 @@ instance.interceptors.response.use(
 		if (error.response) {
 			console.error(
 				`❌ API Error: ${error.response.status}`,
-				error.response.data
+				error.response.data,
 			);
 		} else if (error.request) {
 			console.error(
 				"❌ Network Error: No response received",
-				error.message
+				error.message,
 			);
 		} else {
 			console.error("❌ Request Error:", error.message);
 		}
 		return Promise.reject(error);
-	}
+	},
 );
 
 // INTERCEPTOR PARA OBTENER EL TOKEN DE SESIÓN
 instance.interceptors.request.use(async (config) => {
-    // 1. Obtenemos la sesión actual de Supabase
-    const { data } = await supabase.auth.getSession();
-    const token = data.session?.access_token;
-    // 2. Si hay un token (usuario logueado), lo ponemos en el Authorization
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    } else {
-        // Si no hay sesión, usamos la anon key como respaldo
-        config.headers.Authorization = `Bearer ${supabaseAnonKey}`;
-    }
-    
-    return config;
+	// 1. Obtenemos la sesión actual de Supabase
+	const { data } = await supabase.auth.getSession();
+	const token = data.session?.access_token;
+	// 2. Si hay un token (usuario logueado), lo ponemos en el Authorization
+	if (token) {
+		config.headers.Authorization = `Bearer ${token}`;
+	} else {
+		// Si no hay sesión, usamos la anon key como respaldo
+		config.headers.Authorization = `Bearer ${supabaseAnonKey}`;
+	}
+
+	return config;
 });
 
 // Helper para autenticación (si usas auth)

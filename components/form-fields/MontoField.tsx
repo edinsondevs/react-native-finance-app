@@ -1,12 +1,20 @@
 import { InputComponent, TitleOpcionInput } from "@/components";
 import { InterfaceMontoFieldProps } from "@/interfaces";
-import { Control, Controller, FieldValues, Path } from "react-hook-form";
+import { Controller, FieldValues, Path } from "react-hook-form";
 import { View } from "react-native";
 
-
 /**
- * Componente reutilizable para el campo de monto
- * Incluye validación de formato de moneda y símbolo de dólar
+ * @component MontoField
+ * Campo de entrada especializado para montos monetarios.
+ *
+ * Funcionalidad:
+ * - Utiliza un Controller de react-hook-form para manejar el estado.
+ * - Incluye un icono de dólar visual y configuración de teclado numérico.
+ * - Es genérico para integrarse con cualquier esquema de formulario (SOLID: Reutilización).
+ *
+ * @param control - Objeto control de react-hook-form.
+ * @param name - Nombre de la clave en el objeto del formulario.
+ * @param title - Etiqueta visual del campo.
  */
 export const MontoField = <TFieldValues extends FieldValues = FieldValues>({
 	control,

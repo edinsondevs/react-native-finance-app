@@ -1,6 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
 import { router } from "expo-router";
 import {
 	ActivityIndicator,
@@ -10,20 +7,26 @@ import {
 	View,
 } from "react-native";
 
-import { getIngresosServices } from "@/api/services/ingreso/get.ingresos.services";
-import { IngresoInterfaces } from "@/api/services/interfaces";
-import { CircleButton, HeaderComponent, ItemIngreso } from "@/components";
-
-dayjs.locale("es");
+import {
+	CircleButton,
+	HeaderComponent,
+	ItemIngreso,
+	MonthSelector,
+} from "@/components";
+import { useIngresosScreenLogic } from "@/hooks/useIngresosScreenLogic";
 
 // Eliminamos HeaderList ya que no es necesario en el nuevo diseño de tarjetas.
 
+/**
+ * Pantalla de registro de ingresos mensuales.
+ * Muestra el historial de entradas de dinero para el periodo seleccionado.
+ */
 const IngresosScreen = () => {
-	const { data, isLoading, error, refetch } = useQuery({
-		queryKey: ["ingresos"],
-		queryFn: getIngresosServices,
-	});
+	// 🏗️ Lógica externa desacoplada (SOLID)
+	const { isLoading, error, refetch, ingresosConSeparadores } =
+		useIngresosScreenLogic();
 
+	// Estado de carga inicial
 	if (isLoading) {
 		return (
 			<View className='flex-1 justify-center items-center'>
@@ -35,6 +38,7 @@ const IngresosScreen = () => {
 		);
 	}
 
+	// Estado de error en la petición
 	if (error) {
 		return (
 			<View className='flex-1 justify-center items-center'>
@@ -45,9 +49,15 @@ const IngresosScreen = () => {
 
 	return (
 		<View className='flex-1 bg-gray-50'>
+			{/* Encabezado Principal */}
 			<HeaderComponent title='Ingresos' />
+
+			{/* Selector de Mes (Sincronizado globalmente) */}
+			<MonthSelector />
+
+			{/* Lista de Ingresos */}
 			<FlatList
-				data={data}
+				data={ingresosConSeparadores}
 				contentContainerStyle={{ paddingVertical: 8 }}
 				refreshControl={
 					<RefreshControl
@@ -55,16 +65,23 @@ const IngresosScreen = () => {
 						onRefresh={() => refetch()}
 					/>
 				}
-				renderItem={({ item }: { item: IngresoInterfaces }) => (
-					<ItemIngreso
-						monto={item.monto}
-						fecha={item.fecha}
-						origen={item.origen}
-						descripcion={item.descripcion}
-						id={item.id}
-						user_id={item.user_id}
-					/>
-				)}
+				renderItem={({ item }: { item: any }) => {
+					// Renderizado condicional de separador vs item de ingreso
+					if (item.type === "separator") {
+						return <View className='bg-blue-500 h-1 my-3 mx-4' />;
+					}
+
+					return (
+						<ItemIngreso
+							monto={item.monto}
+							fecha={item.fecha}
+							origen={item.origen}
+							descripcion={item.descripcion}
+							id={item.id}
+							user_id={item.user_id}
+						/>
+					);
+				}}
 				keyExtractor={(item) => item.id.toString()}
 				ListEmptyComponent={
 					<Text className='text-center mt-5'>
@@ -72,6 +89,8 @@ const IngresosScreen = () => {
 					</Text>
 				}
 			/>
+
+			{/* Acción Flotante: Agregar Ingreso */}
 			<View className='bottom-0 right-0 m-6 absolute'>
 				<CircleButton
 					text='+'

@@ -1,24 +1,39 @@
-import { useEffect, useState } from "react";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
+import { useEffect, useState } from "react";
+import {
+	ActivityIndicator,
+	FlatList,
+	Modal,
+	Pressable,
+	StyleSheet,
+	Text,
+	TextStyle,
+	View,
+	ViewStyle,
+} from "react-native";
 
 import { InterfaceCustomSelectorProps } from "@/interfaces";
 
-
-/*
+/**
  * @component CustomSelector
- * Componente de selector personalizado reutilizable (generico).
- * Soporta iconos personalizados, estados de carga, error y selección tipada.
- * Se comporta como un Select/Dropdown que abre un Modal en dispositivos móviles.
- * @param {T[]} data - Array de opciones a mostrar.
- * @param {function} onSelect - Callback que se ejecuta al seleccionar una opción.
- * @param {string} placeholder - Texto a mostrar cuando no hay ninguna opción seleccionada.
- * @param {string} labelKey - Nombre de la propiedad del objeto a usar como etiqueta (display).
- * @param {string} valueKey - Nombre de la propiedad del objeto a usar como valor único (id).
- * @param {string} iconKey - Nombre de la propiedad del objeto que contiene el nombre del icono.
- * @param {boolean} isLoading - Indica si se están cargando los datos.
- * @param {string} error - Mensaje de error a mostrar.
- * @param {T} value - Valor actualmente seleccionado (controlado externamente).
+ * Selector personalizado genérico que funciona como un Dropdown/Select.
+ *
+ * Funcionalidad:
+ * - Abre un Modal (Bottom Sheet) con una lista de opciones.
+ * - Soporta genéricos (T) para trabajar con cualquier tipo de objeto.
+ * - Permite definir qué propiedad usar como etiqueta (labelKey) y cuál como valor (valueKey).
+ * - Soporta iconos dinámicos usando FontAwesome.
+ * - Sincroniza su estado interno con un valor externo propocionado.
+ *
+ * @param data - Array de objetos que representan las opciones.
+ * @param onSelect - Callback disparado al elegir una opción.
+ * @param placeholder - Texto descriptivo cuando no hay selección.
+ * @param labelKey - Clave del objeto T para mostrar texto.
+ * @param valueKey - Clave del objeto T para identificar el item.
+ * @param iconKey - Clave opcional para mostrar un icono junto al texto.
+ * @param isLoading - Estado de carga para mostrar un ActivityIndicator.
+ * @param error - Mensaje de error para validaciones visuales.
+ * @param value - El item actualmente seleccionado (controlado).
  */
 const CustomSelector = <T extends object>({
 	data = [],

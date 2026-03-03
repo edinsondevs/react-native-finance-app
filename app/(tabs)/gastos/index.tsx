@@ -1,26 +1,55 @@
-import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
-import { router } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
+import {
+	ActivityIndicator,
+	FlatList,
+	RefreshControl,
+	Text,
+	View,
+} from "react-native";
 
+import { Category } from "@/api/services/interfaces";
 import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
-import { CardsComponent, CircleButton, HeaderComponent, TitleOpcionInput } from "@/components";
-import { useDashboardData, useFormatoMoneda } from "@/hooks";
-import { useGetHoursCurrent } from "@/hooks/useGetHoursCurrent";
-import { useAuthStore } from "@/store/useAuthStore";
+import {
+	CardsComponent,
+	CircleButton,
+	CustomSelector,
+	HeaderComponent,
+	MonthSelector,
+	TitleOpcionInput,
+} from "@/components";
+import { useFormatoMoneda } from "@/hooks";
+import { useGastosScreenLogic } from "@/hooks/useGastosScreenLogic";
 import { colors } from "@/styles/constants";
 
+/**
+ * Pantalla principal de Gestión de Gastos.
+ * Lista los movimientos filtrados por mes, categoría y método de pago.
+ */
 const GastosScreen = () => {
-	const { saludo } = useGetHoursCurrent();
-
-	const { resumeIngresos, isLoadingResumeIngresos, resumeGastos, isLoadingResumeGastos, allGastos, isLoadingAllGastos, refreshAll, } = useDashboardData();
-
-	const { user } = useAuthStore();
-	const displayName = user?.displayName || "Usuario";
+	// ⚡️ Desacoplamiento de lógica (SOLID - Single Responsibility)
+	const {
+		saludo,
+		displayName,
+		resumeIngresos,
+		isLoadingResumeIngresos,
+		gastosFiltrados,
+		isLoadingAllGastos,
+		refreshAll,
+		categorias,
+		metodosPago,
+		selectedCategoria,
+		selectedMetodoPago,
+		handleCategoriaChange,
+		handleMetodoPagoChange,
+		gastosFiltradosTotal,
+	} = useGastosScreenLogic();
 
 	return (
 		<View className='flex-1'>
+			{/* Lista Principal de Movimientos */}
 			<FlatList
-				data={allGastos}
+				data={gastosFiltrados}
 				refreshControl={
 					<RefreshControl
 						refreshing={isLoadingAllGastos}
@@ -30,15 +59,7 @@ const GastosScreen = () => {
 				keyExtractor={(item) =>
 					item.id?.toString() || Math.random().toString()
 				}
-				renderItem={({ item }) => (
-					<MovimientosRecientes
-						item={{
-							...item,
-							iconName:
-								item.iconName as keyof typeof MaterialIcons.glyphMap,
-						}}
-					/>
-				)}
+				renderItem={({ item }) => <MovimientosRecientes item={item} />}
 				ListEmptyComponent={
 					isLoadingAllGastos ? (
 						<ActivityIndicator
@@ -54,13 +75,18 @@ const GastosScreen = () => {
 				showsVerticalScrollIndicator={false}
 				ListHeaderComponent={
 					<>
+						{/* Saludo dinámico */}
 						<HeaderComponent
 							title={`${saludo} ${displayName.split(" ")[0]}`}
 							icon
 						/>
 
-						{/* Ingresos / Gastos */}
+						{/* Filtro de mes global */}
+						<MonthSelector />
+
+						{/* Tarjetas resumen: Ingresos y Gastos filtrados */}
 						<View className='flex flex-row justify-around '>
+							{/* Card de Ingresos */}
 							<View className='w-6/12'>
 								<CardsComponent className='gap-1 items-center'>
 									<View className='flex flex-row items-center'>
@@ -83,6 +109,7 @@ const GastosScreen = () => {
 								</CardsComponent>
 							</View>
 
+							{/* Card de Gastos */}
 							<View className='w-6/12'>
 								<CardsComponent className='gap-1 items-center'>
 									<View className='flex flex-row items-center'>
@@ -95,16 +122,46 @@ const GastosScreen = () => {
 										<Text className='text-xl'>Gastos</Text>
 									</View>
 									<Text className='font-Nunito-Bold text-alert'>
-										{isLoadingResumeGastos ? (
-											<ActivityIndicator />
-										) : (
-											useFormatoMoneda(resumeGastos)
-										)}
+										{useFormatoMoneda(gastosFiltradosTotal)}
 									</Text>
 								</CardsComponent>
 							</View>
 						</View>
-						{/* Título antes de los movimientos */}
+
+						{/* Seccion de Micro-Filtros Rápidos */}
+						<View className='mx-4 my-3'>
+							<Text className='text-base font-Inter-Bold text-text-dark mb-2'>
+								Filtros
+							</Text>
+							<View className='flex-row gap-2'>
+								{/* Selector de Categoria */}
+								<View className='flex-1'>
+									<CustomSelector<Category>
+										data={categorias}
+										labelKey='name'
+										valueKey='id'
+										iconKey='icon'
+										placeholder='Categoría'
+										value={selectedCategoria}
+										onSelect={handleCategoriaChange}
+									/>
+								</View>
+								{/* Selector de Metodo de Pago */}
+								<View className='flex-1'>
+									<CustomSelector
+										data={metodosPago}
+										labelKey='name'
+										valueKey='id'
+										iconKey='icon'
+										placeholder='Método de Pago'
+										value={selectedMetodoPago}
+										onSelect={handleMetodoPagoChange}
+									/>
+								</View>
+							</View>
+						</View>
+
+						{/* Subtítulo de encabezado */}
 						<View className='mx-8 mb-2'>
 							<TitleOpcionInput title='Movimientos Recientes' />
 						</View>
@@ -113,7 +170,7 @@ const GastosScreen = () => {
 				contentContainerStyle={{ paddingBottom: 100 }}
 			/>
 
-			{/* Botón flotante */}
+			{/* Acción flotante: Ir a crear nuevo gasto */}
 			<View className='bottom-0 right-0 m-3 absolute'>
 				<CircleButton
 					text='+'

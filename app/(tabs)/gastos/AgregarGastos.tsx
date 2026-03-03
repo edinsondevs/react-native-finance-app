@@ -1,103 +1,67 @@
-import dayjs from "dayjs";
+import { Controller } from "react-hook-form";
 import { View } from "react-native";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import { crearGastoServices, getCategoriasServices, getMetodosPagoServices } from "@/api/services";
-import { Category, GastoData, GastoFormData } from "@/api/services/interfaces";
-
-import { useAuthStore } from "@/store/useAuthStore";
-import { useFormMutation, useFormValidation } from "@/hooks";
+import { Category } from "@/api/services/interfaces";
+import {
+	ButtomComponent,
+	CustomSelector,
+	HeaderComponent,
+	ModalsAlerts,
+	TitleOpcionInput,
+} from "@/components";
+import {
+	DescripcionField,
+	FechaField,
+	MontoField,
+} from "@/components/form-fields";
+import { useAgregarGastosLogic } from "@/hooks/useAgregarGastosLogic";
 import { Colors } from "@/styles/constants";
 
-import { ButtomComponent, CustomSelector, HeaderComponent, ModalsAlerts, TitleOpcionInput } from "@/components";
-import { DescripcionField, FechaField, MontoField } from "@/components/form-fields";
-
+/**
+ * Pantalla para añadir un nuevo registro de gasto.
+ * Implementa un formulario controlado con validaciones y feedback de carga.
+ */
 const AgregarGastosScreen = () => {
-	const { user } = useAuthStore();
-	const { control, handleSubmit, reset, watch, setValue } =
-		useForm<GastoFormData>({
-			defaultValues: {
-				fecha: new Date(),
-			},
-		});
-
-	const queryClient = useQueryClient();
-
-	// Usar el custom hook para la mutación
-	const { mutate: crearGasto, isPending: isCreating } =
-		useFormMutation<GastoData>({
-			mutationFn: crearGastoServices,
-			queryKeys: [["gastos"], ["resumeGastos"]],
-			successMessage: "Gasto guardado correctamente",
-			errorMessage: "Error al crear gasto",
-			onSuccessCallback: () => {
-				reset()
-				queryClient.invalidateQueries({queryKey: ["estadisticasGastos"]})
-			},
-		});
-
-	/**
-	 * Hook de React Query para obtener la lista de categorías disponibles desde el backend.
-	 */
-	const { data: categoriesData } = useQuery({
-		queryKey: ["categorias"],
-		queryFn: getCategoriasServices,
-	});
-
-	/**
-	 * Hook de React Query para obtener los métodos de pago disponibles.
-	 */
-	const { data: metodosPagoData } = useQuery({
-		queryKey: ["metodos-pago"],
-		queryFn: getMetodosPagoServices,
-	});
-
-	// Usar el custom hook para validación
-	const { isButtonDisabled, buttonColor, textButton } =
-		useFormValidation<GastoFormData>({
-			requiredFields: ["monto", "categoria", "metodo_pago_id"],
-			watch,
-			isPending: isCreating,
-			saveButtonText: "Guardar Gasto",
-		});
-
-	/**
-	 * Maneja el envío del formulario.
-	 */
-	const onSubmit: SubmitHandler<GastoFormData> = (data) => {
-		const formattedData: GastoData = {
-			descripcion: data.descripcion,
-			monto: parseFloat(data.monto),
-			fecha: data.fecha ? dayjs(data.fecha).format("YYYY-MM-DD") : "",
-			categoria_id: data.categoria.id,
-			icon: data.categoria.icon || "category",
-			metodo_pago_id: data.metodo_pago_id.id,
-			user_id: user?.id,
-		};
-		crearGasto(formattedData);
-	};
+	// 🔌 Desacoplamiento de lógica (SOLID)
+	const {
+		control,
+		handleSubmit,
+		handleFormSubmit,
+		isCreating,
+		categoriesData,
+		metodosPagoData,
+		isButtonDisabled,
+		buttonColor,
+		textButton,
+		watch,
+		setValue,
+	} = useAgregarGastosLogic();
 
 	return (
 		<View className='flex-1 bg-background-light px-4'>
+			{/* Indicador de carga modal al guardar */}
 			<ModalsAlerts
 				visible={isCreating}
 				color={Colors.primary}
 				text='Guardando Nuevo Gasto...'
 				transparent={true}
 			/>
+
+			{/* Encabezado fijo */}
 			<HeaderComponent title='Agregar Nuevo Gasto' />
+
+			{/* Formulario con scroll para evitar el teclado */}
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps='handled'
 				contentContainerStyle={{ paddingTop: 16 }}
 				showsVerticalScrollIndicator={false}
 				extraScrollHeight={100}
 				enableOnAndroid={true}>
-				{/* Monto - Componente reutilizable */}
-				<MontoField<GastoFormData> control={control} />
+				{/* Campo de Monto (Numérico) */}
+				<MontoField<any> control={control} />
 
-				{/* Categoría */}
+				{/* Selector de Categoría */}
 				<View className='mb-5'>
 					<TitleOpcionInput title='Categoría' />
 					<Controller
@@ -117,7 +81,7 @@ const AgregarGastosScreen = () => {
 					/>
 				</View>
 
-				{/* Metodo de Pago */}
+				{/* Selector de Método de Pago */}
 				<View className='mb-5'>
 					<TitleOpcionInput title='Metodo de Pago' />
 					<Controller
@@ -137,19 +101,20 @@ const AgregarGastosScreen = () => {
 					/>
 				</View>
 
-				{/* Fecha - Componente reutilizable */}
-				<FechaField<GastoFormData>
+				{/* Selección de Fecha (Calendario) */}
+				<FechaField<any>
 					control={control}
 					watch={watch}
 					setValue={setValue}
 				/>
 
-				{/* Descripción - Componente reutilizable */}
-				<DescripcionField<GastoFormData> control={control} />
+				{/* Campo de Texto para Descripción/Notas */}
+				<DescripcionField<any> control={control} />
 			</KeyboardAwareScrollView>
 
+			{/* Botón de acción principal al final del formulario */}
 			<ButtomComponent
-				onPressFunction={handleSubmit(onSubmit)}
+				onPressFunction={handleSubmit(handleFormSubmit)}
 				text={textButton}
 				color={buttonColor}
 				className='mb-6'
