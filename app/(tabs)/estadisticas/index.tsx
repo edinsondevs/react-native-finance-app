@@ -27,13 +27,19 @@ import {
 	GastosXdia,
 	HeaderComponent,
 	LineChartComponent,
+	MonthSelector,
 	PieChartComponent,
 	TabSelectorEstadisticas,
 } from "@/components";
+import useCapitalize from "@/hooks/useCapitalize";
+import { useFinanceStore } from "@/store/useFinanceStore";
 import { colors } from "@/styles/constants";
 import { styles } from "@/styles/estadisticas.styles";
 
 const EstadisticasScreen = () => {
+	const selectedMonth = useFinanceStore((state) => state.selectedMonth);
+	const { capitalize } = useCapitalize();
+
 	const [activeTab, setActiveTab] = useState<
 		"diario" | "usuario" | "tipo_pago" | "categoria"
 	>("diario");
@@ -44,12 +50,12 @@ const EstadisticasScreen = () => {
 		isLoading,
 		refetch,
 	} = useQuery({
-		queryKey: ["estadisticasGastos"],
-		queryFn: getGastosPorDiaServices,
+		queryKey: ["estadisticasGastos", selectedMonth.format("YYYY-MM")],
+		queryFn: () => getGastosPorDiaServices(selectedMonth),
 	});
 
 	const { user } = useAuthStore();
-	
+
 	const { data: profiles } = useQuery({
 		queryKey: ["profiles"],
 		queryFn: getProfilesServices,
@@ -84,6 +90,7 @@ const EstadisticasScreen = () => {
 		profiles,
 		metodosPago,
 		categorias,
+		selectedMonth,
 	});
 
 	if (isLoading) {
@@ -108,6 +115,7 @@ const EstadisticasScreen = () => {
 			}
 			showsVerticalScrollIndicator={false}>
 			<HeaderComponent title='Estadísticas de Gastos' />
+			<MonthSelector />
 
 			{/* Total Card */}
 			<View style={styles.totalCard}>
@@ -249,7 +257,10 @@ const EstadisticasScreen = () => {
 							</ScrollView>
 
 							<Text style={styles.monthLabel}>
-								Días del mes de {dayjs().format("MMMM")}
+								Días del mes de{" "}
+								{capitalize(
+									selectedMonth.locale("es").format("MMMM"),
+								)}
 							</Text>
 						</>
 					) : (

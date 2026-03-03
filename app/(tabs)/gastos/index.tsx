@@ -1,29 +1,30 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useQuery } from '@tanstack/react-query';
-import { router } from 'expo-router';
-import { useState } from 'react';
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { useState } from "react";
 import {
 	ActivityIndicator,
 	FlatList,
 	RefreshControl,
 	Text,
 	View,
-} from 'react-native';
+} from "react-native";
 
-import { getCategoriasServices, getMetodosPagoServices } from '@/api/services';
-import { Category } from '@/api/services/interfaces';
-import MovimientosRecientes from '@/app/(tabs)/gastos/MovimientosRecientes';
+import { getCategoriasServices, getMetodosPagoServices } from "@/api/services";
+import { Category } from "@/api/services/interfaces";
+import MovimientosRecientes from "@/app/(tabs)/gastos/MovimientosRecientes";
 import {
 	CardsComponent,
 	CircleButton,
 	CustomSelector,
 	HeaderComponent,
+	MonthSelector,
 	TitleOpcionInput,
-} from '@/components';
-import { useDashboardData, useFormatoMoneda } from '@/hooks';
-import { useGetHoursCurrent } from '@/hooks/useGetHoursCurrent';
-import { useAuthStore } from '@/store/useAuthStore';
-import { colors } from '@/styles/constants';
+} from "@/components";
+import { useDashboardData, useFormatoMoneda } from "@/hooks";
+import { useGetHoursCurrent } from "@/hooks/useGetHoursCurrent";
+import { useAuthStore } from "@/store/useAuthStore";
+import { colors } from "@/styles/constants";
 
 const GastosScreen = () => {
 	const { saludo } = useGetHoursCurrent();
@@ -39,7 +40,7 @@ const GastosScreen = () => {
 	} = useDashboardData();
 
 	const { user } = useAuthStore();
-	const displayName = user?.displayName || 'Usuario';
+	const displayName = user?.displayName || "Usuario";
 
 	// Estado para filtros
 	const [selectedCategoria, setSelectedCategoria] = useState<Category | null>(
@@ -49,13 +50,13 @@ const GastosScreen = () => {
 
 	// Obtener categorías
 	const { data: categorias = [] } = useQuery({
-		queryKey: ['categorias'],
+		queryKey: ["categorias"],
 		queryFn: getCategoriasServices,
 	});
 
 	// Obtener métodos de pago
 	const { data: metodosPago = [] } = useQuery({
-		queryKey: ['metodos-pago'],
+		queryKey: ["metodos-pago"],
 		queryFn: getMetodosPagoServices,
 	});
 
@@ -108,15 +109,7 @@ const GastosScreen = () => {
 				keyExtractor={(item) =>
 					item.id?.toString() || Math.random().toString()
 				}
-				renderItem={({ item }) => (
-					<MovimientosRecientes
-						item={{
-							...item,
-							iconName:
-								item.iconName as keyof typeof MaterialIcons.glyphMap,
-						}}
-					/>
-				)}
+				renderItem={({ item }) => <MovimientosRecientes item={item} />}
 				ListEmptyComponent={
 					isLoadingAllGastos ? (
 						<ActivityIndicator
@@ -133,9 +126,11 @@ const GastosScreen = () => {
 				ListHeaderComponent={
 					<>
 						<HeaderComponent
-							title={`${saludo} ${displayName.split(' ')[0]}`}
+							title={`${saludo} ${displayName.split(" ")[0]}`}
 							icon
 						/>
+
+						<MonthSelector />
 
 						{/* Ingresos / Gastos */}
 						<View className='flex flex-row justify-around '>
@@ -222,7 +217,7 @@ const GastosScreen = () => {
 				<CircleButton
 					text='+'
 					onPressFunction={() =>
-						router.push('/(tabs)/gastos/AgregarGastos')
+						router.push("/(tabs)/gastos/AgregarGastos")
 					}
 				/>
 			</View>

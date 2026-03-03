@@ -1,27 +1,35 @@
-import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import 'dayjs/locale/es';
-import { router } from 'expo-router';
-import { useMemo } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+import { router } from "expo-router";
+import { useMemo } from "react";
 import {
 	ActivityIndicator,
 	FlatList,
 	RefreshControl,
 	Text,
 	View,
-} from 'react-native';
+} from "react-native";
 
-import { getIngresosServices } from '@/api/services/ingreso/get.ingresos.services';
-import { CircleButton, HeaderComponent, ItemIngreso } from '@/components';
+import { getIngresosServices } from "@/api/services/ingreso/get.ingresos.services";
+import {
+	CircleButton,
+	HeaderComponent,
+	ItemIngreso,
+	MonthSelector,
+} from "@/components";
+import { useFinanceStore } from "@/store/useFinanceStore";
 
-dayjs.locale('es');
+dayjs.locale("es");
 
 // Eliminamos HeaderList ya que no es necesario en el nuevo diseño de tarjetas.
 
 const IngresosScreen = () => {
+	const selectedMonth = useFinanceStore((state) => state.selectedMonth);
+
 	const { data, isLoading, error, refetch } = useQuery({
-		queryKey: ['ingresos'],
-		queryFn: getIngresosServices,
+		queryKey: ["ingresos", selectedMonth.format("YYYY-MM")],
+		queryFn: () => getIngresosServices(selectedMonth),
 	});
 
 	// Procesar datos para agregar separadores de mes
@@ -37,12 +45,12 @@ const IngresosScreen = () => {
 		let mesAnterior: string | null = null;
 
 		sorted.forEach((ingreso) => {
-			const mesActual = dayjs(ingreso.fecha).format('MMMM YYYY');
+			const mesActual = dayjs(ingreso.fecha).format("MMMM YYYY");
 
 			// Agregar separador si cambió el mes
 			if (mesAnterior !== mesActual && mesAnterior !== null) {
 				resultado.push({
-					type: 'separator',
+					type: "separator",
 					mes: mesActual,
 					id: `separator-${mesActual}`,
 				});
@@ -50,7 +58,7 @@ const IngresosScreen = () => {
 
 			// Agregar el ingreso
 			resultado.push({
-				type: 'ingreso',
+				type: "ingreso",
 				...ingreso,
 			});
 
@@ -82,6 +90,7 @@ const IngresosScreen = () => {
 	return (
 		<View className='flex-1 bg-gray-50'>
 			<HeaderComponent title='Ingresos' />
+			<MonthSelector />
 			<FlatList
 				data={ingresosConSeparadores}
 				contentContainerStyle={{ paddingVertical: 8 }}
@@ -92,7 +101,7 @@ const IngresosScreen = () => {
 					/>
 				}
 				renderItem={({ item }: { item: any }) => {
-					if (item.type === 'separator') {
+					if (item.type === "separator") {
 						return <View className='bg-blue-500 h-1 my-3 mx-4' />;
 					}
 
@@ -119,7 +128,7 @@ const IngresosScreen = () => {
 					text='+'
 					color='bg-secondary'
 					onPressFunction={() =>
-						router.push('/(tabs)/ingresos/AgregarIngresos')
+						router.push("/(tabs)/ingresos/AgregarIngresos")
 					}
 				/>
 			</View>

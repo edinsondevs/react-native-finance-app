@@ -9,6 +9,7 @@ interface UseEstadisticasLogicProps {
 	profiles: Profile[] | undefined;
 	metodosPago: string[] | undefined;
 	categorias: Category[] | undefined;
+	selectedMonth: dayjs.Dayjs;
 }
 
 export const useEstadisticasLogic = ({
@@ -17,6 +18,7 @@ export const useEstadisticasLogic = ({
 	profiles,
 	metodosPago,
 	categorias,
+	selectedMonth,
 }: UseEstadisticasLogicProps) => {
 	const chartColors = useMemo(
 		() => [
@@ -79,16 +81,14 @@ export const useEstadisticasLogic = ({
 		[gastosData],
 	);
 
-	// Obtener todos los días del mes actual
-	const daysInMonth = dayjs().date();
+	// Obtener todos los días del mes seleccionado
+	const daysInMonth = selectedMonth.daysInMonth();
 	const monthLabels = useMemo(
 		() =>
 			Array.from({ length: daysInMonth }, (_, i) =>
-				dayjs()
-					.date(i + 1)
-					.format("DD/MM"),
+				selectedMonth.date(i + 1).format("DD/MM"),
 			),
-		[daysInMonth],
+		[daysInMonth, selectedMonth],
 	);
 
 	// Agrupar gastos por usuario y por día - memoizado

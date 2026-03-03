@@ -3,11 +3,13 @@ import dayjs from "dayjs";
 import { GastoData, MontoItem } from "../interfaces";
 
 //* Consulta de Ingresos
-export const getResumeIngresosServices = async (): Promise<number> => {
-	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
-	const fechaAnterior = dayjs()
-		.endOf("month")
+export const getResumeIngresosServices = async (
+	month: dayjs.Dayjs,
+): Promise<number> => {
+	const fechaActual = month.endOf("month").format("YYYY-MM-DD");
+	const fechaAnterior = month
 		.subtract(1, "month")
+		.endOf("month")
 		.format("YYYY-MM-DD");
 
 	try {
@@ -31,11 +33,13 @@ export const getResumeIngresosServices = async (): Promise<number> => {
 };
 
 //* Consulta de Gastos
-export const getResumeGastosServices = async (): Promise<number> => {
-	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
-	const fechaAnterior = dayjs()
-		.endOf("month")
+export const getResumeGastosServices = async (
+	month: dayjs.Dayjs,
+): Promise<number> => {
+	const fechaActual = month.endOf("month").format("YYYY-MM-DD");
+	const fechaAnterior = month
 		.subtract(1, "month")
+		.endOf("month")
 		.format("YYYY-MM-DD");
 
 	try {
@@ -60,9 +64,11 @@ export const getResumeGastosServices = async (): Promise<number> => {
 
 //* Consulta de Gastos Completos
 
-export const getAllGastosServices = async (): Promise<GastoData[]> => {
-	const fechaActual = dayjs().endOf("month").format("YYYY-MM-DD");
-	const fechaAnterior = dayjs()
+export const getAllGastosServices = async (
+	month: dayjs.Dayjs,
+): Promise<GastoData[]> => {
+	const fechaActual = month.endOf("month").format("YYYY-MM-DD");
+	const fechaAnterior = month
 		.subtract(1, "month")
 		.endOf("month")
 		.format("YYYY-MM-DD");
