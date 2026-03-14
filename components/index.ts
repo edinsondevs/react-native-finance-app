@@ -6,7 +6,7 @@ export { default as TabSelectorEstadisticas } from "../app/(tabs)/estadisticas/T
 export { default as ButtomComponent } from "./ButtomComponent";
 export { default as CardsComponent } from "./CardsComponent";
 export { default as CharstComponent } from "./charts/CharstComponent";
-export { default as LineChartComponent } from "./charts/LineChartComponent";
+export { default as CustomBarChart } from "./charts/CustomBarChart";
 export { default as PieChartComponent } from "./charts/PieChartComponent";
 export { default as ChipComponent } from "./ChipComponent";
 export { default as CircleButton } from "./CircleButton";

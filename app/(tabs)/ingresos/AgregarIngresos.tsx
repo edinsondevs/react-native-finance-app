@@ -1,20 +1,30 @@
+import { useFormMutation, useFormValidation } from "@/hooks";
 import dayjs from "dayjs";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useFormMutation, useFormValidation } from "@/hooks";
 
 import { postIngresoServices } from "@/api/services/ingreso/post.ingreso.services";
-import { ButtomComponent, HeaderComponent, InputComponent, ModalsAlerts, TitleOpcionInput } from "@/components";
-import { DescripcionField, FechaField, MontoField } from "@/components/form-fields";
+import {
+	ButtomComponent,
+	HeaderComponent,
+	InputComponent,
+	ModalsAlerts,
+	TitleOpcionInput,
+} from "@/components";
+import {
+	DescripcionField,
+	FechaField,
+	MontoField,
+} from "@/components/form-fields";
 
 import { IngresoForm } from "@/interfaces";
-import { Colors } from "@/styles/constants";
 import { useAuthStore } from "@/store/useAuthStore";
+import { Colors } from "@/styles/constants";
 
 const AgregarIngresos = () => {
-
-	const { control, handleSubmit, reset, watch, setValue } = useForm<IngresoForm>({ defaultValues: { fecha: new Date() } });
+	const { control, handleSubmit, reset, watch, setValue } =
+		useForm<IngresoForm>({ defaultValues: { fecha: new Date() } });
 	const { user } = useAuthStore();
 
 	// Usar el custom hook para la mutación
@@ -28,7 +38,7 @@ const AgregarIngresos = () => {
 				user_id: user?.id,
 			});
 		},
-		queryKeys: [["ingresos"], ["resumeIngresos"]],
+		queryKeys: [["ingresos"], ["resumeIngresos"], ["estadisticasGastos"]],
 		successMessage: "Ingreso guardado correctamente",
 		onSuccessCallback: reset,
 	});
@@ -53,7 +63,7 @@ const AgregarIngresos = () => {
 				text='Guardando Nuevo Ingreso...'
 				transparent={true}
 			/>
-			<HeaderComponent title='Agregar Nuevo Ingreso' />	
+			<HeaderComponent title='Agregar Nuevo Ingreso' />
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps='handled'
 				contentContainerStyle={{ paddingTop: 16 }}
@@ -90,7 +100,7 @@ const AgregarIngresos = () => {
 					/>
 
 					{/* Descripción - Componente reutilizable */}
-					<DescripcionField control={control}  />
+					<DescripcionField control={control} />
 				</View>
 			</KeyboardAwareScrollView>
 

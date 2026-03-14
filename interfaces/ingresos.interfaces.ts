@@ -1,6 +1,6 @@
 import { DateType } from "react-native-ui-datepicker";
 
-/* 
+/*
  * @interface IngresoForm
  * Propiedades para el formulario de ingresos.
  * Contiene la información de un ingreso individual para ser visualizado.
@@ -25,6 +25,13 @@ export interface InterfaceModalEdicionProps {
 	setNewMonto: (monto: string) => void;
 	newDescripcion: string;
 	setNewDescripcion: (descripcion: string) => void;
+	newFecha?: Date;
+	setNewFecha?: (fecha: Date) => void;
+	newCategoriaId?: string;
+	setNewCategoriaId?: (categoriaId: string) => void;
+	categoriasData?: any[];
+	newOrigen?: string;
+	setNewOrigen?: (origen: string) => void;
 	mutation: any;
 	deleteMutation: any;
 	handleUpdate: () => void;
@@ -40,6 +47,8 @@ export interface InterfaceMovimientosRecientesProps {
 	item: {
 		id?: number;
 		categoria?: string;
+		categoria_id?: string | number;
+		metodo_pago_id?: string | number;
 		descripcion: string;
 		monto: number;
 		icon: any;
@@ -47,4 +56,5 @@ export interface InterfaceMovimientosRecientesProps {
 		fecha?: string;
 		user_id?: string;
 	};
+	categorias?: any[];
 }

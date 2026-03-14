@@ -14,16 +14,30 @@ const handleDelete = ({ id, deleteMutation }: InterfaceDeleteProps) => {
 				style: "destructive",
 				onPress: () => deleteMutation.mutate(),
 			},
-		]
+		],
 	);
 };
 
-const handleUpdate = ({ id, updateMutation }: InterfaceUpdateProps, newMonto: string, newDescripcion: string) => {
-    if (!id) return;
-	updateMutation.mutate({
+import dayjs from "dayjs";
+
+const handleUpdate = (
+	{ id, updateMutation }: InterfaceUpdateProps,
+	newMonto: string,
+	newDescripcion: string,
+	newOrigen?: string,
+	newFecha?: Date,
+) => {
+	if (!id) return;
+
+	const updateData: any = {
 		monto: parseFloat(newMonto),
 		descripcion: newDescripcion,
-	});
+	};
+
+	if (newOrigen) updateData.origen = newOrigen;
+	if (newFecha) updateData.fecha = dayjs(newFecha).format("YYYY-MM-DD");
+
+	updateMutation.mutate(updateData);
 };
 
 export const FnIngresos = {

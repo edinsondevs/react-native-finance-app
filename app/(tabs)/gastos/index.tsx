@@ -1,8 +1,12 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import dayjs from "dayjs";
 import { router } from "expo-router";
+import { useState } from "react";
 import {
 	ActivityIndicator,
 	FlatList,
+	Pressable,
 	RefreshControl,
 	Text,
 	View,
@@ -18,6 +22,7 @@ import {
 	MonthSelector,
 	TitleOpcionInput,
 } from "@/components";
+import { DatePickerModal } from "@/components/form-fields";
 import { useFormatoMoneda } from "@/hooks";
 import { useGastosScreenLogic } from "@/hooks/useGastosScreenLogic";
 import { colors } from "@/styles/constants";
@@ -27,6 +32,8 @@ import { colors } from "@/styles/constants";
  * Lista los movimientos filtrados por mes, categoría y método de pago.
  */
 const GastosScreen = () => {
+	const [datePickerVisible, setDatePickerVisible] = useState(false);
+
 	// ⚡️ Desacoplamiento de lógica (SOLID - Single Responsibility)
 	const {
 		saludo,
@@ -43,6 +50,8 @@ const GastosScreen = () => {
 		handleCategoriaChange,
 		handleMetodoPagoChange,
 		gastosFiltradosTotal,
+		selectedFecha,
+		handleFechaChange,
 	} = useGastosScreenLogic();
 
 	return (
@@ -56,10 +65,17 @@ const GastosScreen = () => {
 						onRefresh={refreshAll}
 					/>
 				}
-				keyExtractor={(item) =>
-					item.id?.toString() || Math.random().toString()
+				keyExtractor={(item, index) =>
+					item.id?.toString()
+						? `${item.id}-${index}`
+						: Math.random().toString()
 				}
-				renderItem={({ item }) => <MovimientosRecientes item={item} />}
+				renderItem={({ item }) => (
+					<MovimientosRecientes
+						item={item}
+						categorias={categorias}
+					/>
+				)}
 				ListEmptyComponent={
 					isLoadingAllGastos ? (
 						<ActivityIndicator
@@ -159,7 +175,62 @@ const GastosScreen = () => {
 									/>
 								</View>
 							</View>
+
+							{/* Selector de Fecha */}
+							<View className='flex-row mt-2'>
+								<View className='flex-1 justify-center rounded-2xl bg-white border border-border-light overflow-hidden'>
+									<Pressable
+										className='flex-row items-center justify-between py-2 px-5 h-[52px]'
+										onPress={() =>
+											setDatePickerVisible(true)
+										}>
+										<Text
+											className={`font-Inter-Medium text-sm ${
+												selectedFecha
+													? "text-text-dark"
+													: "text-gray-400"
+											}`}
+											numberOfLines={1}>
+											{selectedFecha
+												? dayjs(selectedFecha).format(
+														"DD/MM/YYYY",
+													)
+												: "Filtrar por Fecha"}
+										</Text>
+										{!selectedFecha && (
+											<FontAwesome
+												name='calendar'
+												size={16}
+												color='#9ca3af'
+											/>
+										)}
+									</Pressable>
+									{selectedFecha && (
+										<Pressable
+											className='absolute right-0 p-4 h-[52px] justify-center items-center'
+											onPress={() =>
+												handleFechaChange(null)
+											}>
+											<FontAwesome
+												name='times-circle'
+												size={20}
+												color='#9ca3af'
+											/>
+										</Pressable>
+									)}
+								</View>
+							</View>
 						</View>
+
+						<DatePickerModal
+							visible={datePickerVisible}
+							value={selectedFecha || new Date()}
+							onClose={() => setDatePickerVisible(false)}
+							onSelect={(date) => {
+								handleFechaChange(date);
+								setDatePickerVisible(false);
+							}}
+						/>
 
 						{/* Subtítulo de encabezado */}
 						<View className='mx-8 mb-2'>

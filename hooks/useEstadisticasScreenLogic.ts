@@ -6,7 +6,7 @@ import {
 import { getGastosPorDiaServices } from "@/api/services/estadisticas/get.estadisticas.services";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useFinanceStore } from "@/store/useFinanceStore";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useEstadisticasLogic } from "./useEstadisticasLogic";
 
@@ -22,6 +22,8 @@ export const useEstadisticasScreenLogic = () => {
 		"diario" | "usuario" | "tipo_pago" | "categoria"
 	>("diario");
 	const [activeChart, setActiveChart] = useState<"line" | "pie">("line");
+
+	const queryClient = useQueryClient();
 
 	// Consultas de datos
 	const {
@@ -58,13 +60,21 @@ export const useEstadisticasScreenLogic = () => {
 		selectedMonth,
 	});
 
+	// Refrescar manualmente
+	const refreshAll = async () => {
+		await queryClient.refetchQueries({ queryKey: ["estadisticasGastos"] });
+		await queryClient.refetchQueries({ queryKey: ["profiles"] });
+		await queryClient.refetchQueries({ queryKey: ["metodosPago"] });
+		await queryClient.refetchQueries({ queryKey: ["categorias"] });
+	};
+
 	return {
 		activeTab,
 		setActiveTab,
 		activeChart,
 		setActiveChart,
 		isLoading,
-		refetch,
+		refetch: refreshAll,
 		gastosData,
 		selectedMonth,
 		user,

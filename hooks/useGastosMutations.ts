@@ -15,11 +15,14 @@ export const useGastosMutations = ({
 			monto: number;
 			descripcion: string;
 			user_id?: string;
+			fecha?: string;
+			categoria_id?: number;
 		}) => updateGastoServices(id!, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["gastos", "all"] });
 			queryClient.invalidateQueries({ queryKey: ["resumeGastos"] });
 			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
+			queryClient.invalidateQueries({ queryKey: ["estadisticasGastos"] });
 			onSuccessCallback?.();
 			Alert.alert("Éxito", "El gasto ha sido actualizado.");
 		},
@@ -35,6 +38,7 @@ export const useGastosMutations = ({
 			queryClient.invalidateQueries({ queryKey: ["gastos", "all"] });
 			queryClient.invalidateQueries({ queryKey: ["resumeGastos"] });
 			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
+			queryClient.invalidateQueries({ queryKey: ["estadisticasGastos"] });
 			onSuccessCallback?.();
 			Alert.alert("Éxito", "El gasto ha sido eliminado.");
 		},

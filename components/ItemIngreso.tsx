@@ -1,6 +1,6 @@
 import { FontAwesome } from "@expo/vector-icons";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { IngresoInterfaces } from "@/api/services/interfaces";
@@ -36,7 +36,19 @@ const ItemIngreso = ({
 	const [modalVisible, setModalVisible] = useState(false);
 	const [newMonto, setNewMonto] = useState(monto.toString());
 	const [newDescripcion, setNewDescripcion] = useState(descripcion);
+	const [newOrigen, setNewOrigen] = useState(origen || "");
+	const [newFecha, setNewFecha] = useState<Date>(
+		fecha ? dayjs(fecha).toDate() : new Date(),
+	);
 	const { user } = useAuthStore();
+
+	// Actualizar el estado local cuando cambian los props (tras el refetch de React Query)
+	useEffect(() => {
+		setNewMonto(monto.toString());
+		setNewDescripcion(descripcion);
+		if (origen) setNewOrigen(origen);
+		if (fecha) setNewFecha(dayjs(fecha).toDate());
+	}, [monto, descripcion, origen, fecha]);
 
 	// Usar el custom hook para las mutaciones
 	const { updateMutation, deleteMutation } = useIngresosMutations({
@@ -107,6 +119,10 @@ const ItemIngreso = ({
 				setNewMonto={setNewMonto}
 				newDescripcion={newDescripcion}
 				setNewDescripcion={setNewDescripcion}
+				newOrigen={newOrigen}
+				setNewOrigen={setNewOrigen}
+				newFecha={newFecha}
+				setNewFecha={setNewFecha}
 				mutation={updateMutation}
 				deleteMutation={deleteMutation}
 				handleUpdate={() =>
@@ -114,6 +130,8 @@ const ItemIngreso = ({
 						{ id, updateMutation },
 						newMonto,
 						newDescripcion,
+						newOrigen,
+						newFecha,
 					)
 				}
 				handleDelete={() =>

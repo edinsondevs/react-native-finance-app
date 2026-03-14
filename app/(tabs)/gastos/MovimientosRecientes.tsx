@@ -24,11 +24,20 @@ dayjs.locale("es");
  *
  * @param item - Objeto con los datos del gasto (InterfaceMovimientosRecientesProps).
  */
-const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
-	const { id, monto, descripcion, icon, user_id } = item;
+const MovimientosRecientes = ({
+	item,
+	categorias,
+}: InterfaceMovimientosRecientesProps) => {
+	const { id, monto, descripcion, icon, user_id, categoria_id, fecha } = item;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [newMonto, setNewMonto] = useState(monto.toString());
 	const [newDescripcion, setNewDescripcion] = useState(descripcion);
+	const [newFecha, setNewFecha] = useState<Date>(
+		fecha ? dayjs(fecha).toDate() : new Date(),
+	);
+	const [newCategoriaId, setNewCategoriaId] = useState<string>(
+		categoria_id ? categoria_id.toString() : "",
+	);
 	const { user } = useAuthStore();
 
 	// Usar el custom hook para las mutaciones
@@ -45,7 +54,9 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 	useEffect(() => {
 		setNewMonto(monto.toString());
 		setNewDescripcion(descripcion);
-	}, [monto, descripcion]);
+		if (fecha) setNewFecha(dayjs(fecha).toDate());
+		if (categoria_id) setNewCategoriaId(categoria_id.toString());
+	}, [monto, descripcion, fecha, categoria_id]);
 
 	return (
 		<View>
@@ -100,6 +111,11 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 				setNewMonto={setNewMonto}
 				newDescripcion={newDescripcion}
 				setNewDescripcion={setNewDescripcion}
+				newFecha={newFecha}
+				setNewFecha={setNewFecha}
+				newCategoriaId={newCategoriaId}
+				setNewCategoriaId={setNewCategoriaId}
+				categoriasData={categorias}
 				mutation={updateMutation}
 				deleteMutation={deleteMutation}
 				handleUpdate={() =>
@@ -107,6 +123,8 @@ const MovimientosRecientes = ({ item }: InterfaceMovimientosRecientesProps) => {
 						{ id, updateMutation, user_id: user?.id },
 						newMonto,
 						newDescripcion,
+						newFecha,
+						newCategoriaId,
 					)
 				}
 				handleDelete={() =>

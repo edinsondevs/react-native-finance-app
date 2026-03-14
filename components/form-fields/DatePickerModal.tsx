@@ -2,11 +2,12 @@ import { DateTimePickerComponent, ModalComponent } from "@/components";
 import { InterfaceDatePickerModalProps } from "@/interfaces";
 import { DateType } from "react-native-ui-datepicker";
 
-
 /**
  * Componente reutilizable para el modal de selección de fecha
  * Envuelve DateTimePickerComponent con configuración estándar
  */
+import dayjs from "dayjs";
+
 export const DatePickerModal = ({
 	visible,
 	value,
@@ -16,8 +17,7 @@ export const DatePickerModal = ({
 	minimumDate = new Date(2020, 0, 1),
 }: InterfaceDatePickerModalProps) => {
 	const handleSelect = (selectedDate: DateType) => {
-		const dateToSave =
-			selectedDate instanceof Date ? selectedDate : new Date();
+		const dateToSave = dayjs(selectedDate).toDate();
 		onSelect(dateToSave);
 		onClose();
 	};

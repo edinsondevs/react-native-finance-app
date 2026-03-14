@@ -82,7 +82,11 @@ const IngresosScreen = () => {
 						/>
 					);
 				}}
-				keyExtractor={(item) => item.id.toString()}
+				keyExtractor={(item, index) =>
+					item.id?.toString()
+						? `${item.id}-${index}`
+						: Math.random().toString()
+				}
 				ListEmptyComponent={
 					<Text className='text-center mt-5'>
 						No hay ingresos registrados
