@@ -8,12 +8,12 @@ import {
 } from "react-native";
 
 import {
+	CustomBarChart,
 	GastosPorCategoria,
 	GastosPorTipoPago,
 	GastosPorUsuario,
 	GastosXdia,
 	HeaderComponent,
-	LineChartComponent,
 	MonthSelector,
 	PieChartComponent,
 	TabSelectorEstadisticas,
@@ -127,7 +127,7 @@ const EstadisticasScreen = () => {
 										? colors.primary
 										: "#9ca3af",
 							}}>
-							Gráfico de Líneas
+							Gráfico de Barras
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -209,7 +209,7 @@ const EstadisticasScreen = () => {
 								scrollEnabled={dataSets.length > 0}>
 								<View style={styles.chartContainer}>
 									{dataSets.length > 0 && (
-										<LineChartComponent
+										<CustomBarChart
 											mainData={mainData}
 											dataSets={dataSets}
 											monthLabels={monthLabels}

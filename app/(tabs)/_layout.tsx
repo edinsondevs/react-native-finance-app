@@ -1,5 +1,5 @@
 import { colors } from "@/styles/constants";
-import { FontAwesome } from "@expo/vector-icons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 
 export default function TabLayout() {
@@ -54,6 +54,19 @@ export default function TabLayout() {
 						<FontAwesome
 							size={28}
 							name='bar-chart'
+							color={color}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name='historial'
+				options={{
+					title: "Historial",
+					tabBarIcon: ({ color }) => (
+						<FontAwesome
+							size={28}
+							name='history'
 							color={color}
 						/>
 					),

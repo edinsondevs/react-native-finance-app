@@ -1,6 +1,6 @@
 import { deleteIngresoServices } from "@/api/services/ingreso/delete.ingreso.services";
-import { IngresoInterfaces } from "@/api/services/ingreso/get.ingresos.services";
 import { updateIngresoServices } from "@/api/services/ingreso/update.ingreso.services";
+import { IngresoInterfaces } from "@/api/services/interfaces";
 import { InterfaceUseMutationsProps } from "@/interfaces";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
@@ -17,6 +17,7 @@ export const useIngresosMutations = ({
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["ingresos"] });
 			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
+			queryClient.invalidateQueries({ queryKey: ["estadisticasGastos"] });
 			onSuccessCallback?.();
 			Alert.alert("Éxito", "El ingreso ha sido actualizado.");
 		},
@@ -31,6 +32,7 @@ export const useIngresosMutations = ({
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["ingresos"] });
 			queryClient.invalidateQueries({ queryKey: ["resumeIngresos"] });
+			queryClient.invalidateQueries({ queryKey: ["estadisticasGastos"] });
 			onSuccessCallback?.();
 			Alert.alert("Éxito", "El ingreso ha sido eliminado.");
 		},

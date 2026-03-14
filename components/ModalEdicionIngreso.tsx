@@ -1,10 +1,13 @@
-import React from "react";
-import { Modal, Text, View } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import dayjs from "dayjs";
+import React, { useState } from "react";
+import { Modal, Pressable, Text, View } from "react-native";
 
 // ✅ IMPORTAR DIRECTAMENTE, NO DESDE components/index.ts
+import { InterfaceModalEdicionProps } from "@/interfaces";
 import ButtomComponent from "./ButtomComponent";
 import InputComponent from "./InputComponent";
-import { InterfaceModalEdicionProps } from "@/interfaces";
+import { DatePickerModal } from "./form-fields";
 
 const ModalEdicionIngreso = ({
 	modalVisible,
@@ -17,8 +20,13 @@ const ModalEdicionIngreso = ({
 	deleteMutation,
 	handleUpdate,
 	handleDelete,
+	newFecha,
+	setNewFecha,
+	newOrigen,
+	setNewOrigen,
 }: InterfaceModalEdicionProps) => {
 	const isAnyPending = mutation.isPending || deleteMutation.isPending;
+	const [datePickerVisible, setDatePickerVisible] = useState(false);
 
 	return (
 		<Modal
@@ -42,13 +50,58 @@ const ModalEdicionIngreso = ({
 						editable={!isAnyPending}
 					/>
 
-					<Text className='font-bold'>Descripción</Text>
+					{newOrigen !== undefined && setNewOrigen !== undefined && (
+						<>
+							<Text className='font-bold mt-2'>Origen</Text>
+							<InputComponent
+								placeholder='Ej. Salario, Venta'
+								value={newOrigen}
+								setValue={setNewOrigen}
+								editable={!isAnyPending}
+							/>
+						</>
+					)}
+
+					<Text className='font-bold mt-2'>Descripción</Text>
 					<InputComponent
 						placeholder='Descripción'
 						value={newDescripcion}
 						setValue={setNewDescripcion}
 						editable={!isAnyPending}
 					/>
+
+					{newFecha && setNewFecha && (
+						<>
+							<Text className='font-bold mt-2'>Fecha</Text>
+							<Pressable
+								onPress={() => setDatePickerVisible(true)}>
+								<View>
+									<InputComponent
+										value={dayjs(newFecha).format(
+											"DD/MM/YYYY",
+										)}
+										setValue={() => {}}
+										placeholder='Seleccionar fecha'
+										editable={false}
+										className='pl-3'
+									/>
+									<View className='absolute right-3 top-3'>
+										<FontAwesome
+											name='calendar'
+											size={24}
+											color='black'
+										/>
+									</View>
+								</View>
+							</Pressable>
+							<DatePickerModal
+								visible={datePickerVisible}
+								value={newFecha}
+								onClose={() => setDatePickerVisible(false)}
+								onSelect={(date) => setNewFecha(date)}
+							/>
+						</>
+					)}
 
 					<View className='mt-4 gap-2'>
 						<ButtomComponent
