@@ -1,5 +1,4 @@
 import { colors } from "@/styles/constants";
-import React from "react";
 import { Text, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 

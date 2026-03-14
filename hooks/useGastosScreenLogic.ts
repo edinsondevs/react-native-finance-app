@@ -4,6 +4,7 @@ import { useDashboardData } from "@/hooks";
 import { useGetHoursCurrent } from "@/hooks/useGetHoursCurrent";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { useState } from "react";
 
 /**
@@ -30,6 +31,7 @@ export const useGastosScreenLogic = () => {
 		null,
 	);
 	const [selectedMetodoPago, setSelectedMetodoPago] = useState<any>(null);
+	const [selectedFecha, setSelectedFecha] = useState<Date | null>(null);
 
 	// Obtener categorías mediante React Query
 	const { data: categorias = [] } = useQuery({
@@ -66,6 +68,13 @@ export const useGastosScreenLogic = () => {
 	};
 
 	/**
+	 * Maneja la selección de la fecha
+	 */
+	const handleFechaChange = (fecha: Date | null) => {
+		setSelectedFecha(fecha);
+	};
+
+	/**
 	 * Lista de gastos ya filtrada según las selecciones del usuario
 	 */
 	const gastosFiltrados =
@@ -76,7 +85,12 @@ export const useGastosScreenLogic = () => {
 			const porMetodoPago =
 				!selectedMetodoPago ||
 				gasto.metodo_pago_id === selectedMetodoPago.id;
-			return porCategoria && porMetodoPago;
+			const porFecha =
+				!selectedFecha ||
+				(gasto.fecha &&
+					dayjs(gasto.fecha.split("T")[0]).format("YYYY-MM-DD") ===
+						dayjs(selectedFecha).format("YYYY-MM-DD"));
+			return porCategoria && porMetodoPago && porFecha;
 		}) || [];
 
 	/**
@@ -102,5 +116,7 @@ export const useGastosScreenLogic = () => {
 		handleCategoriaChange,
 		handleMetodoPagoChange,
 		gastosFiltradosTotal,
+		selectedFecha,
+		handleFechaChange,
 	};
 };
