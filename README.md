@@ -52,3 +52,4 @@ Finanzas App es una solución moderna para mantener un registro claro de la econ
 
 ---
 Desarrollado con ❤️ usando React Native & Expo.
+
