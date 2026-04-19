@@ -51,5 +51,4 @@ Finanzas App es una solución moderna para mantener un registro claro de la econ
 **Edinson Madrid**
 
 ---
-
 Desarrollado con ❤️ usando React Native & Expo.
